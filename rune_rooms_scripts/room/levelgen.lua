@@ -89,7 +89,7 @@ else
 
         ReplaceRoom(vaultRoomIndex, newData)
 
-        RuneRooms.Helpers:RunInNRenderFrames(RuneRooms.ReplaceRuneDoorSprites, 20)
+        RuneRooms.Helpers:RunInNRenderFrames(RuneRooms.ReplaceRuneDoorSprites, 20, "RUNE_ROOM_DOOR")
     end
     RuneRooms:AddCallback(
         TSIL.Enums.CustomCallback.POST_NEW_LEVEL_REORDERED,

@@ -438,9 +438,13 @@ function Backdrop:OnNewRoom()
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     local rng = TSIL.RNG.NewRNG(roomDesc.DecorationSeed)
 
-    SpawnFloor()
-
-    SpawnWall()
+    if not REPENTOGON then
+        SpawnFloor()
+        SpawnWall()
+    else
+        local backDropID = Isaac.GetBackdropIdByName("Rune Backdrop")
+        Game():GetRoom():SetBackdropType(backDropID, 1)
+    end
 
     SpawnCrystalPillars(rng)
 

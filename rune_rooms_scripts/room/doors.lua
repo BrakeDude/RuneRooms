@@ -69,7 +69,6 @@ function RuneRooms:ReplaceRuneDoorSprites()
     end)
 end
 
-
 function RuneDoors:OnNewRoom()
     RuneRooms:ReplaceRuneDoorSprites()
 end

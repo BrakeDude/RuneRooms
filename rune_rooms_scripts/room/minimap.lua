@@ -28,7 +28,7 @@ function Minimap:OnNewLevel()
                 end
             end
         end
-    end, 20)
+    end, 20, "RUNE_ROOM_MINIMAP")
 end
 RuneRooms:AddPriorityCallback(
     ModCallbacks.MC_POST_NEW_LEVEL,

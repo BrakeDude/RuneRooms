@@ -20,11 +20,22 @@ do
     ---Runs a function in a given number of render frames
     ---@param funct function
     ---@param frames integer
-    function RuneRooms.Helpers:RunInNRenderFrames(funct, frames)
-        scheduledFunctions[#scheduledFunctions+1] = {
-            funct = funct,
-            frames = frames
-        }
+    function RuneRooms.Helpers:RunInNRenderFrames(funct, frames, id)
+        local add = true
+        if id ~= nil then
+            TSIL.Utils.Tables.ForEach(scheduledFunctions, function (_, scheduledFunction)
+                if scheduledFunction.id and type(scheduledFunction.id) == type(id) and scheduledFunction.id == id then
+                    add = false
+                end
+            end) 
+        end
+        if add then
+            scheduledFunctions[#scheduledFunctions+1] = {
+                funct = funct,
+                frames = frames,
+                id = id
+            }
+        end
     end
 
     RuneRooms:AddCallback(ModCallbacks.MC_POST_RENDER, function ()

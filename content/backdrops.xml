@@ -1,0 +1,8 @@
+<backdrops gfxroot="gfx/backdrop/" gridgfxroot="gfx/grid/" effectsgfxroot="gfx/effects/">
+	<backdrop name="Rune Backdrop" gfx="rune_room_bd.png" walls="1" wallvariants="3" floors="1" floorvariants="6"
+		rocks		= "rocks_mausoleum.png"
+		pit			= "grid_pit_mausoleum.png"
+		door		= "door_rune_room.png"
+	/>
+	<!-- REPENTANCE END -->
+</backdrops>
