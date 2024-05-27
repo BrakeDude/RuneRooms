@@ -4,4 +4,6 @@ TSIL.Utils.Tables.ForEach(RuneRooms.Constants.RUNE_NAMES, function (_, name)
 end)
 
 include("rune_rooms_scripts.rune_effects.rune_effects")
-include("rune_rooms_scripts.rune_effects.minimap")
+if MinimapAPI then
+    include("rune_rooms_scripts.rune_effects.minimap")
+end
