@@ -338,6 +338,8 @@ local exampledirectorykey = {
 
 --#region AgentCucco pause manager for DSS
 
+include("rune_rooms_scripts.lib.imgui")
+
 local OldTimer
 local OldTimerBossRush
 local OldTimerHush
