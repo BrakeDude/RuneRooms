@@ -1,7 +1,7 @@
 local AnsuzEssence = {}
 
 local REVEAL_ROOM_CHANCE = 1
-local FULL_DISPLAY_FLAGS = MinimapAPI and 5 or 7
+local FULL_DISPLAY_FLAGS = 5
 local AnsuzItem = RuneRooms.Enums.Item.ANSUZ_ESSENCE
 
 
@@ -59,15 +59,6 @@ RuneRooms:AddCallback(
     AnsuzEssence.OnNewLevel
 )
 
-local function GetDisplayFlags(room)
-	local df = room.DisplayFlags or 0
-	if room.Data.Type == RoomType.ROOM_ULTRASECRET and room.DisplayFlags == 0 then -- if red self is hidden and DFs not set
-		if room.VisitedCount < 1 then
-			df = 0
-		end
-	end
-	return df
-end
 
 ---@param npc EntityNPC
 function AnsuzEssence:OnNPCDeath(npc)
@@ -77,31 +68,19 @@ function AnsuzEssence:OnNPCDeath(npc)
     if rng:RandomFloat() >= REVEAL_ROOM_CHANCE then return end
 
     local notFullyVisibleRooms = {}
-    if MinimapAPI then
-        for _, room in ipairs(MinimapAPI:GetLevel()) do
-            ---@type integer
-            local displayFlags = room:GetDisplayFlags()
-            if displayFlags ~= FULL_DISPLAY_FLAGS then
-                notFullyVisibleRooms[#notFullyVisibleRooms+1] = room
-            end
-        end
-    else
-        local rooms = Game():GetLevel():GetRooms()
-        for i = 0, rooms.Size-1 do
-            local room = rooms:Get(i)
-            if GetDisplayFlags(room) ~= FULL_DISPLAY_FLAGS then
-                notFullyVisibleRooms[#notFullyVisibleRooms+1] = room
-            end
+
+    for _, room in ipairs(MinimapAPI:GetLevel()) do
+        ---@type integer
+        local displayFlags = room:GetDisplayFlags()
+        if displayFlags ~= FULL_DISPLAY_FLAGS then
+            notFullyVisibleRooms[#notFullyVisibleRooms+1] = room
         end
     end
-    
+
     if #notFullyVisibleRooms == 0 then return end
+
     local room = TSIL.Random.GetRandomElementsFromTable(notFullyVisibleRooms, 1, rng)[1]
-    print(room.DisplayFlags)
     room.DisplayFlags = FULL_DISPLAY_FLAGS
-    if not MinimapAPI then
-        Game():GetLevel():UpdateVisibility()
-    end
 end
 RuneRooms:AddCallback(
     ModCallbacks.MC_POST_NPC_DEATH,
