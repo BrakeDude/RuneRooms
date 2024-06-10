@@ -5,15 +5,25 @@ if REPENTOGON then
         ImGui.CreateMenu("tcMods", "TC Mods")
     end
 
-    if ImGui.ElementExists("runeRoomsMenu") then
-        ImGui.RemoveMenu('runeRoomsMenu')
-    end
-
     if ImGui.ElementExists("runeRoomsSettings") then
         ImGui.RemoveElement("runeRoomsSettings")
     end
 
-    ImGui.AddElement("tcMods", "runeRoomsMenu", ImGuiElement.Menu, "Rune Rooms")
+    if ImGui.ElementExists("runeRoomsRockSprites") then
+        ImGui.RemoveElement("runeRoomsRockSprites")
+    end
+
+    if ImGui.ElementExists("runeRoomsPitSprites") then
+        ImGui.RemoveElement("runeRoomsPitSprites")
+    end
+
+    if ImGui.ElementExists("runeRoomsSpawnChance") then
+        ImGui.RemoveElement("runeRoomsSpawnChance")
+    end
+
+    if not ImGui.ElementExists("runeRoomsMenu") then
+        ImGui.AddElement("tcMods", "runeRoomsMenu", ImGuiElement.Menu, "Rune Rooms")
+    end
 
     ImGui.AddElement("runeRoomsMenu", "runeRoomsSettings", ImGuiElement.MenuItem, "\u{f013} Settings")
     if not ImGui.ElementExists("runeRoomsWindow") then

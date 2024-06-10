@@ -1,6 +1,8 @@
 local MinimapAPILocal = {}
 
-require("scripts.minimapapi.init")
+if not MinimapAPI then
+    require("scripts.minimapapi.init")
+end
 
 
 TSIL.SaveManager.AddPersistentVariable(
@@ -40,7 +42,7 @@ RuneRooms:AddCallback(
 
 
 function MinimapAPILocal:OnGameExit(menuExit)
-    if IsRuneRoomsMinimapiLoaded() then
+    --if IsRuneRoomsMinimapiLoaded() then
         local minimapiData = MinimapAPI:GetSaveTable(menuExit)
 
         TSIL.SaveManager.SetPersistentVariable(
@@ -48,7 +50,7 @@ function MinimapAPILocal:OnGameExit(menuExit)
             RuneRooms.Enums.SaveKey.MINIMAPI_DATA,
             minimapiData
         )
-    end
+    --end
 end
 RuneRooms:AddCallback(
     ModCallbacks.MC_PRE_GAME_EXIT,
