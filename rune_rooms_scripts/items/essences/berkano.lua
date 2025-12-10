@@ -64,7 +64,7 @@ end
 
 ---@param npc EntityNPC
 function BerkanoEssence:OnNPCDeath(npc)
-    if not TSIL.Players.DoesAnyPlayerHasItem(BerkanoItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(BerkanoItem) then return end
 
     local rng = TSIL.RNG.NewRNG(npc.InitSeed)
 

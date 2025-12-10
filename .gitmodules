@@ -1,3 +1,4 @@
 [submodule "rune_rooms_loi"]
 	path = rune_rooms_loi
 	url = https://github.com/Team-Compliance/libraryofisaac
+	branch = repentogon

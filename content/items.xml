@@ -13,9 +13,4 @@
     <passive id="12" gfx="othala_essence.png"   name="Essence of Othala"    description="Legacy?"           quality="3" tags="noeden nocantrip" />
     <passive id="13" gfx="ingwaz_essence.png"   name="Essence of Ingwaz"    description="Treasure?"         quality="3" tags="noeden nocantrip" keys="5" />
     <passive id="14" gfx="sowilo_essence.png"   name="Essence of Sowilo"    description="Renewal?"          quality="3" tags="noeden nocantrip" blackhearts="2" />
-
-    <trinket name="##CONFESSIONAL_ACHIEVEMENT_TRACKER"  description="If you find this, report it to the Rune Rooms mod" achievement="616"/>
-    <trinket name="##CRANE_GAME_ACHIEVEMENT_TRACKER"    description="If you find this, report it to the Rune Rooms mod" achievement="607"/>
-    <trinket name="##HELL_GAME_ACHIEVEMENT_TRACKER"     description="If you find this, report it to the Rune Rooms mod" achievement="608"/>
-    <trinket name="##ROTTEN_BEGGAR_ACHIEVEMENT_TRACKER" description="If you find this, report it to the Rune Rooms mod" achievement="614"/>
 </items>

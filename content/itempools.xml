@@ -1,0 +1,16 @@
+<ItemPools>
+	<Pool Name="Rune Room">
+		<Item Name="#RUNE_BAG_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#CLEAR_RUNE_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#CRYSTAL_BALL_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#GLASS_CANNON_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#JAR_OF_WISPS_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#EVERYTHING_JAR_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#ANGELIC_PRISM_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#SHARD_OF_GLASS_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#CRACKED_ORB_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#GLASS_EYE_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#ISAACS_TEARS_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<Item Name="#SACRED_ORB_NAME" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+	</Pool>
+</ItemPools>

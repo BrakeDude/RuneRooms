@@ -18,7 +18,7 @@ RuneRooms:AddCallback(
 
 
 function EhwazEssence:OnNewRoom()
-    if not TSIL.Players.DoesAnyPlayerHasItem(EhwazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(EhwazItem) then return end
 
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     if roomDesc.GridIndex ~= STARTING_ROOM_INDEX then return end

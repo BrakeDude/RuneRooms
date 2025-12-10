@@ -62,7 +62,7 @@ RuneRooms:AddCallback(
 
 ---@param npc EntityNPC
 function AnsuzEssence:OnNPCDeath(npc)
-    if not TSIL.Players.DoesAnyPlayerHasItem(AnsuzItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(AnsuzItem) then return end
 
     local rng = TSIL.RNG.NewRNG(npc.InitSeed)
     if rng:RandomFloat() >= REVEAL_ROOM_CHANCE then return end

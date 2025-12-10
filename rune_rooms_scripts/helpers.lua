@@ -13,7 +13,6 @@ function RuneRooms.Helpers:IsRuneRoom(gridIndex)
     return RuneRooms.Constants.RUNE_ROOMS_IDS[roomData.Variant] ~= nil
 end
 
-
 do
     local scheduledFunctions = {}
 

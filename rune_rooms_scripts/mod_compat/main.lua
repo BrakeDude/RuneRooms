@@ -24,7 +24,7 @@ include("rune_rooms_scripts.mod_compat.revelations")
 
 
 local hasRunCompatibility = false
-RuneRooms:AddPriorityCallback(ModCallbacks.MC_POST_PLAYER_INIT, math.mininteger, function ()
+RuneRooms:AddCallback(ModCallbacks.MC_POST_MODS_LOADED, function ()
     if hasRunCompatibility then return end
     hasRunCompatibility = true
 

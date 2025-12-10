@@ -89,7 +89,7 @@ RuneRooms:AddCallback(
 ---@param npc EntityNPC
 function AlgizEssence:OnNPCDeath(npc)
     if not npc:IsActiveEnemy(true) then return end
-    if not TSIL.Players.DoesAnyPlayerHasItem(AlgizItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(AlgizItem) then return end
 
     local rng = TSIL.RNG.NewRNG(npc.InitSeed)
     if rng:RandomFloat() >= SOUL_HEART_CHANCE then return end

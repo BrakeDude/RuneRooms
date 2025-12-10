@@ -259,7 +259,9 @@ RuneRooms.Enums.Achievement = {
 }
 
 
-RuneRooms.Enums.ItemPool = {}
+RuneRooms.Enums.ItemPool = {
+    RUNE_ROOM_POOL = Isaac.GetPoolIdByName("Rune Room")
+}
 
 
 ---@enum CustomTearFlag

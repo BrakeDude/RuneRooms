@@ -238,7 +238,7 @@ RuneRooms:AddCallback(
 ---@param maxIntervalOffset integer
 ---@return boolean
 local function CanSlotAttack(slot, attackInterval, maxIntervalOffset)
-    if not TSIL.Players.DoesAnyPlayerHasItem(GeboItem) then
+    if not PlayerManager.AnyoneHasCollectible(GeboItem) then
         return false
     end
 

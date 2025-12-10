@@ -24,10 +24,9 @@ local function CanSpawnFriendlyVersion(npc)
     and not npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) --Can't be friendly
 end
 
-
 ---@param npc EntityNPC
 local function CheckFriendlyEnemyDeath(npc)
-    if not TSIL.Players.DoesAnyPlayerHasItem(SowiloItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(SowiloItem) then return end
 
     if not npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) then return end
 
@@ -81,7 +80,7 @@ RuneRooms:AddCallback(
 
 
 function SowiloEssence:OnRoomClear()
-    if not TSIL.Players.DoesAnyPlayerHasItem(SowiloItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(SowiloItem) then return end
 
     local lastKilledEnemy = TSIL.SaveManager.GetPersistentVariable(
         RuneRooms,

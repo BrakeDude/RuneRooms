@@ -1,6 +1,5 @@
----@diagnostic disable: need-check-nil, param-type-mismatch
 -- Hidden Item Manager, by Connor (aka Ghostbroster)
--- Version 2.0
+-- Version 2.3.1
 -- 
 -- Manages a system of hidden Lemegeton Item Wisps to simulate the effects of passive items without actually granting the player those items (so they can't be removed or rerolled!).
 -- Good for giving the effect of an item temporarily, making an item effect "innate" to a character, and all sorts of other stuff, probably.
@@ -28,42 +27,6 @@ local kPersistentWispMarker = 617413666
 local kEarlyCallbackPriority = -9999
 local kLateCallbackPriority = 9999
 
---------------------------------------------------
--- Initialization
-
-local Callbacks = {}
-
-local function AddCallback(callbackID, func, param, priority)
-	table.insert(Callbacks, {
-		Callback = callbackID,
-		Func = func,
-		Param = param,
-		Priority = priority or kEarlyCallbackPriority,
-	})
-end
-local function AddLateCallback(callbackID, func, param)
-	AddCallback(callbackID, func, param, kLateCallbackPriority)
-end
-
-local initialized = false
-function HiddenItemManager:Init(mod)
-	if not initialized then
-		HiddenItemManager.Mod = mod
-		
-		for _, tab in ipairs(Callbacks) do
-			mod:AddPriorityCallback(tab.Callback, tab.Priority, tab.Func, tab.Param)
-		end
-		
-		HiddenItemManager.WispTag = "HiddenItemManager:" .. mod.Name
-		
-		initialized = true
-	end
-	return HiddenItemManager
-end
-
---------------------------------------------------
--- Storage/Utility
-
 local function LOG_ERROR(str)
 	local prefix = ""
 	if HiddenItemManager.Mod then
@@ -83,6 +46,42 @@ local function LOG(str)
 	Isaac.DebugString(fullStr)
 end
 
+--------------------------------------------------
+-- Initialization
+
+local Callbacks = {}
+
+local function AddCallback(callbackID, func, param, priority)
+	table.insert(Callbacks, {
+		Callback = callbackID,
+		Func = func,
+		Param = param,
+		Priority = priority or kEarlyCallbackPriority,
+	})
+end
+local function AddLateCallback(callbackID, func, param)
+	AddCallback(callbackID, func, param, kLateCallbackPriority)
+end
+
+function HiddenItemManager:Init(mod)
+	HiddenItemManager.Mod = mod
+	HiddenItemManager.WispTag = "HiddenItemManager:" .. mod.Name
+	
+	if not mod.AddedHiddenItemManagerCallbacks then
+		for _, tab in ipairs(Callbacks) do
+			mod:AddPriorityCallback(tab.Callback, tab.Priority, tab.Func, tab.Param)
+		end
+		mod.AddedHiddenItemManagerCallbacks = true
+	else
+		LOG_ERROR("More than one instance initialized!")
+	end
+	
+	return HiddenItemManager
+end
+
+--------------------------------------------------
+-- Storage/Utility
+
 local kDefaultGroup = "HIDDEN_ITEM_MANAGER_DEFAULT"
 
 local function GetGroup(group)
@@ -100,17 +99,13 @@ local DATA = {}
 
 -- Info on ALL hidden item wisps, simply just mapped by their InitSeeds.
 -- This table is good for wisps looking up their own data, as well as for SaveData.
-local SAVE = {}
-SAVE.INDEX = {}
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.HIDDEN_ITEM_MANAGER_DATA,
-	SAVE.INDEX,
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
+local INDEX = {}
 
 -- Cache for EntityPtrs to wisps.
 local WISP_PTRS = {}
+
+-- Groups that should not apply costumes from wisps.
+local NO_COSTUME_GROUPS = {}
 
 -- Removes all empty subtables from a given table.
 local function CleanUp(tab)
@@ -138,9 +133,6 @@ local function FindData(playerKey, group, itemID, allowInit)
 			return
 		end
 		DATA[playerKey] = {}
-	end
-	if not group then
-		return DATA[playerKey]
 	end
 	if not DATA[playerKey][group] then
 		if not allowInit then
@@ -251,7 +243,7 @@ end
 
 -- Removes the hidden item wisp from both data tables with the given key.
 local function RemoveWisp(key)
-	local tab = SAVE.INDEX[key]
+	local tab = INDEX[key]
 	if not tab then return end
 	local player = GetPlayer(tab)
 	local item = tab.Item
@@ -265,7 +257,7 @@ local function RemoveWisp(key)
 		end
 	end
 	
-	SAVE.INDEX[key] = nil
+	INDEX[key] = nil
 end
 
 -- Called continuously on item wisps to make sure they STAY hidden.
@@ -316,15 +308,35 @@ local function InitializeWisp(wisp)
 	TagWisp(wisp)
 	
 	local wispKey = GetWispKey(wisp)
-	local tab = SAVE.INDEX[wispKey]
+	local tab = INDEX[wispKey]
 	tab.WispKey = wispKey
 	WISP_PTRS[wispKey] = EntityPtr(wisp)
 	tab.PlayerKey = GetPlayerKey(wisp.Player)
 	tab.Initialized = true
+	
+	if NO_COSTUME_GROUPS[tab.Group] and not wisp.Player:HasCollectible(wisp.SubType, true) then
+		wisp.Player:RemoveCostume(Isaac.GetItemConfig():GetCollectible(wisp.SubType))
+	end
+end
+
+-- Removes item costumes from players if they should be hidden.
+function HiddenItemManager:CheckCostumes()
+	for key, data in pairs(INDEX) do
+		local wisp = GetWisp(data)
+		local player = GetPlayer(data)
+		if wisp and player then
+			if NO_COSTUME_GROUPS[data.Group] and not player:HasCollectible(wisp.SubType, true) then
+				player:RemoveCostume(Isaac.GetItemConfig():GetCollectible(wisp.SubType))
+			end
+		end
+	end
 end
 
 -- Spawns a hidden item wisp.
 local function SpawnWisp(player, itemID, duration, group, removeOnNewRoom, removeOnNewLevel)
+	if not HiddenItemManager.Mod then
+		LOG_ERROR("Not initialized! Did you forget to call `hiddenItemManager:Init(mod)`?")
+	end
 	group = GetGroup(group)
 	if not itemID or itemID < 1 then
 		LOG_ERROR("Attempted to add invalid CollectibleType `" .. (itemID or "NULL") .. "` to group: " .. group)
@@ -345,7 +357,7 @@ local function SpawnWisp(player, itemID, duration, group, removeOnNewRoom, remov
 		AddTime = game:GetFrameCount(),
 	}
 	InsertData(GetPlayerKey(player), group, itemID, wispKey, tab)
-	SAVE.INDEX[wispKey] = tab
+	INDEX[wispKey] = tab
 	InitializeWisp(wisp)
 	HiddenItemManager:ItemWispUpdate(wisp)
 end
@@ -359,6 +371,12 @@ end
 
 --------------------------------------------------
 -- API Functions
+
+-- Hide costumes for any wisps added in the specified group.
+-- Will hide costumes for wisps in the default group if unspecified.
+function HiddenItemManager:HideCostumes(group)
+	NO_COSTUME_GROUPS[GetGroup(group)] = true
+end
 
 -- Add a hidden item(s) that will persist through room and floor transitions.
 function HiddenItemManager:Add(player, itemID, duration, numToAdd, group)
@@ -415,10 +433,9 @@ end
 
 -- Removes all hidden items from the specified group.
 function HiddenItemManager:RemoveAll(player, group)
-	group = GetGroup(group)
-	local pKey = GetPlayerKey(player)
-	if DATA[pKey] then
-		for itemID, wispList in pairs(DATA[pKey][group]) do
+	local tab = FindData(GetPlayerKey(player), group)
+	if tab then
+		for itemID, wispList in pairs(tab) do
 			for wispKey, _ in pairs(wispList) do
 				RemoveWisp(wispKey)
 			end
@@ -450,10 +467,12 @@ function HiddenItemManager:GetStacks(player, group)
 	
 	local output = {}
 	
-	for itemID, _ in pairs(tab) do
-		local count = HiddenItemManager:CountStack(player, itemID, group)
-		if count > 0 then
-			output[itemID] = count
+	if tab then
+		for itemID, _ in pairs(tab) do
+			local count = HiddenItemManager:CountStack(player, itemID, group)
+			if count > 0 then
+				output[itemID] = count
+			end
 		end
 	end
 	
@@ -474,10 +493,10 @@ end
 -- Returns the table that should be included in your SaveData when you save the game.
 -- Pass this table into HiddenItemManager:LoadData() when you load your SaveData.
 function HiddenItemManager:GetSaveData()
-	LOG("Saving wisp index of size: " .. TableSize(SAVE.INDEX))
+	LOG("Saving wisp index of size: " .. TableSize(INDEX))
 	
 	return {
-		INDEX = SAVE.INDEX,
+		INDEX = INDEX,
 	}
 end
 
@@ -485,21 +504,23 @@ end
 -- Give it the table returned by HiddenItemManager:GetSaveData().
 function HiddenItemManager:LoadData(saveData)
 	if saveData then
-		SAVE.INDEX = saveData.INDEX or {}
-		for _, data in pairs(SAVE.INDEX) do
+		INDEX = saveData.INDEX or {}
+		for _, data in pairs(INDEX) do
 			data.Initialized = false
 		end
 	else
-		SAVE.INDEX = {}
+		INDEX = {}
 	end
 	DATA = {}
 	HiddenItemManager.INITIALIZING = false
-	for _, ptr in pairs(WISP_PTRS) do
+	-- Check & re-initialize all existing wisps, just in case.
+	local oldPtrs = WISP_PTRS
+	WISP_PTRS = {}
+	for _, ptr in pairs(oldPtrs) do
 		if ptr and ptr.Ref then
 			HiddenItemManager:ItemWispUpdate(ptr.Ref:ToFamiliar())
 		end
 	end
-	WISP_PTRS = {}
 	HiddenItemManager:CheckWisps()
 end
 
@@ -510,7 +531,7 @@ function HiddenItemManager:ItemWispUpdate(wisp)
 	if HiddenItemManager.INITIALIZING then return end
 	
 	local wispKey = GetWispKey(wisp)
-	local wispData = SAVE.INDEX[wispKey]
+	local wispData = INDEX[wispKey]
 	
 	if wispData then
 		KeepWispHidden(wisp)
@@ -519,8 +540,9 @@ function HiddenItemManager:ItemWispUpdate(wisp)
 		local player = wisp.Player
 		local playerKey = GetPlayerKey(player)
 		
-		if not IsManagedWisp(wisp) then
+		if not IsManagedWisp(wisp) or not WISP_PTRS[wispKey] then
 			-- This wisp isn't marked as one of our wisps, but we're supposed to have a wisp with this InitSeed.
+			-- OR: we don't have a pointer to this wisp cached, meaning we may have reloaded a save or something.
 			
 			-- Check if there's already an active wisp for this effect.
 			local existingWisp = GetWisp(wispData)
@@ -532,7 +554,8 @@ function HiddenItemManager:ItemWispUpdate(wisp)
 				return false
 			end
 			
-			-- Most likely, we've quit and continued a run. Re-initialize this wisp as a hidden one.
+			-- Most likely, we've quit and continued a run, reloaded a save, or luamodded, or something.
+			-- Re-initialize this wisp as a hidden one.
 			InsertData(playerKey, wispData.Group, wispData.Item, wispKey, wispData)
 			InitializeWisp(wisp)
 		end
@@ -540,7 +563,7 @@ function HiddenItemManager:ItemWispUpdate(wisp)
 		-- Check if timed wisp has expired.
 		local timedOut = (wispData.Duration and wispData.AddTime + wispData.Duration < game:GetFrameCount())
 		-- Remove the wisp if the player disappears or seems to get replaced.
-		local playerGone = (not player or playerKey ~= wispData.PlayerKey)
+		local playerGone = (not player or playerKey ~= wispData.PlayerKey or not EntityRef(player).Entity:Exists())
 		
 		if timedOut or playerGone then
 			RemoveWisp(wispKey)
@@ -565,7 +588,7 @@ function HiddenItemManager:ItemWispLateUpdate(wisp)
 	if HiddenItemManager.INITIALIZING then return end
 	
 	local wispKey = GetWispKey(wisp)
-	local wispData = SAVE.INDEX[wispKey]
+	local wispData = INDEX[wispKey]
 	
 	if not wispData and not IsAnyHiddenItemManagerWisp(wisp) and WasHiddenItemManagerWisp(wisp) then
 		-- This wisp was at one point a HiddenItemManager wisp, but no instance of HiddenItemManager has claimed it. Kill it.
@@ -595,9 +618,7 @@ function HiddenItemManager:PostPlayerInit()
 	if numPlayers == 0 then
 		-- New run or continued run.
 		DATA = {}
-		for key, _ in pairs(SAVE.INDEX) do
-			SAVE.INDEX[key] = nil
-		end
+		INDEX = {}
 		WISP_PTRS = {}
 		HiddenItemManager.INITIALIZING = true
 	end
@@ -628,7 +649,7 @@ function HiddenItemManager:PostUpdate()
 	
 	local wispsToRespawn = {}
 	
-	for key, data in pairs(SAVE.INDEX) do
+	for key, data in pairs(INDEX) do
 		local wisp = GetWisp(data)
 		local player = GetPlayer(data)
 		-- Ignore missing wisps if the player isn't found (could be due to something like Bazarus).
@@ -655,25 +676,27 @@ function HiddenItemManager:PostUpdate()
 		local wisp = player:AddItemWisp(data.Item, kWispPos)
 		local newKey = GetWispKey(wisp)
 		InsertData(GetPlayerKey(player), data.Group, data.Item, newKey, data)
-		SAVE.INDEX[newKey] = data
+		INDEX[newKey] = data
 		InitializeWisp(wisp)
 	end
 end
 AddCallback(ModCallbacks.MC_POST_UPDATE, HiddenItemManager.PostUpdate)
 
 function HiddenItemManager:PostNewRoom()
-	for key, data in pairs(SAVE.INDEX) do
+	for key, data in pairs(INDEX) do
 		if data.RemoveOnNewRoom and data.AddTime < game:GetFrameCount() then
 			RemoveWisp(key)
 		else
 			data.ErrorCount = 0
 		end
 	end
+	
+	HiddenItemManager:CheckCostumes()
 end
 AddCallback(ModCallbacks.MC_POST_NEW_ROOM, HiddenItemManager.PostNewRoom)
 
 function HiddenItemManager:PostNewLevel()
-	for key, data in pairs(SAVE.INDEX) do
+	for key, data in pairs(INDEX) do
 		if data.RemoveOnNewLevel and data.AddTime < game:GetFrameCount() then
 			RemoveWisp(key)
 		end
@@ -717,7 +740,7 @@ AddCallback(ModCallbacks.MC_POST_TEAR_INIT, HiddenItemManager.ItemWispTears)
 -- Thanks DeadInfinity for coming up with this trick.
 function HiddenItemManager:StartSacrificialAltarProtection()
 	LOG("Detected Sacrificial Altar activation. Temporarily nulling wisp.Player...")
-	for _, data in pairs(SAVE.INDEX) do
+	for _, data in pairs(INDEX) do
 		local wisp = GetWisp(data)
 		
 		if wisp then
@@ -737,7 +760,7 @@ AddCallback(ModCallbacks.MC_PRE_USE_ITEM, HiddenItemManager.StartSacrificialAlta
 function HiddenItemManager:FinishSacrificialAltarProtection()
 	LOG("Detected Sacrificial Altar resolution. Fixing wisp.Player...")
 	HiddenItemManager.DoingSacrificialAltarProtection = nil
-	for key, data in pairs(SAVE.INDEX) do
+	for key, data in pairs(INDEX) do
 		local wisp = GetWisp(data)
 		if wisp then
 			local player = wisp:GetData().hiddenItemManagerCachedPlayer or GetPlayer(data)
@@ -761,9 +784,7 @@ AddCallback(ModCallbacks.MC_USE_ITEM, HiddenItemManager.FinishSacrificialAltarPr
 
 AddCallback(ModCallbacks.MC_USE_ITEM, function()
 	LOG("Detected Genesis activation. Clearing all wisps.")
-	for key, _ in pairs(SAVE.INDEX) do
-		SAVE.INDEX[key] = nil
-	end
+	INDEX = {}
 	DATA = {}
 	for _, ptr in pairs(WISP_PTRS) do
 		if ptr and ptr.Ref then
@@ -774,5 +795,4 @@ AddCallback(ModCallbacks.MC_USE_ITEM, function()
 	LOG("Genesis handling completed.")
 end, CollectibleType.COLLECTIBLE_GENESIS)
 
-RuneRooms.Libs.HiddenItemManager = HiddenItemManager
-RuneRooms.Libs.HiddenItemManager:Init(RuneRooms)
+return HiddenItemManager

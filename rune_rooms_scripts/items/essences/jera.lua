@@ -39,7 +39,7 @@ RuneRooms:AddCallback(
 
 ---@param pickup EntityPickup
 function JeraEssence:OnPickupCollect(pickup)
-    if not TSIL.Players.DoesAnyPlayerHasItem(JeraItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(JeraItem) then return end
     if NO_RESPAWN_PICKUPS[pickup.Variant] then return end
 
     local rng = TSIL.RNG.NewRNG(pickup.InitSeed)
@@ -66,7 +66,7 @@ RuneRooms:AddCallback(
 
 ---@param chest EntityPickup
 function JeraEssence:OnChestOpen(chest)
-    if not TSIL.Players.DoesAnyPlayerHasItem(JeraItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(JeraItem) then return end
     if NO_RESPAWN_PICKUPS[chest.Variant] then return end
 
     local rng = TSIL.RNG.NewRNG(chest.InitSeed)

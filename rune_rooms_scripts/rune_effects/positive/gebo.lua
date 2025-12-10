@@ -2,29 +2,30 @@ local GeboPositive = {}
 
 local SLOT_SPAWN_CHANCE = 0.4
 local POSSIBLE_SLOTS = {
-    TSIL.Enums.SlotVariant.SLOT_MACHINE,
-	TSIL.Enums.SlotVariant.BLOOD_DONATION_MACHINE,
-	TSIL.Enums.SlotVariant.FORTUNE_TELLING_MACHINE,
-	TSIL.Enums.SlotVariant.BEGGAR,
-	TSIL.Enums.SlotVariant.DEVIL_BEGGAR,
-	TSIL.Enums.SlotVariant.SHELL_GAME,
-	TSIL.Enums.SlotVariant.KEY_BEGGAR,
-	TSIL.Enums.SlotVariant.DONATION_MACHINE,
-	TSIL.Enums.SlotVariant.BOMB_BEGGAR,
-	TSIL.Enums.SlotVariant.RESTOCK_MACHINE,
-	TSIL.Enums.SlotVariant.GREED_DONATION_MACHINE,
-	TSIL.Enums.SlotVariant.DRESSING_TABLE,
-	TSIL.Enums.SlotVariant.BATTERY_BEGGAR,
-	TSIL.Enums.SlotVariant.HELL_GAME,
-	TSIL.Enums.SlotVariant.CRANE_GAME,
-	TSIL.Enums.SlotVariant.CONFESSIONAL,
-	TSIL.Enums.SlotVariant.ROTTEN_BEGGAR,
+    SlotVariant.SLOT_MACHINE,
+	SlotVariant.BLOOD_DONATION_MACHINE,
+	SlotVariant.FORTUNE_TELLING_MACHINE,
+	SlotVariant.BEGGAR,
+	SlotVariant.DEVIL_BEGGAR,
+	SlotVariant.SHELL_GAME,
+	SlotVariant.KEY_MASTER,
+	SlotVariant.DONATION_MACHINE,
+	SlotVariant.BOMB_BUM,
+	SlotVariant.SHOP_RESTOCK_MACHINE,
+	SlotVariant.GREED_DONATION_MACHINE,
+	SlotVariant.MOMS_DRESSING_TABLE,
+	SlotVariant.BATTERY_BUM,
+	SlotVariant.HELL_GAME,
+	SlotVariant.CRANE_GAME,
+	SlotVariant.CONFESSIONAL,
+	SlotVariant.ROTTEN_BEGGAR,
 }
+
 local ACHIEVEMENT_PER_SLOT = {
-    [TSIL.Enums.SlotVariant.HELL_GAME] = RuneRooms.Enums.Achievement.HELL_GAME,
-	[TSIL.Enums.SlotVariant.CRANE_GAME] = RuneRooms.Enums.Achievement.CRANE_GAME,
-	[TSIL.Enums.SlotVariant.CONFESSIONAL] = RuneRooms.Enums.Achievement.CONFESSIONAL,
-	[TSIL.Enums.SlotVariant.ROTTEN_BEGGAR] = RuneRooms.Enums.Achievement.ROTTEN_BEGGAR,
+    [SlotVariant.HELL_GAME] = Achievement.HELL_GAME,
+	[SlotVariant.CRANE_GAME] = Achievement.CRANE_GAME,
+	[SlotVariant.CONFESSIONAL] = Achievement.CONFESSIONAL,
+	[SlotVariant.ROTTEN_BEGGAR] = Achievement.ROTTEN_BEGGAR,
 }
 ---@type table<SlotVariant, fun(): boolean>
 local CAN_SPAWN_PER_SLOT = {}
@@ -79,7 +80,7 @@ function GeboPositive:OnNewRoom()
             return canSpawn()
         end
 
-        return RuneRooms.Libs.AchievementChecker:IsAchievementUnlocked(achievement)
+        return Isaac.GetPersistentGameData():Unlocked(achievement)
     end)
     local slotVariant = TSIL.Random.GetRandomElementsFromTable(slotsToSpawn, 1, rng)[1]
 

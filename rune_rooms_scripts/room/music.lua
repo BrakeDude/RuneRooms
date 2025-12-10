@@ -1,15 +1,8 @@
-local Music = {}
+local RuneRoomMusic = {}
 
-
-function Music:OnNewRoom()
-    if not RuneRooms.Helpers:IsRuneRoom() then return end
-
-    RuneRooms.Helpers:RunInNRenderFrames(function ()
-        MusicManager():Play(RuneRooms.Enums.Music.RUNE_ROOM, Options.MusicVolume)
-        MusicManager():UpdateVolume()
-    end, 2)
+function RuneRoomMusic:Play(id, volume, isFade)
+    if RuneRooms.Helpers:IsRuneRoom() then
+        return {RuneRooms.Enums.Music.RUNE_ROOM, volume}
+    end
 end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_POST_NEW_ROOM,
-    Music.OnNewRoom
-)
+RuneRooms:AddCallback(ModCallbacks.MC_PRE_MUSIC_PLAY, RuneRoomMusic.Play)

@@ -15,7 +15,6 @@ if StageAPI then
 end
 
 RuneRooms.Libs = {}
-include("rune_rooms_scripts.lib.achievement_checker")
 include("rune_rooms_scripts.lib.hidden_item_manager")
 include("rune_rooms_scripts.lib.dss_menu")
 include("rune_rooms_scripts.lib.minimap_api")

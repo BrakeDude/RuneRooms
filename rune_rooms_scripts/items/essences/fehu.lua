@@ -65,7 +65,7 @@ RuneRooms:AddCallback(
 ---@param subtype integer
 ---@param seed any
 function FehuEssence:PreEntitySpawn(type, variant, subtype, _, _, _, seed)
-    if not TSIL.Players.DoesAnyPlayerHasItem(FehuItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(FehuItem) then return end
 
     if type ~= EntityType.ENTITY_PICKUP then return end
     if variant ~= PickupVariant.PICKUP_COIN then return end

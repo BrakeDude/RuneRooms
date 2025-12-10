@@ -68,7 +68,7 @@ RuneRooms:AddCallback(
 
 
 function HagalazEssence:OnNewRoom()
-    if not TSIL.Players.DoesAnyPlayerHasItem(HagalazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(HagalazItem) then return end
 
     RetractSpikes()
 
@@ -85,7 +85,7 @@ RuneRooms:AddCallback(
 ---@param subtype integer
 ---@param seed integer
 function HagalazEssence:PreEntitySpawn(type, variant, subtype, _, _, _, seed)
-    if not TSIL.Players.DoesAnyPlayerHasItem(HagalazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(HagalazItem) then return end
 
     if type ~= EntityType.ENTITY_FIREPLACE then return end
 

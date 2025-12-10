@@ -130,7 +130,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
 }
 
 function IngwazEssence:PreEntitySpawn(type, variant, _, _, _, _, seed)
-    if not TSIL.Players.DoesAnyPlayerHasItem(IngwazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(IngwazItem) then return end
 
     if type ~= EntityType.ENTITY_PICKUP then return end
 
@@ -181,7 +181,7 @@ end
 
 ---@param chest EntityPickup
 function IngwazEssence:OnChestOpened(chest)
-    if not TSIL.Players.DoesAnyPlayerHasItem(IngwazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(IngwazItem) then return end
 
     local rng = chest:GetDropRNG()
 
@@ -201,7 +201,7 @@ RuneRooms:AddCallback(
 
 ---@param gridEntity GridEntity
 function IngwazEssence:OnTintedRockBreak(gridEntity)
-    if not TSIL.Players.DoesAnyPlayerHasItem(IngwazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(IngwazItem) then return end
 
     local rng = gridEntity:GetRNG()
 
@@ -216,7 +216,7 @@ RuneRooms:AddCallback(
 
 ---@param gridEntity GridEntity
 function IngwazEssence:OnSuperTintedRockBreak(gridEntity)
-    if not TSIL.Players.DoesAnyPlayerHasItem(IngwazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(IngwazItem) then return end
 
     local rng = gridEntity:GetRNG()
 
@@ -233,7 +233,7 @@ RuneRooms:AddCallback(
 
 ---@param slot Entity
 function IngwazEssence:OnSlotBreak(slot)
-    if not TSIL.Players.DoesAnyPlayerHasItem(IngwazItem) then return end
+    if not PlayerManager.AnyoneHasCollectible(IngwazItem) then return end
 
     local rng = slot:GetDropRNG()
 

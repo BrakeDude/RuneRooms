@@ -102,7 +102,7 @@ For reference, these are the vanilla coins:
 {chance = 5,  value = CoinSubType.COIN_LUCKYPENNY}
 ```
 
-`void RuneRooms.API:AddCollectiblesToRuneItemPool({Collectible: CollectibleType, Weight: number, DecreaseBy: number, RemoveOn: number} collectibles)`
+`void RuneRooms.API:AddCollectiblesToRuneItemPool(PoolItems[] collectibles)`
 
 Adds any number of collectibles to the rune item pool.
 

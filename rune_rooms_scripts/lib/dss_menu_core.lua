@@ -1056,8 +1056,8 @@ function dssmenucore.init(DSSModName, MenuProvider)
             local uspr = tab.sprite
             local floaty = 0
             if tab.float then
-                local temp = Vector(0, tab.float[1]):Rotated((game:GetFrameCount() * tab.float[2]) % 360)
-                floaty = temp.Y
+                floaty = Vector(0, tab.float[1]):Rotated((game:GetFrameCount() * tab.float[2]) % 360)
+                floaty = floaty.Y
             end
 
             if (tab.center or tab.centerx) and tab.width then
