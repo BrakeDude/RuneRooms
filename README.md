@@ -34,13 +34,6 @@ Called whenever a negative rune effect is added.
 |---------------|---------------|
 | RuneEffect runeEffect | RuneEffect runeEffect |
 
-### POST_CHEST_OPENED
-Called whenever a chest changes to the opened subtype. Won't be called if a chest spawns an item.
-
-| Function args | Optional args |
-|---------------|---------------|
-| EntityPickup chest | PickupVariant chestVariant |
-
 ### POST_GENERIC_PROP_INIT
 Called either from the `MC_NEW_ROOM` callback or the `MC_POST_UPDATE` callback, the first frame a generic prop is available.
 

@@ -139,18 +139,6 @@ RuneRooms.Enums.CustomCallback = {
 	-- * runeEffect - RuneEffect
     POST_GAIN_NEGATIVE_RUNE_EFFECT = {},
 
-    --Called whenever a chest changes to the opened subtype.
-    --Won't be called if a chest spawns an item.
-    --
-    --Params:
-    --
-    -- * chest - EntityPickup
-    --
-    --Optional args:
-    --
-    -- * pickupVariant - PickupVariant
-    POST_CHEST_OPENED = {},
-
     --Called either from the `MC_NEW_ROOM` callback or the `MC_POST_UPDATE` callback,
     --the first frame a generic prop is available.
     --
@@ -224,12 +212,6 @@ RuneRooms.Enums.CustomCallback = {
     --
     -- * giantRuneCrystal - Entity
     POST_GIANT_RUNE_CRYSTAL_DESTROYED = {},
-
-    ---Called only once the first time a run is started. After the callback runs, the
-    ---game will restart.
-    ---
-    ---Use it to load any neccesary rooms
-    ROOM_LOAD = {}
 }
 
 

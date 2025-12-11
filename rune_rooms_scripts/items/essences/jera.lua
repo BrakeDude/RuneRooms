@@ -82,6 +82,6 @@ function JeraEssence:OnChestOpen(chest)
     )
 end
 RuneRooms:AddCallback(
-    RuneRooms.Enums.CustomCallback.POST_CHEST_OPENED,
+    ModCallbacks.MC_POST_OPEN_CHEST,
     JeraEssence.OnChestOpen
 )

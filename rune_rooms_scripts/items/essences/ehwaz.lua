@@ -32,7 +32,7 @@ function EhwazEssence:OnNewRoom()
     if not gridEntity or gridEntity:GetType() ~= GridEntityType.GRID_STAIRS then
         TSIL.GridEntities.SpawnGridEntity(
             GridEntityType.GRID_STAIRS,
-            TSIL.Enums.CrawlSpaceVariant.NORMAL,
+            TSIL.Enums.StairsVariant.NORMAL,
             gridIndex
         )
     end

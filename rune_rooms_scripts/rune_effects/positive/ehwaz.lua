@@ -103,19 +103,6 @@ RuneRooms:AddCallback(
     EntityType.ENTITY_GIDEON
 )
 
-
-local gideonDungeonRoomData
-function EhwazPositive:OnRoomLoad()
-    Isaac.ExecuteCommand("goto s.itemdungeon.1000")
-
-    gideonDungeonRoomData = TSIL.Rooms.GetRoomData(GridRooms.ROOM_DEBUG_IDX)
-end
-RuneRooms:AddCallback(
-    RuneRooms.Enums.CustomCallback.ROOM_LOAD,
-    EhwazPositive.OnRoomLoad
-)
-
-
 function EhwazPositive:OnEhwazPositiveActivation()
     if crawlspaceMode == "temporary" then
         Isaac.ExecuteCommand("goto s.itemdungeon.1000")
@@ -130,6 +117,7 @@ function EhwazPositive:OnEhwazPositiveActivation()
         local level = Game():GetLevel()
 
         local writeableRoom = level:GetRoomByIdx(GridRooms.ROOM_DUNGEON_IDX, -1)
+        local gideonDungeonRoomData = RoomConfig.GetRoomByStageTypeAndVariant(StbType.SPECIAL_ROOMS, RoomType.ROOM_DUNGEON, 1000)
         writeableRoom.Data = gideonDungeonRoomData
 
         local room = Game():GetRoom()
@@ -138,7 +126,7 @@ function EhwazPositive:OnEhwazPositiveActivation()
 
         TSIL.GridEntities.SpawnGridEntity(
             GridEntityType.GRID_STAIRS,
-            TSIL.Enums.CrawlSpaceVariant.NORMAL,
+            TSIL.Enums.StairsVariant.NORMAL,
             spawnPos,
             true
         )

@@ -35,24 +35,7 @@ include("rune_rooms_scripts.tear_effects.main")
 
 print("Rune Rooms " .. RuneRooms.Version .. ' loaded. Use "rune help" to get information about commands.')
 
-RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
-	if cmd == "rune" then
-		local tokens = TSIL.Utils.String.Split(params, " ")
-		tokens = TSIL.Utils.Tables.Map(tokens, function(_, token)
-			return string.lower(token)
-		end)
-
-		local found =
-			Isaac.RunCallbackWithParam(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, tokens[1], table.unpack(tokens))
-
-		if not found then
-			print("Command " .. tokens[1] .. " not found.")
-			print('Type "rune help" to get information about commands.')
-		end
-	end
-end)
-
-RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function()
+local function CMDHelp()
 	print("rune help - Shows this message.")
 	print("rune seteffect [rune_effect] - Changes the rune effect for the current floor.")
 	print("rune good [rune_effect] - Activates the good effect of a rune for the current level.")
@@ -60,6 +43,29 @@ RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function()
 	print("rune ehwazmode [mode] - Changes how the positive effect of ehwaz works")
 
 	return true
-end, "help")
+end
+
+RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
+	if cmd == "rune" then
+		local tokens = TSIL.Utils.String.Split(params, " ")
+		tokens = TSIL.Utils.Tables.Map(tokens, function(_, token)
+			return string.lower(token)
+		end)
+
+		if #tokens == 0 then
+			CMDHelp()
+		else
+			local found =
+				Isaac.RunCallbackWithParam(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, tokens[1], table.unpack(tokens))
+
+			if not found then
+				print("Command " .. tokens[1] .. " not found.")
+				print('Type "rune help" to get information about commands.')
+			end
+		end
+	end
+end)
+
+RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, CMDHelp, "help")
 
 return
