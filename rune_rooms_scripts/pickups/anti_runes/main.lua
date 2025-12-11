@@ -2,12 +2,6 @@ local Runes = {}
 
 include("rune_rooms_scripts.pickups.anti_runes.gebo.main")
 
-local GiantBookColors = {
-	["poof2"] = Color(0, 0, 0, 0.8, 0, 0, 0),
-	["poof"] = Color(0.2, 0.1, 0.3, 1, 0, 0, 0),
-	["bg"] = Color(0.117, 0.0117, 0.2, 1, 0, 0, 0),
-}
-
 local function Shuffle(list)
     local size, shuffled  = #list, list
     for i = size, 2, -1 do
@@ -52,33 +46,8 @@ local function PlaySND(sound, rng)
 end
 
 local function playGiantBook(gfx, sfx, p, rng)
-	if REPENTOGON then
-		ItemOverlay.Show(Isaac.GetGiantBookIdByName(gfx), 0, p)
-		PlaySND(sfx, rng)
-	else
-		local sound = nil
-		if Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and rng:RandomInt(4) == 0 then
-			sound = sfx
-		end
-		local bookAPI = RuneRooms:GetCustomVanillaGiantbookAPI()
-		if GiantBookAPI and bookAPI == 1 then
-			GiantBookAPI.playGiantBook(
-				"Appear",
-				gfx .. ".png",
-				GiantBookColors["poof"],
-				GiantBookColors["bg"],
-				GiantBookColors["poof2"],
-				sound
-			)
-		elseif bookAPI ~= 1 or not GiantBookAPI then
-			if ScreenAPI and bookAPI == 2 then
-				ScreenAPI.PlayGiantbook("gfx/ui/giantbook/" .. gfx .. ".png", "Appear", p, Isaac.GetItemConfig():GetCard(Isaac.GetCardIdByName(gfx)), GiantBookColors)
-			end
-			if sound then
-				SFXManager():Play(sound, 1, 0)
-			end
-		end
-	end
+	ItemOverlay.Show(Isaac.GetGiantBookIdByName(gfx), 0, p)
+	PlaySND(sfx, rng)
 end
 
 function Runes:UseGebo(gebo, player, useflags)
@@ -169,67 +138,36 @@ function Runes:UseOthala(othala, player, useflags)
 	local data = player:GetData()
 	local rng = player:GetCardRNG(othala)
 	playGiantBook("Othala", RuneRooms.Enums.SoundEffect.RUNE_OTHALA, player, rng)
-	if REPENTOGON then
-		local itemConfig = Isaac.GetItemConfig()
-		local history = player:GetHistory()
-		---@type table
-		local collectHistory = history:GetCollectiblesHistory()
+	
+	local itemConfig = Isaac.GetItemConfig()
+	local history = player:GetHistory()
+	---@type table
+	local collectHistory = history:GetCollectiblesHistory()
 
-		local itemsTable = collectHistory
-		local index, item, collectConfig
-		local itemsToGet = magicchalk_3f(player) and 2 or 1
-		for _ = 1, itemsToGet do
-			repeat
-				index = rng:RandomInt(rng:RandomInt(#itemsTable)) + 1
-				item = itemsTable[index]:GetItemID()
-				collectConfig = itemConfig:GetCollectible(item)
-				if
-					collectConfig.Hidden
-					or collectConfig.Type == ItemType.ITEM_ACTIVE
-					or collectConfig:HasTags(ItemConfig.TAG_QUEST)
-				then
-					table.remove(itemsTable, index)
-					index = nil
-				end
-			until index or #itemsTable == 0
-			if index then
-				if not data.OthalaClone then
-					data.OthalaClone = {}
-				end
-				table.insert(data.OthalaClone, item)
+	local itemsTable = collectHistory
+	local index, item, collectConfig
+	local itemsToGet = magicchalk_3f(player) and 2 or 1
+	for _ = 1, itemsToGet do
+		repeat
+			index = rng:RandomInt(rng:RandomInt(#itemsTable)) + 1
+			item = itemsTable[index]:GetItemID()
+			collectConfig = itemConfig:GetCollectible(item)
+			if
+				collectConfig.Hidden
+				or collectConfig.Type == ItemType.ITEM_ACTIVE
+				or collectConfig:HasTags(ItemConfig.TAG_QUEST)
+			then
+				table.remove(itemsTable, index)
+				index = nil
 			end
-			index = nil
-		end
-	else
-		if player:GetCollectibleCount() > 0 then
-			local playersItems = {}
-			for item = 1, GetMaxCollectibleID() do
-				local itemConfig = Isaac.GetItemConfig():GetCollectible(item)
-				if
-					player:HasCollectible(item)
-					and itemConfig.Type ~= ItemType.ITEM_ACTIVE
-					and itemConfig.Tags & ItemConfig.TAG_QUEST ~= ItemConfig.TAG_QUEST
-					and not itemConfig.Hidden
-				then
-					for _ = 1, player:GetCollectibleNum(item, true) do
-						table.insert(playersItems, item)
-					end
-				end
-			end
-			playersItems = Shuffle(playersItems)
-			if #playersItems > 0 then
-				local randomItem = player:GetCardRNG(othala):RandomInt(#playersItems) + 1
-				--player:AddCollectible(playersItems[randomItem])
+		until index or #itemsTable == 0
+		if index then
+			if not data.OthalaClone then
 				data.OthalaClone = {}
-				table.insert(data.OthalaClone, playersItems[randomItem])
 			end
-			if magicchalk_3f(player) then
-				if #playersItems > 0 then
-					local randomItem = player:GetCardRNG(othala):RandomInt(#playersItems) + 1
-					table.insert(data.OthalaClone, playersItems[randomItem])
-				end
-			end
+			table.insert(data.OthalaClone, item)
 		end
+		index = nil
 	end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_USE_CARD, Runes.UseOthala, RuneRooms.Enums.Runes.OTHALA)

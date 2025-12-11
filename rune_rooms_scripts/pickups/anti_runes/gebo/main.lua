@@ -1,11 +1,13 @@
 local majorversion = 1
 local minorversion = 1
+local isRepentogon = true
 local APIFolder = "rune_rooms_scripts.pickups.anti_runes.gebo"
 
 local function Init()
 	Gebo = RegisterMod("Gebo API", 1)
 	Gebo.MajorVersion = majorversion
 	Gebo.MinorVersion = minorversion
+	Gebo.RepentogonEnabled = true
 	Gebo.SaveData = {
 		Data = {},
 		HourglassBackup = {},
@@ -144,37 +146,10 @@ local function Init()
 			rng = RNG()
 			rng:SetSeed(math.max(1, Isaac.GetFrameCount()), 35)
 		end
-		if REPENTOGON then
-			return EntityPickup.GetRandomPickupVelocity(position, rng, begType)
-		else
-			local vel = Vector.Zero
-			if begType == 0 then
-				vel = Vector.FromAngle(rng:RandomInt(360))
-			else
-				local offset = rng:RandomInt(60)
-				if rng:RandomInt(2) == 0 then
-					offset = -offset
-				end
-				vel = Vector.FromAngle(90 + offset)
-			end
-			vel:Resize(math.max(3, 2 + rng:RandomInt(3)) + rng:RandomFloat())
-			return vel
-		end
+		return EntityPickup.GetRandomPickupVelocity(position, rng, begType)
 	end
 
 	local geboVanillaSlotScripts = {
-		"crane",
-		"fortune",
-		"slot",
-		"blood",
-		"confessional",
-		"restock",
-		"beggar",
-		"devil_beggar",
-		"key_master",
-		"bomb_bum",
-		"battery_bum",
-		"rotten_bum",
 		"repentogon",
 	}
 
@@ -267,8 +242,9 @@ local function Init()
 	end
 	Gebo:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, -1000, GeboHourGlassLoad)
 end
-
-if Gebo then
+if isRepentogon and not REPENTOGON then
+		print("This version of GeboAPI is for REPENTOGON only. Enable REPENTOGON to use this version.")
+elseif Gebo then
 	if Gebo.MajorVersion < majorversion or Gebo.MajorVersion == majorversion and Gebo.MinorVersion < minorversion then
 		print(
 			"Newer version of ["
