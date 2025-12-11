@@ -1,3 +1,4 @@
+---@class ModReference
 RuneRooms = RegisterMod("Rune Rooms", 1)
 
 local myFolder = "rune_rooms_loi"
@@ -11,7 +12,7 @@ RuneRooms.API = {}
 RuneRooms.Version = "v1.4"
 
 if StageAPI then
-    StageAPI.UnregisterCallbacks(RuneRooms.Constants.MOD_ID)
+	StageAPI.UnregisterCallbacks(RuneRooms.Constants.MOD_ID)
 end
 
 RuneRooms.Libs = {}
@@ -32,37 +33,33 @@ include("rune_rooms_scripts.room.main")
 include("rune_rooms_scripts.rune_effects.main")
 include("rune_rooms_scripts.tear_effects.main")
 
-print("Rune Rooms "..RuneRooms.Version.." loaded. Use \"rune help\" to get information about commands.")
+print("Rune Rooms " .. RuneRooms.Version .. ' loaded. Use "rune help" to get information about commands.')
 
-RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function (_, cmd, params)
-    if cmd == "rune" then
-        local tokens = TSIL.Utils.String.Split(params, " ")
-        tokens = TSIL.Utils.Tables.Map(tokens, function (_, token)
-            return string.lower(token)
-        end)
+RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
+	if cmd == "rune" then
+		local tokens = TSIL.Utils.String.Split(params, " ")
+		tokens = TSIL.Utils.Tables.Map(tokens, function(_, token)
+			return string.lower(token)
+		end)
 
-        local found = Isaac.RunCallbackWithParam(
-            RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD,
-            tokens[1],
-            table.unpack(tokens)
-        )
+		local found =
+			Isaac.RunCallbackWithParam(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, tokens[1], table.unpack(tokens))
 
-        if not found then
-            print("Command " .. tokens[1] .. " not found.")
-            print("Type \"rune help\" to get information about commands.")
-        end
-    end
+		if not found then
+			print("Command " .. tokens[1] .. " not found.")
+			print('Type "rune help" to get information about commands.')
+		end
+	end
 end)
 
+RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function()
+	print("rune help - Shows this message.")
+	print("rune seteffect [rune_effect] - Changes the rune effect for the current floor.")
+	print("rune good [rune_effect] - Activates the good effect of a rune for the current level.")
+	print("rune bad [rune_effect] - Activates the bad effect of a rune for the current level.")
+	print("rune ehwazmode [mode] - Changes how the positive effect of ehwaz works")
 
-RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function ()
-    print("rune help - Shows this message.")
-    print("rune seteffect [rune_effect] - Changes the rune effect for the current floor.")
-    print("rune good [rune_effect] - Activates the good effect of a rune for the current level.")
-    print("rune bad [rune_effect] - Activates the bad effect of a rune for the current level.")
-    print("rune ehwazmode [mode] - Changes how the positive effect of ehwaz works")
-
-    return true
+	return true
 end, "help")
 
 return

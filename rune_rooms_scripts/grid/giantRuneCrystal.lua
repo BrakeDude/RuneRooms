@@ -91,7 +91,6 @@ local function SpawnRuneParticles(position, multiplier)
     end
 end
 
-
 ---@param giantCrystal Entity
 local function SpawnRuneShards(giantCrystal)
     local rng = giantCrystal:GetDropRNG()
@@ -237,29 +236,6 @@ RuneRooms:AddCallback(
     RuneRooms.Enums.GenericPropVariant.GIANT_RUNE_CRYSTAL
 )
 
---[[
----@param bomb EntityBomb
-function GiantRuneCrystal:OnBombExplode(bomb)
-    local radius = TSIL.Bombs.GetBombRadiusFromDamage(bomb.ExplosionDamage)
-    local closeEntities = Isaac.FindInRadius(bomb.Position, radius)
-
-    local destroyableGiantCrystals = TSIL.Utils.Tables.Filter(closeEntities, function (_, entity)
-        if entity.Type ~= EntityType.ENTITY_GENERIC_PROP then return false end
-        if entity.Variant ~= RuneRooms.Enums.GenericPropVariant.GIANT_RUNE_CRYSTAL then return false end
-
-        local data = GetGiantCrystalData(entity)
-        return data.breakState ~= 5
-    end)
-
-    TSIL.Utils.Tables.ForEach(destroyableGiantCrystals, function (_, giantCrystal)
-        RuneRooms:DealDamageToGiantCrystal(giantCrystal)
-    end)
-end
-RuneRooms:AddCallback(
-    TSIL.Enums.CustomCallback.POST_BOMB_EXPLODED,
-    GiantRuneCrystal.OnBombExplode
-)]]
----comment
 ---@param entity Entity
 ---@param damage number
 ---@param flags DamageFlag | number
