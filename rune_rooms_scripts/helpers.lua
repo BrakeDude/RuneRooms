@@ -128,3 +128,46 @@ function RuneRooms.Helpers:GetRandomPositionInRoom(allowPits, doOffset, rng)
         return basePos
     end
 end
+
+---@param player EntityPlayer
+---@return boolean
+function RuneRooms.Helpers:HasMagicChalk(player)
+	local magicchalk = Isaac.GetItemIdByName("Magic Chalk")
+	return magicchalk > 0 and player:HasCollectible(magicchalk)
+end
+
+---@param gfx string
+---@param sfx SoundEffect | integer
+---@param player EntityPlayer
+---@param rng RNG?
+function RuneRooms.Helpers:PlayGiantBook(gfx, sfx, player, rng)
+	ItemOverlay.Show(Isaac.GetGiantBookIdByName(gfx), 0, player)
+	RuneRooms.Helpers:PlaySound(sfx, rng)
+end
+
+---@param sound SoundEffect | integer
+---@param rng RNG?
+function RuneRooms.Helpers:PlaySound(sound, rng)
+	if not rng then
+		rng = RNG()
+		rng:SetSeed(math.max(1, Isaac.GetFrameCount()), 35)
+	end
+	if Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and rng:RandomInt(4) == 0 then
+		SFXManager():Play(sound, 1, 0)
+	end
+end
+
+---@param list table
+---@param rng RNG | integer?
+---@return table
+function RuneRooms.Helpers:Shuffle(list, rng)
+    if rng == nil or type(rng) == "number" then
+        rng = TSIL.RNG.NewRNG(rng)
+    end
+    local size, shuffled  = #list, TSIL.Utils.Tables.Copy(list)
+    for i = size, 2, -1 do
+        local j = rng:RandomInt(1, i)
+        shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
+    end
+    return shuffled
+end

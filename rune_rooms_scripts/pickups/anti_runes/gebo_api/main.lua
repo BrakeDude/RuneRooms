@@ -1,7 +1,7 @@
 local majorversion = 1
 local minorversion = 1
 local isRepentogon = true
-local APIFolder = "rune_rooms_scripts.pickups.anti_runes.gebo"
+local APIFolder = "rune_rooms_scripts.pickups.anti_runes.gebo_api"
 
 local function Init()
 	Gebo = RegisterMod("Gebo API", 1)

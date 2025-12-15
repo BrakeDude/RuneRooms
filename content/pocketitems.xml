@@ -1,8 +1,8 @@
 <pocketitems>
-    <card type="rune" pickup="35" achievement="518" description="Charity" hud="Gebo" name="Gebo" mimiccharge="6" />
-    <card type="rune" pickup="35" achievement="517" description="Pestilence" hud="Kenaz" name="Kenaz" mimiccharge="3" />
-    <card type="rune" pickup="35" achievement="532" description="Wealth" hud="Fehu" name="Fehu" mimiccharge="6" />
-    <card type="rune" pickup="35" achievement="521" description="Legacy" hud="Othala" name="Othala" mimiccharge="12" />
-    <card type="rune" pickup="35" achievement="519" description="Renewal" hud="Sowilo" name="Sowilo" mimiccharge="2" />
-    <card type="rune" pickup="35" achievement="533" description="Treasure" hud="Ingwaz" name="Ingwaz" mimiccharge="4" />
+    <card type="rune" pickup="35" description="Charity" hud="Gebo" name="Gebo" mimiccharge="6" />
+    <card type="rune" pickup="35" description="Pestilence" hud="Kenaz" name="Kenaz" mimiccharge="3" />
+    <card type="rune" pickup="35" description="Wealth" hud="Fehu" name="Fehu" mimiccharge="6" />
+    <card type="rune" pickup="35" description="Legacy" hud="Othala" name="Othala" mimiccharge="12" />
+    <card type="rune" pickup="35" description="Renewal" hud="Sowilo" name="Sowilo" mimiccharge="2" />
+    <card type="rune" pickup="35" description="Treasure" hud="Ingwaz" name="Ingwaz" mimiccharge="4" />
 </pocketitems>

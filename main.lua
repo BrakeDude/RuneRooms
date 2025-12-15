@@ -67,6 +67,18 @@ RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
 	end
 end)
 
+--ripairs stuff from revel
+function ripairs_it(t,i)
+    i=i-1
+    local v=t[i]
+    if v==nil then return v end
+    return i,v
+end
+
+function ripairs(t)
+    return ripairs_it, t, #t+1
+end
+
 RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, CMDHelp, "help")
 
 return
