@@ -1,0 +1,4 @@
+
+<achievements gfxroot="gfx/ui/achievement/">
+	<achievement name="Rune Rooms" gfx="achievement_runerooms.png" />
+</achievements>

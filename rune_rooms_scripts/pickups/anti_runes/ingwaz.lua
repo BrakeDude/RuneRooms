@@ -49,7 +49,6 @@ function IngwazRune:UseIngwaz(ingwaz, player, useflags)
 			end
 		end
 	end
-
 	if RuneRooms.Helpers:HasMagicChalk(player) then
 		player:UseActiveItem(CollectibleType.COLLECTIBLE_DADS_KEY, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 	end
