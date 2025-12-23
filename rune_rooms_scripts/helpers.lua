@@ -1,5 +1,4 @@
 RuneRooms.Helpers = {}
-local PersistentData = Isaac.GetPersistentGameData()
 
 ---Helper function to check if a room is a rune room
 ---@param gridIndex integer? @Default: current room index
@@ -168,45 +167,4 @@ function RuneRooms.Helpers:Shuffle(list, rng)
 		shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
 	end
 	return shuffled
-end
-
----@return boolean
-function RuneRooms.Helpers:RoomsUnlocked()
-	return PersistentData:Unlocked(RuneRooms.Enums.Achievement.RUNE_ROOMS)
-end
-
----@return boolean
-function RuneRooms.Helpers:UnlockRooms()
-	return PersistentData:TryUnlock(RuneRooms.Enums.Achievement.RUNE_ROOMS)
-end
-
----@return number
-function RuneRooms.Helpers:GetRuneRoomSpawnChance()
-	return TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE
-    )
-end
-
----@param value number
-function RuneRooms.Helpers:AddRuneRoomsSpawnChance(value)
-    local currentValue = RuneRooms.Helpers:GetRuneRoomSpawnChance()
-    RuneRooms.Helpers:SetRuneRoomSpawnChance(currentValue + value)
-end
-
-function RuneRooms.Helpers:ResetRuneRoomsSpawnChance()
-    TSIL.SaveManager.SetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE,
-        0
-    )
-end
-
----@param value number
-function RuneRooms.Helpers:SetRuneRoomSpawnChance(value)
-	TSIL.SaveManager.SetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE,
-        TSIL.Utils.Math.Clamp(value, 0, 1)
-    )
 end

@@ -1,5 +1,5 @@
 local RuneRoomsUnlock = {}
-local PersitentData = Isaac.GetPersistentGameData()
+local PersistentData = Isaac.GetPersistentGameData()
 local game = Game()
 local itemConfig = Isaac.GetItemConfig()
 
@@ -10,25 +10,45 @@ TSIL.SaveManager.AddPersistentVariable(
 	TSIL.Enums.VariablePersistenceMode.RESET_RUN
 )
 
-function RuneRoomsUnlock:SecretRoomEnter()
-    local room = game:GetRoom()
-    if room:IsFirstVisit() and room:GetType() == RoomType.ROOM_SUPERSECRET then
-        RuneRooms.Helpers:AddRuneRoomsSpawnChance(0.1)
-        if not RuneRooms.Helpers:RoomsUnlocked() and RuneRooms.Helpers:GetRuneRoomSpawnChance() >= 1 then
-            RuneRooms.Helpers:UnlockRooms()
-        end
-    end
+function RuneRooms:GetRunesUsedCount()
+    return TSIL.SaveManager.GetPersistentVariable(
+        RuneRooms,
+	    RuneRooms.Enums.SaveKey.COUNT_RUNES_USED_IN_RUN
+    )
 end
-RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, RuneRoomsUnlock.SecretRoomEnter)
+
+function RuneRooms:SetRunesUsedCount(value)
+    return TSIL.SaveManager.SetPersistentVariable(
+        RuneRooms,
+	    RuneRooms.Enums.SaveKey.COUNT_RUNES_USED_IN_RUN,
+        value
+    )
+end
+
+---@return boolean
+function RuneRooms:RoomsUnlocked()
+	return PersistentData:Unlocked(RuneRooms.Enums.Achievement.RUNE_ROOMS)
+end
+
+---@return boolean
+function RuneRooms:UnlockRooms()
+	return PersistentData:TryUnlock(RuneRooms.Enums.Achievement.RUNE_ROOMS)
+end
 
 ---@param card Card | integer
 ---@param player EntityPlayer
 ---@param flags UseFlag | integer
 function RuneRoomsUnlock:UseRune(card, player, flags)
-    if RuneRooms.Helpers:RoomsUnlocked() then
+    if not RuneRooms:RoomsUnlocked() then
         local config = itemConfig:GetCard(card)
         if config and config:IsRune() then
-            
+            local currentUses = RuneRooms:GetRunesUsedCount()
+            local add = card == Card.RUNE_SHARD and 0.5 or 1
+            local totalUses = currentUses + add
+            if totalUses >= 30 then
+                RuneRooms:UnlockRooms()
+            end
+            RuneRooms:SetRunesUsedCount(totalUses)
         end
     end
 end
