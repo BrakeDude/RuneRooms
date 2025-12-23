@@ -21,20 +21,6 @@ TSIL.SaveManager.AddPersistentVariable(
     TSIL.Enums.VariablePersistenceMode.NONE
 )
 
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE,
-    0.3,
-    TSIL.Enums.VariablePersistenceMode.NONE
-)
-
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.VANILLA_GIANTBOOK_CUSTOM_API_OPTION,
-    1,
-    TSIL.Enums.VariablePersistenceMode.NONE
-)
-
 ---@return GridSpriteMode
 function RuneRooms:GetRocksSpriteMode()
     return TSIL.SaveManager.GetPersistentVariable(
@@ -48,20 +34,6 @@ function RuneRooms:GetPitsSpriteMode()
     return TSIL.SaveManager.GetPersistentVariable(
         RuneRooms,
         RuneRooms.Enums.SaveKey.PITS_SPRITE_MODE
-    )
-end
-
-function RuneRooms:GetRuneRoomSpawnChance()
-    return TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE
-    )
-end
-
-function RuneRooms:GetCustomVanillaGiantbookAPI()
-    return TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.VANILLA_GIANTBOOK_CUSTOM_API_OPTION
     )
 end
 
@@ -269,55 +241,6 @@ local exampledirectory = {
                 tooltip = { strset = { 'what sprite', 'pits have', 'in rune rooms' } }
             },
 
-            {
-                str = 'rune room chance',
-                -- If "min" and "max" are set without "slider", you've got yourself a number option!
-                -- It will allow you to scroll through the entire range of numbers from "min" to
-                -- "max", incrementing by "increment".
-                min = 0,
-                max = 100,
-                increment = 1,
-                -- You can also specify a prefix or suffix that will be applied to the number, which
-                -- is especially useful for percentages!
-                suf = '%',
-                setting = 30,
-                variable = "RuneRoomSpawnChance",
-                load = function()
-                    return math.floor(RuneRooms:GetRuneRoomSpawnChance() * 100)
-                end,
-                store = function(var)
-                    TSIL.SaveManager.SetPersistentVariable(
-                        RuneRooms,
-                        RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE,
-                        var / 100
-                    )
-                end,
-                tooltip = { strset = { "how often", "rune rooms", "replace vaults" } },
-            },
-
-            {
-                str = 'giantbook api',
-
-                choices = { 'giantbook api', 'screen api', 'none' },
-
-                setting = 1,
-
-                variable = 'GiantbookAPI',
-
-                load = function()
-                    return RuneRooms:GetCustomVanillaGiantbookAPI()
-                end,
-
-                store = function(var)
-                    TSIL.SaveManager.SetPersistentVariable(
-                        RuneRooms,
-                        RuneRooms.Enums.SaveKey.VANILLA_GIANTBOOK_CUSTOM_API_OPTION,
-                        var
-                    )
-                end,
-                displayif = function() return not REPENTOGON end,
-                tooltip = { strset = { 'what giantbook', 'api to use', '(without repentogon)' } }
-            },
         }
     }
 }

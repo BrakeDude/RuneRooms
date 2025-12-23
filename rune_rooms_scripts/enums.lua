@@ -70,7 +70,6 @@ RuneRooms.Enums.SaveKey = {
 
     ROCKS_SPRITE_MODE               = "ROCKS_SPRITE_MODE",
     PITS_SPRITE_MODE                = "PITS_SPRITE_MODE",
-    RUNE_ROOM_SPAWN_CHANCE          = "RUNE_ROOM_SPAWN_CHANCE",
 
     GIANT_CRYSTAL_DATA              = "GIANT_CRYSTAL_DATA",
     RUNE_PAD_DATA                   = "RUNE_PAD_DATA",
@@ -97,7 +96,9 @@ RuneRooms.Enums.SaveKey = {
     COLLECTIBLE_INFOS_PERTHRO       = "COLLECTIBLE_INFOS_PERTHRO",
     ACTIVATED_4_PIP_DICE_ROOM       = "ACTIVATED_4_PIP_DICE_ROOM",
 
-    VANILLA_GIANTBOOK_CUSTOM_API_OPTION       = "VANILLA_GIANTBOOK_CUSTOM_API_OPTION",
+    ENTERED_SUPER_SECRET_ROOMS      = "ENTERED_SUPER_SECRET_ROOMS",
+    COUNT_RUNES_USED_IN_RUN         = "COUNT_RUNES_USED_IN_RUN",
+    RUNE_ROOM_SPAWN_CHANCE          = "RUNE_ROOM_SPAWN_CHANCE"
 }
 
 
@@ -231,15 +232,9 @@ RuneRooms.Enums.Music = {
     RUNE_ROOM = Isaac.GetMusicIdByName("Rune Room")
 }
 
-
----@enum Achievement
 RuneRooms.Enums.Achievement = {
-    CONFESSIONAL    = 1,
-    CRANE_GAME      = 2,
-    HELL_GAME       = 3,
-    ROTTEN_BEGGAR   = 4,
+    RUNE_ROOMS = Isaac.GetAchievementIdByName("Rune Rooms")
 }
-
 
 RuneRooms.Enums.ItemPool = {
     RUNE_ROOM_POOL = Isaac.GetPoolIdByName("Rune Room")

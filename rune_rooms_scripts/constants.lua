@@ -63,13 +63,6 @@ RuneRooms.Constants.RUNE_ROOMS_IDS = {
 ---@type {chance: number, value: RoomConfig_Room}[]
 RuneRooms.Constants.RUNE_ROOMS_DATAS = {}
 
-RuneRooms.Constants.TRINKET_PER_ACHIEVEMENT = {
-    [RuneRooms.Enums.Achievement.CONFESSIONAL]     = Isaac.GetTrinketIdByName("##CONFESSIONAL_ACHIEVEMENT_TRACKER"),
-    [RuneRooms.Enums.Achievement.CRANE_GAME]       = Isaac.GetTrinketIdByName("##CRANE_GAME_ACHIEVEMENT_TRACKER"),
-    [RuneRooms.Enums.Achievement.HELL_GAME]        = Isaac.GetTrinketIdByName("##HELL_GAME_ACHIEVEMENT_TRACKER"),
-    [RuneRooms.Enums.Achievement.ROTTEN_BEGGAR]    = Isaac.GetTrinketIdByName("##ROTTEN_BEGGAR_ACHIEVEMENT_TRACKER")
-}
-
 RuneRooms.Constants.RUNE_ROOM_ICON = "RuneRoomIcon"
 
 RuneRooms.Constants.RUNE_EFFECT_ICON_FRAME = {

@@ -5,20 +5,32 @@ local LevelGen = {}
 ---@param id integer
 ---@param weight number
 function RuneRooms.API:AddRuneRoom(id, weight)
-    RuneRooms.Constants.RUNE_ROOMS_IDS[id] = weight
+	RuneRooms.Constants.RUNE_ROOMS_IDS[id] = weight
 end
 
+TSIL.SaveManager.AddPersistentVariable(
+	RuneRooms,
+	RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE,
+	0,
+	TSIL.Enums.VariablePersistenceMode.RESET_RUN
+)
+
 function LevelGen:ReplaceRoom(levelGeneratorRoom, roomConfigRoom, seed)
-    if roomConfigRoom.Type == RoomType.ROOM_CHEST then
-        local rng = RuneRooms.Helpers:GetStageRNG()
-        if rng:RandomFloat() >= RuneRooms:GetRuneRoomSpawnChance() then return end
-        local outcome = WeightedOutcomePicker()
-        for roomID, weight in pairs(RuneRooms.Constants.RUNE_ROOMS_IDS) do
-            outcome:AddOutcomeFloat(roomID, weight)
-        end
-        local roomID = outcome:PickOutcome(rng)
-        local roomconf = RoomConfigHolder.GetRoomByStageTypeAndVariant(StbType.SPECIAL_ROOMS, RoomType.ROOM_CHEST, roomID, 0)
-        return roomconf
-    end
+	if RuneRooms.Helpers:RoomsUnlocked() then
+		if roomConfigRoom.Type == RoomType.ROOM_CHEST then
+			local rng = RuneRooms.Helpers:GetStageRNG()
+			if rng:RandomFloat() >= RuneRooms:GetRuneRoomSpawnChance() then
+				return
+			end
+			local outcome = WeightedOutcomePicker()
+			for roomID, weight in pairs(RuneRooms.Constants.RUNE_ROOMS_IDS) do
+				outcome:AddOutcomeFloat(roomID, weight)
+			end
+			local roomID = outcome:PickOutcome(rng)
+			local roomconf =
+				RoomConfigHolder.GetRoomByStageTypeAndVariant(StbType.SPECIAL_ROOMS, RoomType.ROOM_CHEST, roomID, 0)
+			return roomconf
+		end
+	end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, LevelGen.ReplaceRoom)
