@@ -1,4 +1,4 @@
 
 <achievements gfxroot="gfx/ui/achievement/">
-	<achievement name="Rune Rooms" gfx="achievement_runerooms.png" />
+	<achievement name="Rune Rooms" text="A forgotten power has awoken behind crystal walls" gfx="achievement_runeroom_purple.png" />
 </achievements>

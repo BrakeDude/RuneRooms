@@ -54,3 +54,4 @@ RuneRooms:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, LevelGen.ReplaceRoom
 RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, function()
 	RuneRooms:AddToRoomSpawnChance(0.1)
 end)
+

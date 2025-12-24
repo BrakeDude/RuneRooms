@@ -1,6 +1,5 @@
 local RuneRoomsUnlock = {}
 local PersistentData = Isaac.GetPersistentGameData()
-local game = Game()
 local itemConfig = Isaac.GetItemConfig()
 
 TSIL.SaveManager.AddPersistentVariable(
