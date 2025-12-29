@@ -26,14 +26,15 @@ include("rune_rooms_scripts.custom_callbacks.main")
 include("rune_rooms_scripts.pickups.main")
 
 include("rune_rooms_scripts.room.main")
---[[
-include("rune_rooms_scripts.effects.main")
+
+include("rune_rooms_scripts.rune_effects.main")
+--[[include("rune_rooms_scripts.effects.main")
 include("rune_rooms_scripts.grid.main")
 include("rune_rooms_scripts.item_pools.main")
 include("rune_rooms_scripts.items.main")
 include("rune_rooms_scripts.player_effects.main")
 
-include("rune_rooms_scripts.rune_effects.main")
+
 include("rune_rooms_scripts.tear_effects.main")]]
 
 print("Rune Rooms " .. RuneRooms.Version .. ' loaded. Use "rune help" to get information about commands.')
