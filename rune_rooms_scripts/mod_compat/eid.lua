@@ -695,7 +695,7 @@ RuneRooms:AddModCompat("EID", function ()
         end
     end
 
-    RuneRooms:AddCallback(
+    --[[RuneRooms:AddCallback(
         RuneRooms.Enums.CustomCallback.POST_GENERIC_PROP_INIT,
         function (_, giantCrystal)
             if RuneRooms:IsGiantRuneCrystalBroken(giantCrystal) then
@@ -720,5 +720,5 @@ RuneRooms:AddModCompat("EID", function ()
         function (_, giantCrystal)
             SpawnNegativeEffectDescriptionHolder(giantCrystal)
         end
-    )
+    )]]
 end)

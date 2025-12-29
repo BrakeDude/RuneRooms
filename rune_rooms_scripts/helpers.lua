@@ -168,3 +168,9 @@ function RuneRooms.Helpers:Shuffle(list, rng)
 	end
 	return shuffled
 end
+
+---@return boolean | nil
+function RuneRooms.Helpers:IsInMirrorDimension()
+	local room = Game():GetRoom()
+	return room:IsMirrorWorld() or StageAPI and StageAPI.IsMirrorDimension()
+end
