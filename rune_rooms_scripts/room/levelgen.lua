@@ -66,7 +66,7 @@ function LevelGen:PlaceRoom()
 				end
 			end
 		end
-	elseif level:GetAbsoluteStage() ~= LevelStage.STAGE1_1 then
+	else
 		RuneRooms:AddToRoomSpawnChance(0.1)
 	end
 end
