@@ -32,7 +32,8 @@ end
 function LevelGen:PlaceRoom()
 	local level = game:GetLevel()
 	if
-		game:IsGreedMode()
+		not RuneRooms:RoomsUnlocked()
+		or game:IsGreedMode()
 		or game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)
 		or level:GetAbsoluteStage() >= LevelStage.STAGE4_1
 	then
