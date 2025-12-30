@@ -41,7 +41,7 @@ function LevelGen:PlaceRoom()
 	end
 	local seed = level:GetDungeonPlacementSeed()
 	local rng = RNG(seed)
-	if RuneRooms:GetRoomSpawnChance() <= rng:RandomFloat() then
+	if rng:RandomFloat() <= RuneRooms:GetRoomSpawnChance() then
 		local outcome = WeightedOutcomePicker()
 		for roomID, weight in pairs(RuneRooms.Constants.RUNE_ROOMS_IDS) do
 			outcome:AddOutcomeFloat(roomID, weight)
