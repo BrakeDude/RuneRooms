@@ -97,7 +97,8 @@ RuneRooms.Enums.SaveKey = {
     ACTIVATED_4_PIP_DICE_ROOM       = "ACTIVATED_4_PIP_DICE_ROOM",
 
     COUNT_RUNES_USED_IN_RUN         = "COUNT_RUNES_USED_IN_RUN",
-    RUNE_ROOM_SPAWN_CHANCE          = "RUNE_ROOM_SPAWN_CHANCE"
+    RUNE_ROOM_SPAWN_CHANCE          = "RUNE_ROOM_SPAWN_CHANCE",
+    RUNE_ROOM_ENTERED_IN_RUN        = "RUNE_ROOM_ENTERED_IN_RUN"
 }
 
 
@@ -212,6 +213,22 @@ RuneRooms.Enums.CustomCallback = {
     --
     -- * giantRuneCrystal - Entity
     POST_GIANT_RUNE_CRYSTAL_DESTROYED = {},
+
+    ---Called before decidion to spawn rune room. Return a new chance to spawn a
+    ---rune room
+    --
+    --Params:
+    --
+    -- * chance - number
+    RUNE_ROOM_SPAWN_CHANCE = {},
+
+    ---Called before rune room is spawned. Return new room config to be placed.
+    ---Will fail to replace if returned config is not a registered rune room
+    --
+    --Params:
+    --
+    -- * roomConfigRoom - RoomConfigRoom
+    PRE_SPAWN_RUNE_ROOM = {}
 }
 
 
