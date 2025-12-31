@@ -174,3 +174,12 @@ function RuneRooms.Helpers:IsInMirrorDimension()
 	local room = Game():GetRoom()
 	return room:IsMirrorWorld() or StageAPI and StageAPI.IsMirrorDimension()
 end
+
+function RuneRooms.Helpers:MergeTables(oldTable, newTable)
+	local tab = TSIL.Utils.Tables.Copy(oldTable)
+	local iter = TSIL.Utils.Tables.IsArray(newTable) and ipairs or pairs
+	for k, v in iter(newTable) do
+		tab[#tab + 1] = v
+	end
+	return tab
+end

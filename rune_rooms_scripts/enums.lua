@@ -116,7 +116,7 @@ RuneRooms.Enums.CustomCallback = {
 	--Optional args:
 	--
 	-- * command - string
-    ON_CUSTOM_CMD = {},
+    ON_CUSTOM_CMD = "ON_CUSTOM_CMD",
 
     --Called whenever a positive rune effect is added.
 	--
@@ -127,7 +127,7 @@ RuneRooms.Enums.CustomCallback = {
 	--Optional args:
 	--
 	-- * runeEffect - RuneEffect
-    POST_GAIN_POSITIVE_RUNE_EFFECT = {},
+    POST_GAIN_POSITIVE_RUNE_EFFECT = "POST_GAIN_POSITIVE_RUNE_EFFECT",
 
     --Called whenever a negative rune effect is added.
 	--
@@ -138,7 +138,7 @@ RuneRooms.Enums.CustomCallback = {
 	--Optional args:
 	--
 	-- * runeEffect - RuneEffect
-    POST_GAIN_NEGATIVE_RUNE_EFFECT = {},
+    POST_GAIN_NEGATIVE_RUNE_EFFECT = "POST_GAIN_NEGATIVE_RUNE_EFFECT",
 
     --Called either from the `MC_NEW_ROOM` callback or the `MC_POST_UPDATE` callback,
     --the first frame a generic prop is available.
@@ -150,7 +150,7 @@ RuneRooms.Enums.CustomCallback = {
     --Optional args:
     --
     -- * genericPropVariant - GenericPropVariant
-    POST_GENERIC_PROP_INIT = {},
+    POST_GENERIC_PROP_INIT = "POST_GENERIC_PROP_INIT",
 
     --Called from the `MC_POST_UPDATE` callback for each generic prop in the room.
     --
@@ -161,7 +161,7 @@ RuneRooms.Enums.CustomCallback = {
     --Optional args:
     --
     -- * genericPropVariant - GenericPropVariant
-    POST_GENERIC_PROP_UPDATE = {},
+    POST_GENERIC_PROP_UPDATE = "POST_GENERIC_PROP_UPDATE",
 
     --Called whenever a custom tear flag is added to a tear.
     --
@@ -173,7 +173,7 @@ RuneRooms.Enums.CustomCallback = {
     --Optional args:
     --
     -- * tearFlag - CustomTearFlag
-    POST_CUSTOM_TEAR_FLAG_ADDED = {},
+    POST_CUSTOM_TEAR_FLAG_ADDED = "POST_CUSTOM_TEAR_FLAG_ADDED",
 
     --Called whenever a custom tear flag is removed from a tear.
     --
@@ -185,7 +185,7 @@ RuneRooms.Enums.CustomCallback = {
     --Optional args:
     --
     -- * tearFlag - CustomTearFlag
-    POST_CUSTOM_TEAR_FLAG_REMOVED = {},
+    POST_CUSTOM_TEAR_FLAG_REMOVED = "POST_CUSTOM_TEAR_FLAG_REMOVED",
 
     ---Called before the rune door sprite is replaced. Return a spritesheet
     ---to replace the regular one.
@@ -193,11 +193,11 @@ RuneRooms.Enums.CustomCallback = {
     --Params:
     --
     -- * door - GridEntityDoor
-    PRE_GET_RUNE_DOOR_SPRITE = {},
+    PRE_GET_RUNE_DOOR_SPRITE = "PRE_GET_RUNE_DOOR_SPRITE",
 
     ---Called before the rune room pits sprite is replaced. Return a spritesheet
     ---to replace the regular one.
-    PRE_GET_RUNE_PIT_SPRITE = {},
+    PRE_GET_RUNE_PIT_SPRITE = "PRE_GET_RUNE_PIT_SPRITE",
 
     ---Called before the rune room grids sprite are replaced. Return a spritesheet
     ---to replace the regular one.
@@ -205,30 +205,21 @@ RuneRooms.Enums.CustomCallback = {
     --Params:
     --
     -- * gridType - GridEntityType
-    PRE_GET_RUNE_GRID_SPRITE = {},
+    PRE_GET_RUNE_GRID_SPRITE = "PRE_GET_RUNE_GRID_SPRITE",
 
     ---Called after a giant rune crystal is destroyed.
     --
     --Params:
     --
     -- * giantRuneCrystal - Entity
-    POST_GIANT_RUNE_CRYSTAL_DESTROYED = {},
+    POST_GIANT_RUNE_CRYSTAL_DESTROYED = "POST_GIANT_RUNE_CRYSTAL_DESTROYED",
 
-    ---Called before decidion to spawn rune room. Return a new chance to spawn a
-    ---rune room
+    ---Called before spawning rune room. Return a new spawn chance.
     --
     --Params:
     --
     -- * chance - number
-    RUNE_ROOM_SPAWN_CHANCE = {},
-
-    ---Called before rune room is spawned. Return new room config to be placed.
-    ---Will fail to replace if returned config is not a registered rune room
-    --
-    --Params:
-    --
-    -- * roomConfigRoom - RoomConfigRoom
-    PRE_SPAWN_RUNE_ROOM = {}
+    RUNE_ROOM_SPAWN_CHANCE = "RUNE_ROOM_SPAWN_CHANCE",
 }
 
 

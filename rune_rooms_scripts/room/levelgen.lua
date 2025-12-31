@@ -49,19 +49,31 @@ local function RunSpawnChanceCallbacks()
 end
 
 function LevelGen:PlaceRoom()
-	local level = game:GetLevel()
-	local levelStage = level:GetAbsoluteStage()
-	if levelStage >= LevelStage.STAGE4_3 or game:IsGreedMode()
-	or game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH) then
-	--or not RuneRooms:RoomsUnlocked() or Isaac.GetPlayer(0):GetNumKeys() < 2 then
+	if
+		game:IsGreedMode()
+		or game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)
+		or not RuneRooms:RoomsUnlocked()
+		or Isaac.GetPlayer(0):GetNumKeys() < 2
+	then
 		return
 	end
-	if level:GetStageType() >= StageType.STAGETYPE_REPENTANCE then
+	local level = game:GetLevel()
+	local levelStage = level:GetAbsoluteStage()
+	local levelType = level:GetStageType()
+
+	if StageAPI and StageAPI.InNewStage() then
+		local stage = StageAPI.GetCurrentStage()
+		levelStage = stage.LevelgenStage.Stage
+		levelType = stage.LevelgenStage.StageType
+	end
+
+	if levelStage >= LevelStage.STAGE4_3 then
+		return
+	end
+	if levelType >= StageType.STAGETYPE_REPENTANCE then
 		levelStage = levelStage + 1
 	end
-	if
-		levelStage % 2 == 0
-	then
+	if levelStage % 2 == 0 then
 		local seed = level:GetDungeonPlacementSeed()
 		local rng = RNG(seed)
 		local chance = RunSpawnChanceCallbacks()
@@ -95,7 +107,7 @@ function LevelGen:PlaceRoom()
 end
 RuneRooms:AddPriorityCallback(ModCallbacks.MC_POST_NEW_LEVEL, CallbackPriority.IMPORTANT, LevelGen.PlaceRoom)
 
-function LevelGen:ChanceIncrease()
+function LevelGen:NewRoom()
 	local room = game:GetRoom()
 	local runeRoomWasEntered =
 		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_ENTERED_IN_RUN)
@@ -105,6 +117,15 @@ function LevelGen:ChanceIncrease()
 	if RuneRooms.Helpers:IsRuneRoom() then
 		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_ENTERED_IN_RUN, true)
 		RuneRooms.API:SetRoomSpawnChance(1 / 15)
+		if RuneRooms.Helpers:IsInMirrorDimension() then
+			local props =
+				Isaac.FindByType(EntityType.ENTITY_GENERIC_PROP, RuneRooms.Enums.GenericPropVariant.GIANT_RUNE_CRYSTAL)
+			local pads = Isaac.FindByType(EntityType.ENTITY_GENERIC_PROP, RuneRooms.Enums.GenericPropVariant.RUNE_PAD)
+			local toDelete = RuneRooms.Helpers:MergeTables(props, pads)
+			for _, prop in ipairs(toDelete) do
+				prop:Remove()
+			end
+		end
 	end
 end
-RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, LevelGen.ChanceIncrease)
+RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, LevelGen.NewRoom)
