@@ -175,6 +175,9 @@ function RuneRooms.Helpers:IsInMirrorDimension()
 	return room:IsMirrorWorld() or StageAPI and StageAPI.IsMirrorDimension()
 end
 
+---@param oldTable table
+---@param newTable table
+---@return table
 function RuneRooms.Helpers:MergeTables(oldTable, newTable)
 	local tab = TSIL.Utils.Tables.Copy(oldTable)
 	local iter = TSIL.Utils.Tables.IsArray(newTable) and ipairs or pairs
@@ -182,4 +185,49 @@ function RuneRooms.Helpers:MergeTables(oldTable, newTable)
 		tab[#tab + 1] = v
 	end
 	return tab
+end
+
+---@param list table
+---@return number
+function RuneRooms.Helpers:TableSize(list)
+	local size = 0
+	for _ in pairs(list) do
+		size = size + 1
+	end
+	return size
+end
+
+---@param list table
+---@param condition function
+---@return table
+function RuneRooms.Helpers:TableQuickSort(list, condition)
+	if RuneRooms.Helpers:TableSize(list) <= 1 then
+		return list
+	end
+
+	local key, value = next(list)
+
+	local left = {}
+	local right = {}
+
+	for k, v in pairs(list) do
+		if k ~= key then
+			if condition(v, value) then
+				left[k] = v
+			else
+				right[k] = v
+			end
+		end
+	end
+
+	local sortLeft = RuneRooms.Helpers:TableQuickSort(left, condition)
+	local sortRight = RuneRooms.Helpers:TableQuickSort(right, condition)
+
+	local result = {}
+	for _, tab in ipairs({ sortLeft, { [key] = value }, sortRight }) do
+		for key, value in pairs(tab) do
+			result[key] = value
+		end
+	end
+	return result
 end

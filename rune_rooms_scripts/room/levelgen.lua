@@ -48,6 +48,12 @@ local function RunSpawnChanceCallbacks()
 	return TSIL.Utils.Math.Clamp(chance, 0, 1)
 end
 
+---@param gridIndex number
+---@return Vector
+local function GridIndexToVector(gridIndex)
+	return Vector(gridIndex % 13, math.floor(gridIndex / 13))
+end
+
 function LevelGen:PlaceRoom()
 	if
 		game:IsGreedMode()
@@ -86,17 +92,34 @@ function LevelGen:PlaceRoom()
 			local roomconf =
 				RoomConfig.GetRoomByStageTypeAndVariant(StbType.SPECIAL_ROOMS, RoomType.ROOM_CHEST, roomID, 0)
 			local options = level:FindValidRoomPlacementLocations(roomconf, -1, false, false)
-			for _, gridIndex in pairs(options) do
+			local startGridIndex = level:GetStartingRoomIndex()
+			local startGridVector = GridIndexToVector(startGridIndex)
+			table.sort(options, function(a, b)
+				return startGridVector:Distance(GridIndexToVector(a)) < startGridVector:Distance(GridIndexToVector(b))
+			end)
+
+			for _, gridIndex in ipairs(options) do
 				local canPlace = true
 				local neighbors = level:GetNeighboringRooms(gridIndex, roomconf.Shape)
-				local shuffled = RuneRooms.Helpers:Shuffle(neighbors, rng)
-				for doorSlot, neighborDesc in pairs(shuffled) do
+				local sorted = RuneRooms.Helpers:TableQuickSort(neighbors, function(a, b)
+					return startGridVector:Distance(GridIndexToVector(a.GridIndex))
+						< startGridVector:Distance(GridIndexToVector(b.GridIndex))
+				end)
+				for doorSlot, neighborDesc in pairs(sorted) do
 					if neighborDesc.Data and neighborDesc.Data.Type ~= RoomType.ROOM_DEFAULT then
 						canPlace = false
 					end
 					if canPlace then
 						local room = level:TryPlaceRoom(roomconf, gridIndex, -1, seed, false, false)
 						if room then
+							local t = {
+								Shape = room.Data.Shape,
+								PermanentIcons = { RuneRooms.Constants.RUNE_ROOM_ICON },
+								Position = MinimapAPI:GridIndexToVector(room.SafeGridIndex),
+								Descriptor = room,
+								Type = room.Data.Type,
+							}
+							MinimapAPI:AddRoom(t)
 							return
 						end
 					end
