@@ -124,12 +124,12 @@ end
 function RuneRooms:DealDamageToGiantCrystal(giantCrystal)
     local data = GetGiantCrystalData(giantCrystal)
     if data.activated then return end
-    if data.breakState == 5 then return end
-    data.breakState = data.breakState + 1
+    if data.breakState >= 5 then return end
+    data.breakState = data.breakState + 2
 
     local sprite = giantCrystal:GetSprite()
 
-    if data.breakState ~= 5 then
+    if data.breakState < 5 then
         local frame = sprite:GetFrame()
         sprite:Play("State" .. data.breakState .. "Symbol", true)
         sprite:SetFrame(frame)
@@ -140,6 +140,7 @@ function RuneRooms:DealDamageToGiantCrystal(giantCrystal)
 
         SpawnRuneShards(giantCrystal)
     else
+        data.breakState = 5
         sprite:Play("State5", true)
         giantCrystal.SortingLayer = SortingLayer.SORTING_BACKGROUND
         giantCrystal.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
@@ -181,7 +182,7 @@ end
 function RuneRooms:ActivateGiantCrystal(giantCrystal)
     local data = GetGiantCrystalData(giantCrystal)
 
-    if data.breakState == 5 then return end
+    if data.breakState >= 5 then return end
     if data.activated then return end
 
     data.activated = true

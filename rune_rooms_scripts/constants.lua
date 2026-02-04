@@ -37,6 +37,40 @@ RuneRooms.Constants.ESSENCE_ITEM_PER_RUNE = {
     [RuneRooms.Enums.RuneEffect.SOWILO]     = RuneRooms.Enums.Item.SOWILO_ESSENCE,
 }
 
+RuneRooms.Constants.RUNE_CURSES = {
+    [RuneRooms.Enums.RuneEffect.ALGIZ]      = RuneRooms.Enums.RuneCurse.CURSE_OF_ALGIZ,
+    [RuneRooms.Enums.RuneEffect.ANSUZ]      = RuneRooms.Enums.RuneCurse.CURSE_OF_ANSUZ,
+    [RuneRooms.Enums.RuneEffect.BERKANO]    = RuneRooms.Enums.RuneCurse.CURSE_OF_BERKANO,
+    [RuneRooms.Enums.RuneEffect.DAGAZ]      = RuneRooms.Enums.RuneCurse.CURSE_OF_DAGAZ,
+    [RuneRooms.Enums.RuneEffect.EHWAZ]      = RuneRooms.Enums.RuneCurse.CURSE_OF_EHWAZ,
+    [RuneRooms.Enums.RuneEffect.FEHU]       = RuneRooms.Enums.RuneCurse.CURSE_OF_FEHU,
+    [RuneRooms.Enums.RuneEffect.GEBO]       = RuneRooms.Enums.RuneCurse.CURSE_OF_GEBO,
+    [RuneRooms.Enums.RuneEffect.HAGALAZ]    = RuneRooms.Enums.RuneCurse.CURSE_OF_HAGALAZ,
+    [RuneRooms.Enums.RuneEffect.INGWAZ]     = RuneRooms.Enums.RuneCurse.CURSE_OF_INGWAZ,
+    [RuneRooms.Enums.RuneEffect.JERA]       = RuneRooms.Enums.RuneCurse.CURSE_OF_JERA,
+    [RuneRooms.Enums.RuneEffect.KENAZ]      = RuneRooms.Enums.RuneCurse.CURSE_OF_KENAZ,
+    [RuneRooms.Enums.RuneEffect.OTHALA]     = RuneRooms.Enums.RuneCurse.CURSE_OF_OTHALA,
+    [RuneRooms.Enums.RuneEffect.PERTHRO]    = RuneRooms.Enums.RuneCurse.CURSE_OF_PERTHRO,
+    [RuneRooms.Enums.RuneEffect.SOWILO]     = RuneRooms.Enums.RuneCurse.CURSE_OF_SOWILO,
+}
+
+RuneRooms.Constants.RUNE_BLESSINGS = {
+    [RuneRooms.Enums.RuneEffect.ALGIZ]      = RuneRooms.Enums.RuneBlessing.BLESSING_OF_ALGIZ,
+    [RuneRooms.Enums.RuneEffect.ANSUZ]      = RuneRooms.Enums.RuneBlessing.BLESSING_OF_ANSUZ,
+    [RuneRooms.Enums.RuneEffect.BERKANO]    = RuneRooms.Enums.RuneBlessing.BLESSING_OF_BERKANO,
+    [RuneRooms.Enums.RuneEffect.DAGAZ]      = RuneRooms.Enums.RuneBlessing.BLESSING_OF_DAGAZ,
+    [RuneRooms.Enums.RuneEffect.EHWAZ]      = RuneRooms.Enums.RuneBlessing.BLESSING_OF_EHWAZ,
+    [RuneRooms.Enums.RuneEffect.FEHU]       = RuneRooms.Enums.RuneBlessing.BLESSING_OF_FEHU,
+    [RuneRooms.Enums.RuneEffect.GEBO]       = RuneRooms.Enums.RuneBlessing.BLESSING_OF_GEBO,
+    [RuneRooms.Enums.RuneEffect.HAGALAZ]    = RuneRooms.Enums.RuneBlessing.BLESSING_OF_HAGALAZ,
+    [RuneRooms.Enums.RuneEffect.INGWAZ]     = RuneRooms.Enums.RuneBlessing.BLESSING_OF_INGWAZ,
+    [RuneRooms.Enums.RuneEffect.JERA]       = RuneRooms.Enums.RuneBlessing.BLESSING_OF_JERA,
+    [RuneRooms.Enums.RuneEffect.KENAZ]      = RuneRooms.Enums.RuneBlessing.BLESSING_OF_KENAZ,
+    [RuneRooms.Enums.RuneEffect.OTHALA]     = RuneRooms.Enums.RuneBlessing.BLESSING_OF_OTHALA,
+    [RuneRooms.Enums.RuneEffect.PERTHRO]    = RuneRooms.Enums.RuneBlessing.BLESSING_OF_PERTHRO,
+    [RuneRooms.Enums.RuneEffect.SOWILO]     = RuneRooms.Enums.RuneBlessing.BLESSING_OF_SOWILO,
+}
+
 RuneRooms.Constants.RUNE_ROOMS_IDS = {
     [3670] = 1,
     [3671] = 1,

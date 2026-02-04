@@ -1,4 +1,4 @@
-local MinimapAPI = require("scripts.minimapapi.minimapapi")
+local MinimapAPI = require("scripts.minimapapi")
 local constants = require("scripts.minimapapi.constants")
 local CALLBACK_PRIORITY = constants.CALLBACK_PRIORITY
 

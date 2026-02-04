@@ -1,4 +1,4 @@
-local MinimapAPI = require("scripts.minimapapi.minimapapi")
+local MinimapAPI = require("scripts.minimapapi")
 
 MinimapAPI.Config = {
 	["Disable"] = false,
@@ -39,7 +39,9 @@ MinimapAPI.Config = {
 	["BorderBgColorG"] = 0,
 	["BorderBgColorB"] = 0,
 	["BorderBgColorA"] = 1,
-	["MinimapTransparency"] = 1,
+	["TransparencySmallMap"] = 1,
+	["TransparencyLargeMap"] = 0.3,
+	["LargeMapFadeInOnHold"] = true,
 	["ExternalMap"] = false,
 	["ShowGridDistances"] = false,
 	["HighlightFurthestRoom"] = false,

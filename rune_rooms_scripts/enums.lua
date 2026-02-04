@@ -36,6 +36,41 @@ RuneRooms.Enums.RuneEffect = {
     SOWILO  = 1<<13,
 }
 
+RuneRooms.Enums.RuneCurse = {
+    CURSE_OF_ALGIZ   = 1 << (Isaac.GetCurseIdByName("Curse of Algiz") - 1),
+    CURSE_OF_ANSUZ   = 1 << (Isaac.GetCurseIdByName("Curse of Ansuz") - 1),
+    CURSE_OF_BERKANO = 1 << (Isaac.GetCurseIdByName("Curse of Berkano") - 1),
+    CURSE_OF_DAGAZ   = 1 << (Isaac.GetCurseIdByName("Curse of Dagaz") - 1),
+    CURSE_OF_EHWAZ   = 1 << (Isaac.GetCurseIdByName("Curse of Ehwaz") - 1),
+    CURSE_OF_FEHU    = 1 << (Isaac.GetCurseIdByName("Curse of Fehu") - 1),
+    CURSE_OF_GEBO    = 1 << (Isaac.GetCurseIdByName("Curse of Gebo") - 1),
+    CURSE_OF_HAGALAZ = 1 << (Isaac.GetCurseIdByName("Curse of Hagalaz") - 1),
+    CURSE_OF_INGWAZ  = 1 << (Isaac.GetCurseIdByName("Curse of Ingwaz") - 1),
+    CURSE_OF_JERA    = 1 << (Isaac.GetCurseIdByName("Curse of Jera") - 1),
+    CURSE_OF_KENAZ   = 1 << (Isaac.GetCurseIdByName("Curse of Kenaz") - 1),
+    CURSE_OF_OTHALA  = 1 << (Isaac.GetCurseIdByName("Curse of Othala") - 1),
+    CURSE_OF_PERTHRO = 1 << (Isaac.GetCurseIdByName("Curse of Perthro") - 1),
+    CURSE_OF_SOWILO  = 1 << (Isaac.GetCurseIdByName("Curse of Sowilo") - 1),
+}
+
+RuneRooms.Enums.RuneBlessing = {
+    BLESSING_OF_ALGIZ   = 1 << (Isaac.GetCurseIdByName("Blessing of Algiz") - 1),
+    BLESSING_OF_ANSUZ   = 1 << (Isaac.GetCurseIdByName("Blessing of Ansuz") - 1),
+    BLESSING_OF_BERKANO = 1 << (Isaac.GetCurseIdByName("Blessing of Berkano") - 1),
+    BLESSING_OF_DAGAZ   = 1 << (Isaac.GetCurseIdByName("Blessing of Dagaz") - 1),
+    BLESSING_OF_EHWAZ   = 1 << (Isaac.GetCurseIdByName("Blessing of Ehwaz") - 1),
+    BLESSING_OF_FEHU    = 1 << (Isaac.GetCurseIdByName("Blessing of Fehu") - 1),
+    BLESSING_OF_GEBO    = 1 << (Isaac.GetCurseIdByName("Blessing of Gebo") - 1),
+    BLESSING_OF_HAGALAZ = 1 << (Isaac.GetCurseIdByName("Blessing of Hagalaz") - 1),
+    BLESSING_OF_INGWAZ  = 1 << (Isaac.GetCurseIdByName("Blessing of Ingwaz") - 1),
+    BLESSING_OF_JERA    = 1 << (Isaac.GetCurseIdByName("Blessing of Jera") - 1),
+    BLESSING_OF_KENAZ   = 1 << (Isaac.GetCurseIdByName("Blessing of Kenaz") - 1),
+    BLESSING_OF_OTHALA  = 1 << (Isaac.GetCurseIdByName("Blessing of Othala") - 1),
+    BLESSING_OF_PERTHRO = 1 << (Isaac.GetCurseIdByName("Blessing of Perthro") - 1),
+    BLESSING_OF_SOWILO  = 1 << (Isaac.GetCurseIdByName("Blessing of Sowilo") - 1),
+}
+
+
 
 RuneRooms.Enums.PickupVariant = {
     DOUBLE_LOCKED_CHEST = Isaac.GetEntityVariantByName("Double Locked Chest"),
@@ -77,6 +112,7 @@ RuneRooms.Enums.SaveKey = {
     ACTIVE_POSITIVE_EFFECTS         = "ACTIVE_POSITIVE_EFFECTS",
     ACTIVE_NEGATIVE_EFFECTS         = "ACTIVE_NEGATIVE_EFFECTS",
     FORCED_RUNE_EFFECT              = "FORCED_RUNE_EFFECT",
+    PERSISTENT_RUNE_CURSES          = "PERSISTENT_RUNE_CURSES",
 
     SHIELD_DURATION_PER_PLAYER      = "SHIELD_DURATION_PER_PLAYER",
 

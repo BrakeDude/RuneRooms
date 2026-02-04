@@ -1,0 +1,32 @@
+<curses>
+	<curse name="Curse of Algiz" />
+    <curse name="Curse of Ansuz" />
+    <curse name="Curse of Berkano" />
+    <curse name="Curse of Dagaz" />
+    <curse name="Curse of Ehwaz" />
+    <curse name="Curse of Fehu" />
+    <curse name="Curse of Gebo" />
+    <curse name="Curse of Hagalaz" />
+	<curse name="Curse of Ingwaz" />
+    <curse name="Curse of Jera" />
+	<curse name="Curse of Kenaz" />
+	<curse name="Curse of Othala" />
+	<curse name="Curse of Perthro" />
+	<curse name="Curse of Sowilo" />
+	
+    <curse name="Blessing of Algiz" />
+    <curse name="Blessing of Ansuz" />
+    <curse name="Blessing of Berkano" />
+    <curse name="Blessing of Dagaz" />
+    <curse name="Blessing of Ehwaz" />
+    <curse name="Blessing of Fehu" />
+    <curse name="Blessing of Gebo" />
+    <curse name="Blessing of Hagalaz" />
+	<curse name="Blessing of Ingwaz" />
+    <curse name="Blessing of Jera" />
+	<curse name="Blessing of Kenaz" />
+	<curse name="Blessing of Othala" />
+	<curse name="Blessing of Perthro" />
+	<curse name="Blessing of Sowilo" />
+	
+</curses>

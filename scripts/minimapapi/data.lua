@@ -1,4 +1,4 @@
-local MinimapAPI = require("scripts.minimapapi.minimapapi")
+local MinimapAPI = require("scripts.minimapapi")
 
 local RS = RoomShape
 

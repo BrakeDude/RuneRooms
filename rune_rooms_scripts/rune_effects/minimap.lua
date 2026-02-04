@@ -10,7 +10,7 @@ local function AddRuneEffectIcons(runeEffect, name)
     MinimapAPI:AddMapFlag(
         name .. "Positive",
         function ()
-            return RuneRooms:IsPositiveEffectActive(runeEffect)
+            return RuneRooms:IsRuneBlessingActive(runeEffect)
         end,
         RuneIconsSprite,
         "Positive",
@@ -20,12 +20,14 @@ local function AddRuneEffectIcons(runeEffect, name)
     MinimapAPI:AddMapFlag(
         name .. "Negative",
         function ()
-            return RuneRooms:IsNegativeEffectActive(runeEffect)
+            return RuneRooms:IsRuneCurseActive(runeEffect)
         end,
         RuneIconsSprite,
         "Negative",
         frame
     )
+    print(name)
+    print(frame)
 end
 
 

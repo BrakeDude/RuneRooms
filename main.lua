@@ -9,7 +9,7 @@ include("rune_rooms_scripts.enums")
 include("rune_rooms_scripts.constants")
 include("rune_rooms_scripts.helpers")
 RuneRooms.API = {}
-RuneRooms.Version = "v1.4"
+RuneRooms.Version = "v2.0"
 
 if StageAPI then
 	StageAPI.UnregisterCallbacks(RuneRooms.Constants.MOD_ID)
@@ -42,8 +42,10 @@ print("Rune Rooms " .. RuneRooms.Version .. ' loaded. Use "rune help" to get inf
 local function CMDHelp()
 	print("rune help - Shows this message.")
 	print("rune seteffect [rune_effect] - Changes the rune effect for the current floor.")
-	print("rune good [rune_effect] - Activates the good effect of a rune for the current level.")
-	print("rune bad [rune_effect] - Activates the bad effect of a rune for the current level.")
+	print("rune setgood [rune_effect] - Activates the good effect of a rune for the current level.")
+	print("rune unsetgood [rune_effect] - Deactivates the good effect of a rune.")
+	print("rune setbad [rune_effect] - Activates the bad effect of a rune for the current run.")
+	print("rune unsetbad [rune_effect] - Deactivates the bad effect of a rune.")
 	print("rune ehwazmode [mode] - Changes how the positive effect of ehwaz works")
 
 	return true

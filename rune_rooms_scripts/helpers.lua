@@ -231,3 +231,9 @@ function RuneRooms.Helpers:TableQuickSort(list, condition)
 	end
 	return result
 end
+
+---@param n number
+---@return boolean
+function RuneRooms.Helpers:IsInteger(n)
+	return type(n) == "number" and n == math.floor(n)
+end

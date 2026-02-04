@@ -1,4 +1,4 @@
-local MinimapAPI = require("scripts.minimapapi.minimapapi")
+local MinimapAPI = require("scripts.minimapapi")
 
 --Functions for rooms that are not grid aligned
 
