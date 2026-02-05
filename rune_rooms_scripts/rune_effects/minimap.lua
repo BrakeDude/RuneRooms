@@ -26,8 +26,6 @@ local function AddRuneEffectIcons(runeEffect, name)
         "Negative",
         frame
     )
-    print(name)
-    print(frame)
 end
 
 

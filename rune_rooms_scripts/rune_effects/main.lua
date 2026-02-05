@@ -12,6 +12,6 @@ local RuneEffects = {}
 ---@return LevelCurse | integer?
 function RuneEffects:AddRuneCursesOnNewFloor(curses)
 	local PersistentRuneCurses = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES)
-    --return curses | PersistentRuneCurses
+    return curses | PersistentRuneCurses
 end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, RuneEffects.AddRuneCursesOnNewFloor)
