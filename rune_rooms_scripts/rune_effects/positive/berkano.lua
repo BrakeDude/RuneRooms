@@ -3,7 +3,7 @@ local BerkanoPositive = {}
 
 ---@param npc EntityNPC
 function BerkanoPositive:OnNPCDeath(npc)
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.BERKANO) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.BERKANO) then return end
 
     local players = TSIL.Players.GetPlayers()
     local rng = TSIL.RNG.NewRNG(npc.InitSeed)

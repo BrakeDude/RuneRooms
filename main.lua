@@ -41,11 +41,11 @@ print("Rune Rooms " .. RuneRooms.Version .. ' loaded. Use "rune help" to get inf
 
 local function CMDHelp()
 	print("rune help - Shows this message.")
-	print("rune seteffect [rune_effect] - Changes the rune effect for the current floor.")
-	print("rune setgood [rune_effect] - Activates the good effect of a rune for the current level.")
-	print("rune unsetgood [rune_effect] - Deactivates the good effect of a rune.")
-	print("rune setbad [rune_effect] - Activates the bad effect of a rune for the current run.")
-	print("rune unsetbad [rune_effect] - Deactivates the bad effect of a rune.")
+	print("rune seteffect [rune_effects] - Changes the rune effect for the current floor.")
+	print("rune setgood [rune_effects] - Activates the good effect of a rune for the current level.")
+	print("rune unsetgood [rune_effects] - Deactivates the good effect of a rune.")
+	print("rune setbad [rune_effects] - Activates the bad effect of a rune for the current run.")
+	print("rune unsetbad [rune_effects] - Deactivates the bad effect of a rune.")
 	print("rune ehwazmode [mode] - Changes how the positive effect of ehwaz works")
 
 	return true
@@ -61,8 +61,11 @@ RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
 		if #tokens == 0 then
 			CMDHelp()
 		else
-			local found =
-				Isaac.RunCallbackWithParam(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, tokens[1], table.unpack(tokens))
+			local found = Isaac.RunCallbackWithParam(
+				RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD,
+				tokens[1],
+				table.unpack(tokens)
+			)
 
 			if not found then
 				print("Command " .. tokens[1] .. " not found.")
@@ -72,16 +75,43 @@ RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
 	end
 end)
 
+Console.RegisterCommand(
+	"rune",
+	"Debug command for rune effects",
+	"Usage: rune [command] [argument_1] .. [argument_n]",
+	true,
+	AutocompleteType.CUSTOM
+)
+
+local commands = {
+	["setgood"]   = "Activates the good effect of a rune for the current level" ,
+	["setbad"]    = "Activates the bad effect of a rune for the current run" ,
+	["unsetgood"] = "Deactivates the good effect of a rune" ,
+	["unsetbad"]  = "Deactivate bad rune effects" ,
+	["seteffect"] = "Deactivates the bad effect of a rune" ,
+	["ehwazmode"] = "Changes how the positive effect of ehwaz works" ,
+}
+
+RuneRooms:AddCallback(ModCallbacks.MC_CONSOLE_AUTOCOMPLETE, function(_, cmd, args)
+	local returnTable = {}
+	for command, desc in pairs(commands) do
+		table.insert(returnTable, { command, desc })
+	end
+	return returnTable
+end, "rune")
+
 --ripairs stuff from revel
-function ripairs_it(t,i)
-    i=i-1
-    local v=t[i]
-    if v==nil then return v end
-    return i,v
+function ripairs_it(t, i)
+	i = i - 1
+	local v = t[i]
+	if v == nil then
+		return v
+	end
+	return i, v
 end
 
 function ripairs(t)
-    return ripairs_it, t, #t+1
+	return ripairs_it, t, #t + 1
 end
 
 RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, CMDHelp, "help")

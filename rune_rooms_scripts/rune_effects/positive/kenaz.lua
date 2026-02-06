@@ -53,7 +53,7 @@ end
 
 
 function KenazPositive:OnNewRoom()
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.KENAZ) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.KENAZ) then return end
 
     local room = Game():GetRoom()
     if room:IsClear() then return end

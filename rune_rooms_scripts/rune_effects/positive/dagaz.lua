@@ -3,7 +3,7 @@ local DagazPositive = {}
 
 ---@param npc EntityNPC
 function DagazPositive:OnNPCInit(npc)
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.DAGAZ) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.DAGAZ) then return end
 
     if npc:IsChampion() then
         local newNPC = TSIL.Entities.Spawn(

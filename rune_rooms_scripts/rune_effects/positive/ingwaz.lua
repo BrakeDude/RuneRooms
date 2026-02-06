@@ -98,7 +98,7 @@ function EhwazPositive:OnChestOpened(chest)
 	if chest.Variant == PickupVariant.PICKUP_ETERNALCHEST or chest:GetData().CloseChest then
 		return
 	end
-	if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.INGWAZ) then
+	if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.INGWAZ) then
 		return
 	end
 	local rng = chest:GetDropRNG()

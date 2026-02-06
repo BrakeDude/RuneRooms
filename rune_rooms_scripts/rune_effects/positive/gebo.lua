@@ -49,7 +49,7 @@ TSIL.SaveManager.AddPersistentVariable(
 
 
 function GeboPositive:OnNewRoom()
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.GEBO) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.GEBO) then return end
 
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     local roomData = roomDesc.Data

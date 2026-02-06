@@ -10,7 +10,7 @@ TSIL.SaveManager.AddPersistentVariable(
 
 
 function PerthroPositive:OnNewRoom()
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.PERTHRO) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.PERTHRO) then return end
 
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     local roomIndex = roomDesc.ListIndex
@@ -21,8 +21,7 @@ function PerthroPositive:OnNewRoom()
 
     if roomsUsedIsaacsSoul[roomIndex] then return end
     roomsUsedIsaacsSoul[roomIndex] = true
-
-    local player = Isaac.GetPlayer()
+    local player = Isaac.GetPlayer(0)
     player:UseCard(Card.CARD_SOUL_ISAAC, UseFlag.USE_NOANIM | UseFlag.USE_NOANNOUNCER)
 end
 RuneRooms:AddCallback(

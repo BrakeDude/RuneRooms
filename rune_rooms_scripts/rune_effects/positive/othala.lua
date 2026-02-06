@@ -1,15 +1,20 @@
 local OthalaPositive = {}
 
 
+---@param player EntityPlayer
 local function AddRandomItemForRoom(player)
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     local rng = TSIL.RNG.NewRNG(roomDesc.SpawnSeed)
 
     local playerInventory = TSIL.Players.GetPlayerInventory(player, TSIL.Enums.InventoryType.COLLECTIBLE)
+    local history = player:GetHistory()
     if #playerInventory == 0 then return end
 
-    local randomItem = TSIL.Random.GetRandomElementsFromTable(playerInventory, 1, rng)[1]
-    local item = randomItem.Id
+    local items = history:GetCollectiblesHistory()
+
+
+    local randomItem = items[rng:RandomInt(1, #items)]
+    local item = randomItem:GetItemID()
 
     RuneRooms.Libs.HiddenItemManager:AddForRoom(player, item, nil, 1)
 end
@@ -24,7 +29,7 @@ end
 
 
 function OthalaPositive:OnNewRoom()
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.OTHALA) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.OTHALA) then return end
 
     AddRandomItemToPlayers()
 end

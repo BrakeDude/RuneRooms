@@ -63,7 +63,7 @@ function SowiloPositive:OnRoomClear()
         RuneRooms.Enums.SaveKey.LOWEST_HEALTH_ENEMY
     )
 
-    if lowestHealthEnemy and RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.SOWILO) then
+    if lowestHealthEnemy and RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.SOWILO) then
         local friendlyEnemy = TSIL.Entities.Spawn(
             lowestHealthEnemy.type,
             lowestHealthEnemy.variant,

@@ -38,7 +38,7 @@ end
 
 ---@param tear EntityTear
 function FehuPositive:OnTearInit(tear)
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.FEHU) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.FEHU) then return end
 
     local player = TSIL.Players.GetPlayerFromEntity(tear)
     if not player then return end

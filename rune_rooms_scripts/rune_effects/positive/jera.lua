@@ -3,7 +3,7 @@ local JeraPositive = {}
 
 ---@param player EntityPlayer
 function JeraPositive:OnPeffectUpdate(player)
-    if not RuneRooms:IsPositiveEffectActive(RuneRooms.Enums.RuneEffect.JERA) then return end
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.JERA) then return end
 
     RuneRooms.Libs.HiddenItemManager:CheckStack(
         player,
@@ -11,7 +11,25 @@ function JeraPositive:OnPeffectUpdate(player)
         1
     )
 end
-RuneRooms:AddCallback(
+--[[RuneRooms:AddCallback(
     ModCallbacks.MC_POST_PEFFECT_UPDATE,
     JeraPositive.OnPeffectUpdate
+)]]
+
+---@param rng RNG
+---@param spawnPos Vector
+function JeraPositive:DupePickups(rng, spawnPos)
+    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.JERA) then return end
+
+    for _, pickup in ipairs(Isaac.FindByType(5)) do
+        
+        if pickup.Variant ~= PickupVariant.PICKUP_COLLECTIBLE then
+            
+        end
+    end
+end
+RuneRooms:AddPriorityCallback(
+    ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD,
+    math.huge,
+    JeraPositive.DupePickups
 )

@@ -5,6 +5,13 @@ local RuneBlessings = RuneRooms.Constants.RUNE_BLESSINGS
 
 TSIL.SaveManager.AddPersistentVariable(
 	RuneRooms,
+	RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS,
+	0,
+	TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
+)
+
+TSIL.SaveManager.AddPersistentVariable(
+	RuneRooms,
 	RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES,
 	0,
 	TSIL.Enums.VariablePersistenceMode.RESET_RUN
@@ -64,8 +71,13 @@ local function IsRuneCurseBlessingActive(runeEffect, isBlessing)
 	if not exists then
 		return false
 	end
-	local curses = Game():GetLevel():GetCurses()
-	return TSIL.Utils.Flags.HasFlags(curses, lookup[runeEffect])
+	local curseBlessing =
+		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES)
+
+	if isBlessing then
+		curseBlessing = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS)
+	end
+	return TSIL.Utils.Flags.HasFlags(curseBlessing, runeEffect)
 end
 
 ---@param runeEffect RuneEffect
@@ -78,19 +90,15 @@ local function ActivateRuneCurseBlessing(runeEffect, isBlessing)
 
 	local hadEffectPreviously = IsRuneCurseBlessingActive(runeEffect, isBlessing)
 
-	local level = Game():GetLevel()
-	level:AddCurse(lookup[runeEffect], false)
+	local saveKey = RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES
 
-	if not isBlessing then
-		local negativeEffects =
-			TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES)
-
-		TSIL.SaveManager.SetPersistentVariable(
-			RuneRooms,
-			RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES,
-			TSIL.Utils.Flags.AddFlags(negativeEffects, lookup[runeEffect])
-		)
+	if isBlessing then
+		saveKey = RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS
 	end
+
+	local effects = TSIL.SaveManager.GetPersistentVariable(RuneRooms, saveKey)
+
+	TSIL.SaveManager.SetPersistentVariable(RuneRooms, effects, TSIL.Utils.Flags.AddFlags(effects, runeEffect))
 
 	if not hadEffectPreviously then
 		Isaac.RunCallbackWithParam(
@@ -110,51 +118,47 @@ local function DeactivateRuneCurseBlessing(runeEffect, isBlessing)
 		return
 	end
 
-	local level = Game():GetLevel()
-	level:RemoveCurses(lookup[runeEffect])
+	local saveKey = RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES
 
-	if not isBlessing then
-		local negativeEffects =
-			TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES)
-
-		TSIL.SaveManager.SetPersistentVariable(
-			RuneRooms,
-			RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES,
-			TSIL.Utils.Flags.RemoveFlags(negativeEffects, lookup[runeEffect])
-		)
+	if isBlessing then
+		saveKey = RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS
 	end
+
+	local effects = TSIL.SaveManager.GetPersistentVariable(RuneRooms, saveKey)
+
+	TSIL.SaveManager.SetPersistentVariable(RuneRooms, effects, TSIL.Utils.Flags.RemoveFlags(effects, runeEffect))
 end
 
 ---@param ... RuneEffect
 function RuneRooms:ActivateRuneCurses(...)
-    local args = {...}
-    for _, runeEffect in ipairs(args) do
-	    ActivateRuneCurseBlessing(runeEffect)
-    end
+	local args = { ... }
+	for _, runeEffect in ipairs(args) do
+		ActivateRuneCurseBlessing(runeEffect)
+	end
 end
 
 ---@param ... RuneEffect
 function RuneRooms:ActivateRuneBlessings(...)
-    local args = {...}
-    for _, runeEffect in ipairs(args) do
-	    ActivateRuneCurseBlessing(runeEffect, true)
-    end
+	local args = { ... }
+	for _, runeEffect in ipairs(args) do
+		ActivateRuneCurseBlessing(runeEffect, true)
+	end
 end
 
 ---@param ... RuneEffect
 function RuneRooms:DeactivateRuneCurses(...)
-    local args = {...}
-    for _, runeEffect in ipairs(args) do
-	    DeactivateRuneCurseBlessing(runeEffect)
-    end
+	local args = { ... }
+	for _, runeEffect in ipairs(args) do
+		DeactivateRuneCurseBlessing(runeEffect)
+	end
 end
 
 ---@param ... RuneEffect
 function RuneRooms:DeactivateRuneBlessings(...)
-    local args = {...}
-    for _, runeEffect in ipairs(args) do
-	    DeactivateRuneCurseBlessing(runeEffect, true)
-    end
+	local args = { ... }
+	for _, runeEffect in ipairs(args) do
+		DeactivateRuneCurseBlessing(runeEffect, true)
+	end
 end
 
 ---@param runeEffect RuneEffect
@@ -181,10 +185,9 @@ end
 
 ---@param isBlessing boolean?
 ---@return integer
-local function GetAllCursesBlessingMask(isBlessing)
-	local lookup = isBlessing and RuneBlessings or RuneCurses
+local function GetAllCursesBlessingMask()
 	local curses = 0
-	for _, curse in pairs(lookup) do
+	for _, curse in pairs(RuneRooms.Enums.RuneEffect) do
 		curses = curses | curse
 	end
 	return curses
@@ -197,21 +200,21 @@ function RuneEffects:OnActivateGoodCommand(_, ...)
 		return true
 	end
 	if #args == 1 and args[1] == "all" then
-		local curses = GetAllCursesBlessingMask(true)
-		Game():GetLevel():AddCurse(curses, false)
-        print("Succesfully activated all good rune effects")
+		local mask = GetAllCursesBlessingMask()
+		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS, mask)
+		print("Succesfully activated all good rune effects")
 		return true
 	end
 
 	for _, runeName in ipairs(args) do
-        local effect
-        for runeEffect, name in pairs(RuneRooms.Constants.RUNE_NAMES) do
-            if runeName == name then
-                effect = runeEffect
-            end
-        end
+		local effect
+		for runeEffect, name in pairs(RuneRooms.Constants.RUNE_NAMES) do
+			if runeName == name then
+				effect = runeEffect
+			end
+		end
 
-        if not effect then
+		if not effect then
 			print("Failed to find " .. runeName .. " effect")
 		elseif not IsRuneCurseBlessingActive(effect, true) then
 			ActivateRuneCurseBlessing(effect, true)
@@ -219,7 +222,7 @@ function RuneEffects:OnActivateGoodCommand(_, ...)
 		else
 			print("Positive " .. runeName .. " effect already active")
 		end
-    end
+	end
 
 	return true
 end
@@ -234,8 +237,8 @@ function RuneEffects:OnDeactivateGoodCommand(_, ...)
 
 	if #args == 1 and args[1] == "all" then
 		if AnyCurseBlessingActive(true) then
-			local curses = GetAllCursesBlessingMask(true)
-			Game():GetLevel():RemoveCurses(curses)
+			local mask = GetAllCursesBlessingMask()
+			TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS, mask)
 			print("Succesfully deactivated all positive effects")
 		else
 			print("No positive effect was activated")
@@ -253,7 +256,7 @@ function RuneEffects:OnDeactivateGoodCommand(_, ...)
 
 		if not effect then
 			print("Failed to find " .. runeName .. " rune")
-        elseif IsRuneCurseBlessingActive(effect, true) then
+		elseif IsRuneCurseBlessingActive(effect, true) then
 			DeactivateRuneCurseBlessing(effect, true)
 			print("Succesfully deactivated positive " .. runeName .. " effect")
 		else
@@ -271,9 +274,9 @@ function RuneEffects:OnActivateBadCommand(_, ...)
 		return true
 	end
 	if #args == 1 and args[1] == "all" then
-		local curses = GetAllCursesBlessingMask()
-		Game():GetLevel():AddCurse(curses, false)
-        print("Succesfully activated all bad rune effects")
+		local mask = GetAllCursesBlessingMask()
+		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES, mask)
+		print("Succesfully activated all bad rune effects")
 		return true
 	end
 
@@ -308,8 +311,8 @@ function RuneEffects:OnDeactivateBadCommand(_, ...)
 
 	if #args == 1 and args[1] == "all" then
 		if AnyCurseBlessingActive() then
-			local curses = GetAllCursesBlessingMask()
-			Game():GetLevel():RemoveCurses(curses)
+			local mask = GetAllCursesBlessingMask()
+			TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES, mask)
 			print("Succesfully deactivated all negative rune effects")
 		else
 			print("No negative effect was activated")
@@ -328,7 +331,7 @@ function RuneEffects:OnDeactivateBadCommand(_, ...)
 		if not effect then
 			print("Failed to find " .. runeName .. " rune")
 		elseif IsRuneCurseBlessingActive(effect) then
-			RuneRooms:DeactivateRuneCurse(effect)
+			DeactivateRuneCurseBlessing(effect)
 			print("Succesfully deactivated negative " .. runeName .. " effect")
 		else
 			print("Negative " .. runeName .. " effect wasn't activated")
