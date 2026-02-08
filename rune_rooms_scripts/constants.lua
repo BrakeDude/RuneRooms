@@ -94,7 +94,7 @@ RuneRooms.Constants.RUNE_ROOMS_IDS = {
     [3689] = 1,
     [3690] = 1,
 }
----@type {chance: number, value: RoomConfig_Room}[]
+---@type {chance: number, value: RoomConfigRoom}[]
 RuneRooms.Constants.RUNE_ROOMS_DATAS = {}
 
 RuneRooms.Constants.RUNE_ROOM_ICON = "RuneRoomIcon"

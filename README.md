@@ -20,15 +20,15 @@ Return true so the handler knows a command has been found and doesn't print the 
 | string command | string command |
 | string ... params | |
 
-### POST_GAIN_POSITIVE_RUNE_EFFECT
-Called whenever a positive rune effect is added.
+### POST_GAIN_RUNE_BLESSING
+Called whenever a rune blessing is added.
 
 | Function args | Optional args |
 |---------------|---------------|
 | RuneEffect runeEffect | RuneEffect runeEffect |
 
-### POST_GAIN_NEGATIVE_RUNE_EFFECT
-Called whenever a negative rune effect is added.
+### POST_GAIN_RUNE_CURSE
+Called whenever a rune curse is added.
 
 | Function args | Optional args |
 |---------------|---------------|
@@ -124,21 +124,25 @@ Prevents a pickup variant from respawning when being collected by the effect of 
 
 Activates the given giant crystal, which triggers the positive effect for the floor.
 
-`void RuneRooms:ActivateNegativeEffect(RuneEffect runeEffect)`
+`void RuneRooms:ActivateRuneCurses(...RuneEffect)`
 
-Activates the negative effect of a rune.
+Activates rune curses.
 
-`void RuneRooms:ActivatePositiveEffect(RuneEffect runeEffect)`
+`void RuneRooms:ActivateRuneBlessings(...RuneEffect)`
 
-Activates the negative effect of a rune.
+Activates rune blessings.
+
+`void RuneRooms:DeactivateRuneCurses(...RuneEffect)`
+
+Deactivates rune curses.
+
+`void RuneRooms:DeactivateRuneBlessings(...RuneEffect)`
+
+Deactivates rune blessings.
 
 `void RuneRooms:AddCustomTearFlag(EntityTear tear, CustomTearFlag|integer tearFlag)`
 
 Adds a custom tear flag to a tear.
-
-`void RuneRooms:AddShieldInvincibility(EntityPlayer player, integer duration)`
-
-Adds a shield similar to the one given by Book of Shadows. The duration must be given in frames.
 
 `void RuneRooms:DealDamageToGiantCrystal(Entity giantCrystal)`
 
@@ -164,17 +168,13 @@ Returns the rune effect this floor has.
 
 Checks if a tear has a given custom tear flag.
 
-`boolean RuneRooms:HasShieldInvincibility(EntityPlayer player)`
+`boolean RuneRooms:IsRuneCurseActive(RuneEffect runeEffect)`
 
-Checks if a player has the shield given by `RuneRooms:AddShieldInvincibility`.
+Checks if rune curse is active.
 
-`boolean RuneRooms:IsNegativeEffectActive(RuneEffect runeEffect)`
+`boolean RuneRooms:IsRuneBlessingActive(RuneEffect runeEffect)`
 
-Checks if the negative effect of a given rune is active.
-
-`boolean RuneRooms:IsPositiveEffectActive(RuneEffect runeEffect)`
-
-Checks if the positive effect of a given rune is active.
+Checks if rune blessing is active.
 
 `void RuneRooms:RemoveCustomTearFlag(EntityTear tear, CustomTearFlag|integer)`
 

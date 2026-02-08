@@ -32,7 +32,6 @@ include("rune_rooms_scripts.grid.main")
 --[[include("rune_rooms_scripts.effects.main")
 include("rune_rooms_scripts.item_pools.main")
 include("rune_rooms_scripts.items.main")
-include("rune_rooms_scripts.player_effects.main")
 
 
 include("rune_rooms_scripts.tear_effects.main")]]

@@ -34,6 +34,6 @@ function AnsuzPositive:ReveilMapAndGenerateSecretRooms()
 	until #optionssupersecret == 0 or room ~= nil
 end
 RuneRooms:AddCallback(
-	RuneRooms.Enums.CustomCallback.POST_GAIN_POSITIVE_RUNE_EFFECT,
+	RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_BLESSING,
 	AnsuzPositive.ReveilMapAndGenerateSecretRooms
 )

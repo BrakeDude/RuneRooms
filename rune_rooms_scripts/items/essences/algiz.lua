@@ -12,22 +12,19 @@ TSIL.SaveManager.AddPersistentVariable(
     TSIL.Enums.VariablePersistenceMode.RESET_ROOM
 )
 
----@param player EntityPlayer
+---@param collectible CollectibleType | integer
 ---@param firstTime boolean
-function AlgizEssence:OnAlgizPickup(player, _, firstTime)
-    if player:GetPlayerType() == PlayerType.PLAYER_ISAAC_B and not firstTime then return end
+---@param player EntityPlayer
+function AlgizEssence:OnAlgizPickup(collectible, _, firstTime, _, _, player)
+    if not firstTime then return end
 
     player:AddBoneHearts(1)
     player:AddHearts(2)
 end
 RuneRooms:AddCallback(
-    TSIL.Enums.CustomCallback.POST_PLAYER_COLLECTIBLE_ADDED,
+    ModCallbacks.MC_POST_ADD_COLLECTIBLE,
     AlgizEssence.OnAlgizPickup,
-    {
-        nil,
-        nil,
-        AlgizItem
-    }
+    AlgizItem
 )
 
 
@@ -35,7 +32,7 @@ function AlgizEssence:OnNewRoom()
     local players = TSIL.Players.GetPlayersByCollectible(AlgizItem)
 
     TSIL.Utils.Tables.ForEach(players, function (_, player)
-        RuneRooms:AddShieldInvincibility(player, SHIELD_DURATION)
+        player:AddCollectibleEffect(CollectibleType.COLLECTIBLE_BOOK_OF_SHADOWS, true, SHIELD_DURATION, true)
     end)
 end
 RuneRooms:AddCallback(
@@ -59,25 +56,19 @@ local function HasPlayerTakenDamage(player)
     return hasTakenDamage
 end
 
-local avoidRecursion = false
-
 ---@param entity Entity
 ---@param damageFlags DamageFlag
 ---@param source EntityRef
 ---@param countdown integer
 function AlgizEssence:OnPlayerDamage(entity, _, damageFlags, source, countdown)
-    if avoidRecursion then return end
 
     local player = entity:ToPlayer()
 
     if HasPlayerTakenDamage(player) then return end
     if not player:HasCollectible(AlgizItem) then return end
 
-    avoidRecursion = true
-    player:TakeDamage(1, damageFlags | DamageFlag.DAMAGE_NO_MODIFIERS, source, countdown)
-    avoidRecursion = false
+    return {1, damageFlags | DamageFlag.DAMAGE_NO_MODIFIERS, countdown}
 
-    return false
 end
 RuneRooms:AddCallback(
     ModCallbacks.MC_ENTITY_TAKE_DMG,

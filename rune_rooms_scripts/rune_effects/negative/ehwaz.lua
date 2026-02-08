@@ -34,7 +34,7 @@ end
 
 
 function EhwazNegative:OnNewRoom()
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.EHWAZ) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.EHWAZ) then return end
 
     ReplaceGridEntities()
 end
@@ -48,7 +48,7 @@ function EhwazNegative:OnEhwazNegativeActivation()
     ReplaceGridEntities()
 end
 RuneRooms:AddCallback(
-    RuneRooms.Enums.CustomCallback.POST_GAIN_NEGATIVE_RUNE_EFFECT,
+    RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE,
     EhwazNegative.OnEhwazNegativeActivation,
     RuneRooms.Enums.RuneEffect.EHWAZ
 )

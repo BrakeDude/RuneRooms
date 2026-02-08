@@ -40,7 +40,7 @@ end
 
 ---@param entity Entity
 function FehuNegative:OnPlayerDamage(entity)
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.FEHU) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.FEHU) then return end
 
     local player = entity:ToPlayer()
     if not player then return end

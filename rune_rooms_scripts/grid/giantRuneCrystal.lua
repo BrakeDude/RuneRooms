@@ -161,7 +161,7 @@ function RuneRooms:DealDamageToGiantCrystal(giantCrystal)
         SpawnRuneParticles(giantCrystal.Position, 4)
 
         local runeEffect = RuneRooms:GetRuneEffectForFloor()
-        RuneRooms:ActivateNegativeEffect(runeEffect)
+        RuneRooms:ActivateRuneCurses(runeEffect)
 
         local essence = RuneRooms.Constants.ESSENCE_ITEM_PER_RUNE[runeEffect]
         TSIL.EntitySpecific.SpawnPickup(
@@ -227,7 +227,7 @@ function GiantRuneCrystal:OnGiantCrystalUpdate(giantCrystal)
         sprite:Play("ActivateLoop", true)
 
         local runeEffect = RuneRooms:GetRuneEffectForFloor()
-        RuneRooms:ActivatePositiveEffect(runeEffect)
+        RuneRooms:ActivateRuneBlessings(runeEffect)
         Game():ShakeScreen(20)
     end
 end

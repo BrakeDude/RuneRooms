@@ -16,7 +16,7 @@ end
 
 
 function SowiloNegative:OnRoomClear()
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.SOWILO) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.SOWILO) then return end
 
     TSIL.Doors.CloseAllDoors(true)
 

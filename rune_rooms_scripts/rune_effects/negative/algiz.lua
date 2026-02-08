@@ -4,7 +4,7 @@ local INVINCIBILITY_DURATION = 3 * 30 -- 3 seconds (at 30 fps)
 
 ---@param entity Entity
 function NegativeAlgiz:OnEntityDamage(entity)
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.ALGIZ) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.ALGIZ) then return end
 
     if entity.Type == EntityType.ENTITY_PLAYER then return end
 

@@ -1,6 +1,6 @@
 local JeraNegative = {}
 
-local PICKUP_TIMEOUT = 3 * 30
+local PICKUP_TIMEOUT = 5 * 30
 local DISAPPEARING_PICKUP_VARIANTS = {
     [PickupVariant.PICKUP_BOMB] = true,
     [PickupVariant.PICKUP_COIN] = true,
@@ -13,7 +13,7 @@ local DISAPPEARING_PICKUP_VARIANTS = {
 
 ---@param pickup EntityPickup
 function JeraNegative:OnPickupInit(pickup)
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.JERA) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.JERA) then return end
 
     if DISAPPEARING_PICKUP_VARIANTS[pickup.Variant] then
         pickup.Timeout = PICKUP_TIMEOUT

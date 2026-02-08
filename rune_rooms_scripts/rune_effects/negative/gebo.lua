@@ -31,7 +31,7 @@ end
 
 ---@param slot Entity
 function GeboNegative:OnSlotInit(slot)
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.GEBO) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.GEBO) then return end
 
     DestroySlot(slot)
 end
@@ -49,7 +49,7 @@ function GeboNegative:OnGeboNegativeActivation()
     end)
 end
 RuneRooms:AddCallback(
-    RuneRooms.Enums.CustomCallback.POST_GAIN_NEGATIVE_RUNE_EFFECT,
+    RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE,
     GeboNegative.OnGeboNegativeActivation,
     RuneRooms.Enums.RuneEffect.GEBO
 )

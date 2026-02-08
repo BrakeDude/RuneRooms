@@ -2,7 +2,7 @@ local PerthroNegative = {}
 
 
 function PerthroNegative:PreEntitySpawn(type, variant, subtype, _, _, _, seed)
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.PERTHRO) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.PERTHRO) then return end
 
     if type ~= EntityType.ENTITY_PICKUP then return end
     if variant ~= PickupVariant.PICKUP_COLLECTIBLE then return end
@@ -19,15 +19,15 @@ function PerthroNegative:PreEntitySpawn(type, variant, subtype, _, _, _, seed)
         seed
     }
 end
-RuneRooms:AddCallback(
+--[[RuneRooms:AddCallback(
     ModCallbacks.MC_PRE_ENTITY_SPAWN,
     PerthroNegative.PreEntitySpawn
-)
+)]]
 
 
 ---@param pickup EntityPickup
 function PerthroNegative:OnCollectibleInit(pickup)
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.PERTHRO) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.PERTHRO) then return end
 
     local isQuestItem = TSIL.Collectibles.CollectibleHasFlag(pickup.SubType, TSIL.Enums.ItemConfigTag.QUEST)
     local isRuneEssence = TSIL.Utils.Tables.IsIn(RuneRooms.Enums.Item, pickup.SubType)

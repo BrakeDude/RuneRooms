@@ -109,8 +109,7 @@ RuneRooms.Enums.SaveKey = {
     GIANT_CRYSTAL_DATA              = "GIANT_CRYSTAL_DATA",
     RUNE_PAD_DATA                   = "RUNE_PAD_DATA",
 
-    ACTIVE_POSITIVE_EFFECTS         = "ACTIVE_POSITIVE_EFFECTS",
-    ACTIVE_NEGATIVE_EFFECTS         = "ACTIVE_NEGATIVE_EFFECTS",
+    NEGATIVE_DAGAZ_CURSE            = "NEGATIVE_DAGAZ_CURSE",
     FORCED_RUNE_EFFECT              = "FORCED_RUNE_EFFECT",
     PERSISTENT_RUNE_CURSES          = "PERSISTENT_RUNE_CURSES",
     LEVEL_RUNE_BLESSINGS            = "LEVEL_RUNE_BLESSINGS",
@@ -164,7 +163,7 @@ RuneRooms.Enums.CustomCallback = {
 	--Optional args:
 	--
 	-- * runeEffect - RuneEffect
-    POST_GAIN_POSITIVE_RUNE_EFFECT = "POST_GAIN_POSITIVE_RUNE_EFFECT",
+    POST_GAIN_RUNE_BLESSING = "POST_GAIN_RUNE_BLESSING",
 
     --Called whenever a negative rune effect is added.
 	--
@@ -175,7 +174,7 @@ RuneRooms.Enums.CustomCallback = {
 	--Optional args:
 	--
 	-- * runeEffect - RuneEffect
-    POST_GAIN_NEGATIVE_RUNE_EFFECT = "POST_GAIN_NEGATIVE_RUNE_EFFECT",
+    POST_GAIN_RUNE_CURSE = "POST_GAIN_RUNE_CURSE",
 
     --Called either from the `MC_NEW_ROOM` callback or the `MC_POST_UPDATE` callback,
     --the first frame a generic prop is available.

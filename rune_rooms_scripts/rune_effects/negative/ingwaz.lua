@@ -22,7 +22,7 @@ TSIL.SaveManager.AddPersistentVariable(
 ---@param variant integer
 ---@param seed integer
 function IngwazNegative:PreEntitySpawn(type, variant, _, _, _, _, seed)
-    if not RuneRooms:IsNegativeEffectActive(RuneRooms.Enums.RuneEffect.INGWAZ) then return end
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.INGWAZ) then return end
 
     if type ~= EntityType.ENTITY_PICKUP then return end
 

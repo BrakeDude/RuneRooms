@@ -54,7 +54,7 @@ function OthalaNegative:OnOthalaNegativeActivation()
     end)
 end
 RuneRooms:AddCallback(
-    RuneRooms.Enums.CustomCallback.POST_GAIN_NEGATIVE_RUNE_EFFECT,
+    RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE,
     OthalaNegative.OnOthalaNegativeActivation,
     RuneRooms.Enums.RuneEffect.OTHALA
 )
