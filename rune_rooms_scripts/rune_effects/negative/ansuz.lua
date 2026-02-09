@@ -1,4 +1,5 @@
 local AnsuzNegative = {}
+local MinimapAPICallbacks = require("scripts.minimapapi.callbacks")
 
 local function GetRandomRoomWithEnemies(roomType)
 	local level = Game():GetLevel()
@@ -44,7 +45,7 @@ function AnsuzNegative:RemovePickups()
 	if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.ANSUZ) then return end
 	local room = Game():GetRoom()
     
-    if room:GetType() == RoomType.ROOM_SECRET or room:GetType() == RoomType.ROOM_SUPERSECRET
+    if (room:GetType() == RoomType.ROOM_SECRET or room:GetType() == RoomType.ROOM_SUPERSECRET)
     and room:IsFirstVisit() then
         for _, entryType in ipairs({EntityType.ENTITY_PICKUP, EntityType.ENTITY_SHOPKEEPER, EntityType.ENTITY_SLOT, EntityType.ENTITY_FIREPLACE}) do
             for _, entry in ipairs(Isaac.FindByType(entryType)) do
@@ -76,3 +77,22 @@ function AnsuzNegative:NoRewardInSecretRooms()
 	end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, AnsuzNegative.NoRewardInSecretRooms)
+
+
+-- From MinimapAPI code of April Fools challenge
+---@param room MinimapAPI.Room
+---@param playerPos Vector
+---@return Vector?
+function AnsuzNegative:RandomMinimapPosition(room, playerPos)
+    if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.ANSUZ) then return end
+    local cache = MinimapAPI.Cache
+    local level = Game():GetLevel()
+    local currentroom = cache.RoomDescriptor
+	if currentroom.GridIndex < 0 then
+		return Vector(-32768,-32768)
+    else
+        local randomRoom = level:GetRooms():Get(level:GetRoomByIdx(level:GetRandomRoomIndex(false, cache.RoomDescriptor.DecorationSeed), MinimapAPI.CurrentDimension).ListIndex)
+        return MinimapAPI:GridIndexToVector(randomRoom.GridIndex) + MinimapAPI.RoomShapeGridPivots[randomRoom.Data.Shape]
+    end
+end
+RuneRooms:AddCallback(MinimapAPICallbacks.PLAYER_POS_CHANGED, AnsuzNegative.RandomMinimapPosition)

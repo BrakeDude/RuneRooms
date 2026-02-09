@@ -237,3 +237,13 @@ end
 function RuneRooms.Helpers:IsInteger(n)
 	return type(n) == "number" and n == math.floor(n)
 end
+
+function RuneRooms.Helpers:Clamp(n, min, max)
+	if n < min then
+		return min
+	elseif n > max then
+		return max
+	else
+		return n
+	end
+end
