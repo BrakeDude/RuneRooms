@@ -7,6 +7,7 @@ local function GetRandomRoomWithEnemies(roomType)
 	local roomconfig
 	local allow = false
 	repeat
+        allow = false
 		roomconfig = RoomConfig.GetRandomRoom(rng:GetSeed(), false, StbType.SPECIAL_ROOMS, roomType)
 		for i = 0, roomconfig.Spawns.Size - 1 do
 			local spawn = roomconfig.Spawns:Get(i)
