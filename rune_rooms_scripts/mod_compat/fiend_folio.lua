@@ -15,4 +15,12 @@ RuneRooms:AddModCompat("FiendFolio", function ()
             return GRIDS_SPRITE_FF
         end
     )
+
+    local FFRuneRooms = {
+        
+    }
+
+    for id, weight in pairs(FFRuneRooms) do
+        RuneRooms.API:AddRuneRoom(id, weight)
+    end
 end)
