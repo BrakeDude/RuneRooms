@@ -3,6 +3,6 @@
     <card type="rune" pickup="35" description="Pestilence" hud="Kenaz" name="Kenaz" mimiccharge="3" />
     <card type="rune" pickup="35" description="Wealth" hud="Fehu" name="Fehu" mimiccharge="6" />
     <card type="rune" pickup="35" description="Legacy" hud="Othala" name="Othala" mimiccharge="12" />
-    <card type="rune" pickup="35" description="Renewal" hud="Sowilo" name="Sowilo" mimiccharge="2" />
+    <card type="rune" pickup="35" description="Renewal" hud="Sowilo" name="Sowilo" mimiccharge="2" greedmode="false" />
     <card type="rune" pickup="35" description="Treasure" hud="Ingwaz" name="Ingwaz" mimiccharge="4" />
 </pocketitems>
