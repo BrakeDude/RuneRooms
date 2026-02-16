@@ -43,6 +43,7 @@ local Descriptions = {}
 local Item = RuneRooms.Enums.Item
 local RuneEffect = RuneRooms.Enums.RuneEffect
 local Runes = RuneRooms.Enums.Runes
+local runeSprites = Sprite("gfx/ui/eid_rune_icon.anm2",true)
 
 Descriptions.Collectibles = {
     [Item.ALGIZ_ESSENCE] = {
@@ -693,6 +694,8 @@ RuneRooms:AddModCompat("EID", function ()
         for language, description in pairs(translations) do
             EID:addCard(rune, description.description, description.name, language)
         end
+        EID:addIcon("Card"..rune, "Runes", 0, 12, 12, 0, 0, runeSprites)
+        EID:AddIconToObject(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_TAROTCARD, rune, "Card"..rune)
     end
 
     --[[RuneRooms:AddCallback(

@@ -2,11 +2,6 @@ local HagalazNegative = {}
 
 local REPLACE_CHANCE = 0.3
 
-function HagalazNegative:PreEntitySpawn(entity)
-
-end
-RuneRooms:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, HagalazNegative.PreEntitySpawn)
-
 local function ReplaceGridEntities()
 	local rocks = TSIL.GridEntities.GetGridEntities(GridEntityType.GRID_ROCK, GridEntityType.GRID_ROCKB, GridEntityType.GRID_ROCKT, GridEntityType.GRID_ROCK_SS)
     local poops = TSIL.Utils.Tables.Filter(TSIL.GridSpecific.GetPoops(), function(_, poop)
