@@ -144,21 +144,10 @@ RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function(_, 
 	return true
 end, "debug")
 
-RuneRooms:AddCallback(ModCallbacks.MC_PLAYER_INIT_POST_LEVEL_INIT_STATS, function(_, player)
-	if RuneRooms.Helpers:IsDebugEnabled() then
-		player:AddKeys(99)
-		player:AddBombs(99)
-		player:AddKeys(99)
-		player:AddCollectible(CollectibleType.COLLECTIBLE_MIND)
-		player:AddCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE)
-		player:AddCollectible(CollectibleType.COLLECTIBLE_FATE)
-		player:AddCollectible(CollectibleType.COLLECTIBLE_WOODEN_SPOON)
-		player:AddCollectible(CollectibleType.COLLECTIBLE_WOODEN_SPOON)
+RuneRooms:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinue)
+	if not isContinue then
+		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false)
 	end
-end)
-
-RuneRooms:AddCallback(ModCallbacks.MC_POST_SAVESLOT_LOAD, function()
-	TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false)
 end)
 
 Console.RegisterCommand(
