@@ -74,6 +74,93 @@ RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
 	end
 end)
 
+--TSIL.SaveManager.AddPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false, TSIL.Enums.VariablePersistenceMode.REMOVE_RUN)
+
+TSIL.SaveManager.AddPersistentVariable(
+	RuneRooms,
+	RuneRooms.Enums.SaveKey.DEBUG_ENABLED,
+	false,
+	TSIL.Enums.VariablePersistenceMode.NONE
+)
+
+RuneRooms:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
+	local value = RuneRooms.Helpers:IsDebugEnabled()
+	for _, cmd in pairs({ "debug 10", "debug 8" }) do
+		local str = Isaac.ExecuteCommand(cmd)
+		local enabled = str:gmatch("Enabled")()
+		if enabled == nil and value or enabled ~= nil and not value then
+			Isaac.ExecuteCommand(cmd)
+		end
+	end
+end)
+
+RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function(_, _, toggle)
+	local value
+	local isEnabled = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED)
+	if toggle == "enable" then
+		if isEnabled then
+			print("Rune Rooms debug mode already activated")
+			return true
+		end
+		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, true)
+		print("Rune Rooms debug mode activated")
+		value = true
+	elseif toggle == "disable" then
+		if not isEnabled then
+			print("Rune Rooms debug mode already deactivated")
+			return true
+		end
+		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false)
+		print("Rune Rooms debug mode deactivated")
+		value = false
+	end
+
+	if value == nil then
+		return
+	end
+
+	if not Isaac.IsInGame() then
+		return true
+	end
+	for _, cmd in pairs({ "debug 10", "debug 8" }) do
+		local str = Isaac.ExecuteCommand(cmd)
+		local enabled = str:gmatch("Enabled")()
+		if enabled == nil and value or enabled ~= nil and not value then
+			Isaac.ExecuteCommand(cmd)
+		end
+	end
+	if value == true then
+		for _, player in ipairs(PlayerManager.GetPlayers()) do
+			player:AddKeys(99)
+			player:AddBombs(99)
+			player:AddKeys(99)
+			player:AddCollectible(CollectibleType.COLLECTIBLE_MIND)
+			player:AddCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE)
+			player:AddCollectible(CollectibleType.COLLECTIBLE_FATE)
+			player:AddCollectible(CollectibleType.COLLECTIBLE_WOODEN_SPOON)
+			player:AddCollectible(CollectibleType.COLLECTIBLE_WOODEN_SPOON)
+		end
+	end
+	return true
+end, "debug")
+
+RuneRooms:AddCallback(ModCallbacks.MC_PLAYER_INIT_POST_LEVEL_INIT_STATS, function(_, player)
+	if RuneRooms.Helpers:IsDebugEnabled() then
+		player:AddKeys(99)
+		player:AddBombs(99)
+		player:AddKeys(99)
+		player:AddCollectible(CollectibleType.COLLECTIBLE_MIND)
+		player:AddCollectible(CollectibleType.COLLECTIBLE_BLACK_CANDLE)
+		player:AddCollectible(CollectibleType.COLLECTIBLE_FATE)
+		player:AddCollectible(CollectibleType.COLLECTIBLE_WOODEN_SPOON)
+		player:AddCollectible(CollectibleType.COLLECTIBLE_WOODEN_SPOON)
+	end
+end)
+
+RuneRooms:AddCallback(ModCallbacks.MC_POST_SAVESLOT_LOAD, function()
+	TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false)
+end)
+
 Console.RegisterCommand(
 	"rune",
 	"Debug command for rune effects",
@@ -83,12 +170,12 @@ Console.RegisterCommand(
 )
 
 local commands = {
-	["setgood"]   = "Activates the good effect of a rune for the current level" ,
-	["setbad"]    = "Activates the bad effect of a rune for the current run" ,
-	["unsetgood"] = "Deactivates the good effect of a rune" ,
-	["unsetbad"]  = "Deactivate bad rune effects" ,
-	["seteffect"] = "Deactivates the bad effect of a rune" ,
-	["ehwazmode"] = "Changes how the positive effect of ehwaz works" ,
+	["setgood"] = "Activates the good effect of a rune for the current level",
+	["setbad"] = "Activates the bad effect of a rune for the current run",
+	["unsetgood"] = "Deactivates the good effect of a rune",
+	["unsetbad"] = "Deactivate bad rune effects",
+	["seteffect"] = "Deactivates the bad effect of a rune",
+	["ehwazmode"] = "Changes how the positive effect of ehwaz works",
 }
 
 RuneRooms:AddCallback(ModCallbacks.MC_CONSOLE_AUTOCOMPLETE, function(_, cmd, args)

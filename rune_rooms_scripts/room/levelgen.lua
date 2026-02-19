@@ -1,5 +1,6 @@
 local LevelGen = {}
 local game = Game()
+local placingroom = false
 ---Adds a new rune room. The room id must be unique and it has to be a chest.
 ---
 ---This function must be called before MC_PRE_LEVEL_PLACE_ROOM callback fires, otherwise the room won't be loaded.
@@ -23,8 +24,20 @@ TSIL.SaveManager.AddPersistentVariable(
 	TSIL.Enums.VariablePersistenceMode.RESET_RUN
 )
 
+local function RunSpawnChanceCallbacks()
+	local callbacks = Isaac.GetCallbacks(RuneRooms.Enums.CustomCallback.RUNE_ROOM_SPAWN_CHANCE)
+	local chance = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE)
+	for _, callback in ipairs(callbacks) do
+		local ret = callback.Function(callback.Mod, chance * 100)
+		if type(ret) == "number" then
+			chance = chance + ret / 100
+		end
+	end
+	return TSIL.Utils.Math.Clamp(chance, 0, 1)
+end
+
 function RuneRooms.API:GetRoomSpawnChance()
-	return TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE)
+	return RunSpawnChanceCallbacks()
 end
 
 function RuneRooms.API:SetRoomSpawnChance(value)
@@ -36,30 +49,24 @@ function RuneRooms.API:AddToRoomSpawnChance(value)
 	RuneRooms.API:SetRoomSpawnChance(currentChance + value)
 end
 
-local function RunSpawnChanceCallbacks()
-	local callbacks = Isaac.GetCallbacks(RuneRooms.Enums.CustomCallback.RUNE_ROOM_SPAWN_CHANCE)
-	local chance = RuneRooms.API:GetRoomSpawnChance()
-	for _, callback in ipairs(callbacks) do
-		local ret = callback.Function(callback.Mod, chance)
-		if type(ret) == "number" then
-			chance = chance + ret
-		end
-	end
-	return TSIL.Utils.Math.Clamp(chance, 0, 1)
-end
-
 ---@param gridIndex number
 ---@return Vector
 local function GridIndexToVector(gridIndex)
 	return Vector(gridIndex % 13, math.floor(gridIndex / 13))
 end
 
+RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.RUNE_ROOM_SPAWN_CHANCE, function()
+	if RuneRooms.Helpers:IsDebugEnabled() then
+		return 100
+	end
+end)
+
 function LevelGen:PlaceRoom()
 	if
 		game:IsGreedMode()
 		or game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)
-		or not RuneRooms:RoomsUnlocked()
-		or Isaac.GetPlayer(0):GetNumKeys() < 2
+		or (not RuneRooms:RoomsUnlocked() or Isaac.GetPlayer(0):GetNumKeys() < 2)
+			and not RuneRooms.Helpers:IsDebugEnabled()
 	then
 		return
 	end
@@ -79,18 +86,28 @@ function LevelGen:PlaceRoom()
 	if levelType >= StageType.STAGETYPE_REPENTANCE then
 		levelStage = levelStage + 1
 	end
-	if levelStage % 2 == 0 then
+	if levelStage % 2 == 0 or RuneRooms.Helpers:IsDebugEnabled() then
 		local seed = level:GetDungeonPlacementSeed()
 		local rng = RNG(seed)
 		local chance = RunSpawnChanceCallbacks()
 		if rng:RandomFloat() <= chance then
-			local outcome = WeightedOutcomePicker()
+			--[[local outcome = WeightedOutcomePicker()
 			for roomID, weight in pairs(RuneRooms.Constants.RUNE_ROOMS_IDS) do
 				outcome:AddOutcomeFloat(roomID, weight)
 			end
-			local roomID = outcome:PickOutcome(rng)
-			local roomconf =
-				RoomConfig.GetRoomByStageTypeAndVariant(StbType.SPECIAL_ROOMS, RoomType.ROOM_CHEST, roomID, 0)
+			local roomID = outcome:PickOutcome(rng)]]
+			local roomconf
+			local antisoftlock = 0
+			repeat
+				roomconf = RoomConfig.GetRandomRoom(math.max(1, rng:GetSeed()), false, StbType.SPECIAL_ROOMS, RoomType.ROOM_CHEST, RoomShape.ROOMSHAPE_1x1, 0, -1, 0, 10)
+				antisoftlock = antisoftlock + 1
+				rng:Next()
+			until roomconf ~= nil and RuneRooms.Helpers:IsRuneRoomDescriptor(roomconf) or antisoftlock > 100
+			--RoomConfig.GetRoomByStageTypeAndVariant(StbType.SPECIAL_ROOMS, RoomType.ROOM_CHEST, roomID, 0)
+			if roomconf == nil then
+				print("None")
+				return
+			end
 			local options = level:FindValidRoomPlacementLocations(roomconf, -1, false, false)
 			local startGridIndex = level:GetStartingRoomIndex()
 			local startGridVector = GridIndexToVector(startGridIndex)
@@ -110,7 +127,9 @@ function LevelGen:PlaceRoom()
 						canPlace = false
 					end
 					if canPlace then
+						placingroom = true
 						local room = level:TryPlaceRoom(roomconf, gridIndex, -1, seed, false, false)
+						placingroom = false
 						if room then
 							local t = {
 								Shape = room.Data.Shape,
@@ -129,6 +148,45 @@ function LevelGen:PlaceRoom()
 	end
 end
 RuneRooms:AddPriorityCallback(ModCallbacks.MC_POST_NEW_LEVEL, CallbackPriority.IMPORTANT, LevelGen.PlaceRoom)
+
+---@param slot LevelGeneratorRoom
+---@param roomConfig RoomConfigRoom
+---@param seed integer
+---@return RoomConfigRoom?
+function LevelGen:NoNaturalRoom(slot, roomConfig, seed)
+	if placingroom then
+		return
+	end
+	if
+		roomConfig.Type == RoomType.ROOM_CHEST
+		and roomConfig.Type == RoomType.ROOM_NULL
+		and RuneRooms.Constants.RUNE_ROOMS_IDS[roomConfig.Variant] ~= nil
+	then
+		local rng = RNG(math.max(1, seed))
+		local roomconf
+		local newType = RoomType.ROOM_CHEST
+		local stb = StbType.SPECIAL_ROOMS
+		if roomConfig.Type == RoomType.ROOM_NULL then
+			newType = RoomType.ROOM_DEFAULT
+			stb = roomConfig.StageID
+		end
+		repeat
+			roomconf = RoomConfig.GetRandomRoom(
+				math.max(1, rng:GetSeed()),
+				false,
+				stb,
+				newType,
+				RoomShape.ROOMSHAPE_1x1,
+				0,
+				-1,
+				0,
+				10
+			)
+			rng:Next()
+		until roomconf ~= nil
+	end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, LevelGen.NoNaturalRoom)
 
 function LevelGen:NewRoom()
 	local room = game:GetRoom()

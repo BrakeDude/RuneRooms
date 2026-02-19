@@ -10,6 +10,21 @@ function RuneRooms.Helpers:IsRuneRoom(gridIndex)
 		return false
 	end
 
+	if roomData.Type ~= RoomType.ROOM_CHEST and roomData.Type ~= RoomType.ROOM_NULL then
+		return false
+	end
+	return RuneRooms.Constants.RUNE_ROOMS_IDS[roomData.Variant] ~= nil
+end
+
+---Helper function to check if a room is a rune room data
+---@param roomData RoomConfigRoom
+---@return boolean
+function RuneRooms.Helpers:IsRuneRoomDescriptor(roomData)
+
+	if not roomData then
+		return false
+	end
+
 	if roomData.Type ~= RoomType.ROOM_CHEST then
 		return false
 	end
@@ -27,6 +42,11 @@ do
 			funct = funct,
 			frames = frames,
 		}
+	end
+
+	function RuneRooms.Helpers:IsDebugEnabled()
+		local value = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED)
+		return value ~= nil and value == true
 	end
 
 	RuneRooms:AddCallback(ModCallbacks.MC_POST_RENDER, function()
