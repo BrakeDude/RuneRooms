@@ -258,6 +258,17 @@ RuneRooms.Enums.CustomCallback = {
     --
     -- * chance - number
     RUNE_ROOM_SPAWN_CHANCE = "RUNE_ROOM_SPAWN_CHANCE",
+
+    --- Called when opening chests using Ingwaz rune.
+    --
+    --Params:
+    -- * pickup - EntityPickup
+    -- * player - EntityPlayer
+    INGWAZ_OPEN_CHEST = "INGWAZ_OPEN_CHEST",
+
+    
+	RUN_RUNE_MAIN = "RUN_RUNE_MAIN",
+	RUN_RUNE_EXTRA = "RUN_RUNE_EXTRA",
 }
 
 

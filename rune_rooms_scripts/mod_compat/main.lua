@@ -18,10 +18,18 @@ function RuneRooms:AddModCompat(mod, funct)
     }
 end
 
-include("rune_rooms_scripts.mod_compat.eid")
-include("rune_rooms_scripts.mod_compat.fiend_folio")
-include("rune_rooms_scripts.mod_compat.revelations")
+local compats = {
+    "eid",
+    "fiend_folio",
+    "revelations",
+    "rare_chests",
+    "repentanceplus",
+    "runic_tablet"
+}
 
+for _, compat in ipairs(compats) do
+    include("rune_rooms_scripts.mod_compat."..compat..".main")
+end
 
 local hasRunCompatibility = false
 RuneRooms:AddCallback(ModCallbacks.MC_POST_MODS_LOADED, function ()

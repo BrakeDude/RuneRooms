@@ -147,10 +147,22 @@ function RuneRooms.Helpers:GetRandomPositionInRoom(allowPits, doOffset, rng)
 end
 
 ---@param player EntityPlayer
----@return boolean
+---@return boolean, CollectibleType | integer?
 function RuneRooms.Helpers:HasMagicChalk(player)
 	local magicchalk = Isaac.GetItemIdByName("Magic Chalk")
 	return magicchalk > 0 and player:HasCollectible(magicchalk)
+end
+
+---@param player EntityPlayer
+---@return boolean
+function RuneRooms.Helpers:HasRunicTablet(player)
+	return  RunicTablet and player:HasCollectible(RunicTablet.Collectible.RunicTablet.ID)
+end
+
+---@param player EntityPlayer
+---@return boolean
+function RuneRooms.Helpers:HasMagicChalkOrRunicTablet(player)
+	return RuneRooms.Helpers:HasMagicChalk(player) or RuneRooms.Helpers:HasRunicTablet(player)
 end
 
 ---@param gfx string

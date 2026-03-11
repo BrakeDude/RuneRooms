@@ -1,27 +1,10 @@
 local SlotLocal = {}
 if not REPENTOGON then return end
 
-local slotPlays = {
-    [SlotVariant.BATTERY_BUM] = 6,
-    [SlotVariant.BEGGAR] = 6,
-    [SlotVariant.BLOOD_DONATION_MACHINE] = 4,
-    [SlotVariant.BOMB_BUM] = 6,
-    [SlotVariant.CONFESSIONAL] = 5,
-    [SlotVariant.CRANE_GAME] = 5,
-    [SlotVariant.DEVIL_BEGGAR] = 6,
-    [SlotVariant.DONATION_MACHINE] = 5,
-    [SlotVariant.GREED_DONATION_MACHINE] = 5,
-    [SlotVariant.FORTUNE_TELLING_MACHINE] = 5,
-    [SlotVariant.KEY_MASTER] = 6,
-    [SlotVariant.SHOP_RESTOCK_MACHINE] = 5,
-    [SlotVariant.ROTTEN_BEGGAR] = 6,
-    [SlotVariant.SLOT_MACHINE] = 5,
-}
+Gebo.AddMachineBeggar(SlotVariant.DONATION_MACHINE)
+Gebo.AddMachineBeggar(SlotVariant.GREED_DONATION_MACHINE)
 
 for i = 1,18 do
-    if slotPlays[i] ~= nil then
-        Gebo.AddMachineBeggar(i, nil, slotPlays[i])
-    end
     Gebo.ChangeRepentogonTag(i, true)
 end
 
@@ -88,7 +71,7 @@ Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, SlotLocal.UpdateDono, SlotVar
 function SlotLocal:UpdateBeggar(slot)
     local data = Gebo.GetData(slot)
     local sprite = slot:GetSprite()
-    if data.GeboUses and data.GeboUses > 0 and Gebo.IsGeboSlot(slot) then
+    if data.GeboUses and data.GeboUses > 0 then
         if slot:GetState() == 4 then
             return
         end

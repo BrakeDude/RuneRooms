@@ -1,0 +1,5 @@
+RuneRooms:AddModCompat("RepentancePlusMod", function()
+    RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.INGWAZ_OPEN_CHEST, RepentancePlusMod.openFleshChest, RepentancePlusMod.CustomPickups.FLESH_CHEST)
+    RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.INGWAZ_OPEN_CHEST, RepentancePlusMod.openScarletChest, RepentancePlusMod.CustomPickups.SCARLET_CHEST)
+    RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.INGWAZ_OPEN_CHEST, RepentancePlusMod.openBlackChest, RepentancePlusMod.CustomPickups.BLACK_CHEST)
+end)
