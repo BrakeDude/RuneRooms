@@ -56,7 +56,7 @@ function BerkanoEssence:OnStartGame(isContinue)
                 for entSubType, num in pairs(entities) do
                     local subNum = 0
                     for _, ent in ipairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ABYSS_LOCUST, entSubType)) do
-                        if subNum > nym then
+                        if subNum > num then
                             break
                         end
                         ent:Remove()
