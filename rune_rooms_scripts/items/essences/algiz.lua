@@ -85,11 +85,12 @@ function AlgizEssence:OnNPCDeath(npc)
     local rng = TSIL.RNG.NewRNG(npc.InitSeed)
     if rng:RandomFloat() >= SOUL_HEART_CHANCE then return end
 
-    TSIL.EntitySpecific.SpawnPickup(
+    local heart = TSIL.EntitySpecific.SpawnPickup(
         PickupVariant.PICKUP_HEART,
-        HeartSubType.HEART_SOUL,
+        HeartSubType.HEART_HALF_SOUL,
         npc.Position
     )
+    heart.Timeout = 60
 end
 RuneRooms:AddCallback(
     ModCallbacks.MC_POST_NPC_DEATH,

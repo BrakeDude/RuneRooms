@@ -1,15 +1,15 @@
 <items gfxroot="gfx/items/" deathanm2="gfx/death items.anm2" version="1">
-	<passive id="1"  gfx="hagalaz_essence.png"  name="Essence of Hagalaz"   description="Destruction?"      quality="3" tags="noeden nocantrip" cache="range" />
-    <passive id="2"  gfx="jera_essence.png"     name="Essence of Jera"      description="Abundance?"        quality="3" tags="noeden nocantrip" cache="speed" />
-    <passive id="3"  gfx="ehwaz_essence.png"    name="Essence of Ehwaz"     description="Passage?"          quality="3" tags="noeden nocantrip" cache="shotspeed" />
+	<passive id="1"  gfx="hagalaz_essence.png"  name="Essence of Hagalaz"   description="Destruction?"      quality="3" tags="noeden nocantrip" range="120" />
+    <passive id="2"  gfx="jera_essence.png"     name="Essence of Jera"      description="Abundance?"        quality="3" tags="noeden nocantrip" speed="0.15" />
+    <passive id="3"  gfx="ehwaz_essence.png"    name="Essence of Ehwaz"     description="Passage?"          quality="3" tags="noeden nocantrip" shotspeed="0.3" />
     <passive id="4"  gfx="dagaz_essence.png"    name="Essence of Dagaz"     description="Purity?"           quality="3" tags="noeden nocantrip" hearts="2" maxhealth="1" soulhearts="2" />
     <passive id="5"  gfx="ansuz_essence.png"    name="Essence of Ansuz"     description="Vision?"           quality="3" tags="noeden nocantrip" bombs="2" />
-    <passive id="6"  gfx="perthro_essence.png"  name="Essence of Perthro"   description="Change?"           quality="3" tags="noeden nocantrip" cache="damage" />
-    <passive id="7"  gfx="berkano_essence.png"  name="Essence of Berkano"   description="Companionship?"    quality="3" tags="noeden nocantrip" cache="firedelay" />
+    <passive id="6"  gfx="perthro_essence.png"  name="Essence of Perthro"   description="Change?"           quality="3" tags="noeden nocantrip" flatdamage="0.5" />
+    <passive id="7"  gfx="berkano_essence.png"  name="Essence of Berkano"   description="Companionship?"    quality="3" tags="noeden nocantrip" flattears="0.3" />
     <passive id="8"  gfx="algiz_essence.png"    name="Essence of Algiz"     description="Resistance?"       quality="3" tags="noeden nocantrip" />
     <passive id="9"  gfx="gebo_essence.png"     name="Essence of Gebo"      description="Charity?"          quality="3" tags="noeden nocantrip" coins="5" bombs="2" keys="1" />
     <passive id="10" gfx="kenaz_essence.png"    name="Essence of Kenaz"     description="Pestilence?"       quality="3" tags="noeden nocantrip" />
-    <passive id="11" gfx="fehu_essence.png"     name="Essence of Fehu"      description="Wealth?"           quality="3" tags="noeden nocantrip" cache="luck" />
+    <passive id="11" gfx="fehu_essence.png"     name="Essence of Fehu"      description="Wealth?"           quality="3" tags="noeden nocantrip" luck="1" />
     <passive id="12" gfx="othala_essence.png"   name="Essence of Othala"    description="Legacy?"           quality="3" tags="noeden nocantrip" />
     <passive id="13" gfx="ingwaz_essence.png"   name="Essence of Ingwaz"    description="Treasure?"         quality="3" tags="noeden nocantrip" keys="5" />
     <passive id="14" gfx="sowilo_essence.png"   name="Essence of Sowilo"    description="Renewal?"          quality="3" tags="noeden nocantrip" blackhearts="2" />

@@ -1,105 +1,110 @@
 local HagalazEssence = {}
 
-local FIREPLACE_VARIANTS_TO_SAFE_VARIANTS = {
-    [TSIL.Enums.FireplaceVariant.RED] = TSIL.Enums.FireplaceVariant.NORMAL,
-    [TSIL.Enums.FireplaceVariant.PURPLE] = TSIL.Enums.FireplaceVariant.BLUE
-}
 local TINTED_ROCK_REPLACE_CHANCE = 0.05
 local HagalazItem = RuneRooms.Enums.Item.HAGALAZ_ESSENCE
 
----@param player EntityPlayer
-function HagalazEssence:OnRangeCache(player)
-    local numItems = player:GetCollectibleNum(HagalazItem)
-    player.TearRange = player.TearRange + numItems * (3 * 40)
-end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_EVALUATE_CACHE,
-    HagalazEssence.OnRangeCache,
-    CacheFlag.CACHE_RANGE
-)
-
-
 local function RetractSpikes()
-    local player = Isaac.GetPlayer()
-    local trinketSituation = TSIL.Players.TemporarilyRemoveTrinkets(player)
+	local player = Isaac.GetPlayer()
+	local trinketSituation = TSIL.Players.TemporarilyRemoveTrinkets(player)
 
-    player:AddTrinket(TrinketType.TRINKET_FLAT_FILE)
+	player:AddTrinket(TrinketType.TRINKET_FLAT_FILE)
 
-    TSIL.Rooms.UpdateRoom()
+	TSIL.Rooms.UpdateRoom()
 
-    player:TryRemoveTrinket(TrinketType.TRINKET_FLAT_FILE)
+	player:TryRemoveTrinket(TrinketType.TRINKET_FLAT_FILE)
 
-    TSIL.Players.GiveTrinketsBack(player, trinketSituation)
+	TSIL.Players.GiveTrinketsBack(player, trinketSituation)
 end
-
 
 local function ReplaceRocks()
-    local rocks = TSIL.GridSpecific.GetRocks()
+	local rocks = TSIL.GridSpecific.GetRocks()
 
-    TSIL.Utils.Tables.ForEach(rocks, function (_, rock)
-        local rng = TSIL.RNG.NewRNG(rock.Desc.SpawnSeed)
+	TSIL.Utils.Tables.ForEach(rocks, function(_, rock)
+		local rng = TSIL.RNG.NewRNG(rock.Desc.SpawnSeed)
 
-        if rng:RandomFloat() >= TINTED_ROCK_REPLACE_CHANCE then return end
-
-        TSIL.GridEntities.SpawnGridEntity(
-            GridEntityType.GRID_ROCKT,
-            0,
-            rock:GetGridIndex(),
-            true
-        )
-    end)
+		if rng:RandomFloat() >= TINTED_ROCK_REPLACE_CHANCE then
+			return
+		end
+        rock:SetType(GridEntityType.GRID_ROCKT)
+        rock:GetSprite():Play("tinted", true)
+	end)
 end
-
 
 function HagalazEssence:OnHagalazEssencePickup()
-    RetractSpikes()
+	RetractSpikes()
 
-    ReplaceRocks()
+	ReplaceRocks()
 end
-RuneRooms:AddCallback(
-    TSIL.Enums.CustomCallback.POST_PLAYER_COLLECTIBLE_ADDED,
-    HagalazEssence.OnHagalazEssencePickup,
-    {
-        nil,
-        nil,
-        RuneRooms.Enums.Item.HAGALAZ_ESSENCE
-    }
-)
-
+RuneRooms:AddCallback(TSIL.Enums.CustomCallback.POST_PLAYER_COLLECTIBLE_ADDED, HagalazEssence.OnHagalazEssencePickup, {
+	nil,
+	nil,
+	RuneRooms.Enums.Item.HAGALAZ_ESSENCE,
+})
 
 function HagalazEssence:OnNewRoom()
-    if not PlayerManager.AnyoneHasCollectible(HagalazItem) then return end
+	if not PlayerManager.AnyoneHasCollectible(HagalazItem) then
+		return
+	end
 
-    RetractSpikes()
+	RetractSpikes()
 
-    ReplaceRocks()
+	ReplaceRocks()
 end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_POST_NEW_ROOM,
-    HagalazEssence.OnNewRoom
-)
+RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, HagalazEssence.OnNewRoom)
 
+---@param npc EntityNPC
+function HagalazEssence:NoShootFire(npc)
+	if
+		not PlayerManager.AnyoneHasCollectible(HagalazItem)
+		or npc.SpawnerEntity and npc.SpawnerEntity.Type == EntityType.ENTITY_PLAYER
+	then
+		return
+	end
+	local sprite = npc:GetSprite()
+	if sprite:IsOverlayPlaying("Shoot") then
+		sprite:StopOverlay()
+	end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_NPC_UPDATE, HagalazEssence.NoShootFire, EntityType.ENTITY_FIREPLACE)
 
----@param type EntityType
----@param variant integer
----@param subtype integer
----@param seed integer
-function HagalazEssence:PreEntitySpawn(type, variant, subtype, _, _, _, seed)
-    if not PlayerManager.AnyoneHasCollectible(HagalazItem) then return end
-
-    if type ~= EntityType.ENTITY_FIREPLACE then return end
-
-    local newVariant = FIREPLACE_VARIANTS_TO_SAFE_VARIANTS[variant]
-    if newVariant then
-        return {
-            type,
-            newVariant,
-            subtype,
-            seed
-        }
+---@param player EntityPlayer
+---@param damage number
+---@param flags DamageFlag | integer
+---@param source EntityRef
+---@param countdown integer
+---@return boolean?
+function HagalazEssence:NoDamageFromEternalFly(player, damage, flags, source, countdown)
+    if player:HasCollectible(HagalazItem) and source.Entity and source.Entity.Type == EntityType.ENTITY_ETERNALFLY then
+        return false
     end
 end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_PRE_ENTITY_SPAWN,
-    HagalazEssence.PreEntitySpawn
-)
+RuneRooms:AddCallback(ModCallbacks.MC_PRE_PLAYER_TAKE_DMG, HagalazEssence.NoDamageFromEternalFly)
+
+---@param grid GridEntity
+---@param entity Entity
+---@param damage number
+---@param flags DamageFlag | integer
+---@return boolean?
+function HagalazEssence:NoPlayerRedPoopDamage(grid, entity, damage, flags)
+	if entity and entity:ToPlayer() then
+        local player = entity:ToPlayer()
+        if player:HasCollectible(HagalazItem) then
+            return false
+        end
+    end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_GRID_HURT_DAMAGE, HagalazEssence.NoPlayerRedPoopDamage, GridEntityType.GRID_POOP)
+
+---@param grid GridEntityRock
+---@return boolean?
+function HagalazEssence:NoNearExplosion(grid, gridType, immediate, source)
+	if PlayerManager.AnyoneHasCollectible(HagalazItem) then
+        local players = Isaac.FindInCapsule(Capsule(grid.Position, grid.Position, 60), EntityPartition.PLAYER)
+        if #players > 0 then
+            grid:SetType(GridEntityType.GRID_ROCK)
+            grid.State = 1
+            grid:Destroy()
+        end
+    end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_POST_GRID_ROCK_DESTROY, HagalazEssence.NoNearExplosion, GridEntityType.GRID_ROCK_BOMB)

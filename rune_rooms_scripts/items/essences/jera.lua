@@ -25,18 +25,6 @@ function RuneRooms.API:ForbidPickupFromRespawning(pickupVariant)
     NO_RESPAWN_PICKUPS[pickupVariant] = true
 end
 
----@param player EntityPlayer
-function JeraEssence:OnSpeedCache(player)
-    local numItems = player:GetCollectibleNum(JeraItem)
-    player.MoveSpeed = player.MoveSpeed + numItems * 0.15
-end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_EVALUATE_CACHE,
-    JeraEssence.OnSpeedCache,
-    CacheFlag.CACHE_SPEED
-)
-
-
 ---@param pickup EntityPickup
 function JeraEssence:OnPickupCollect(pickup)
     if not PlayerManager.AnyoneHasCollectible(JeraItem) then return end

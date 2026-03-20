@@ -4,126 +4,91 @@ local FAMILIAR_SPAWN_CHANCE = 0.1
 local BerkanoItem = RuneRooms.Enums.Item.BERKANO_ESSENCE
 
 TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_POSITIONS,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_ROOM
+	RuneRooms,
+	RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_CREATION,
+	{},
+	TSIL.Enums.VariablePersistenceMode.RESET_RUN
 )
 
+local function RemoveWithPoof(entity)
+	TSIL.EntitySpecific.SpawnEffect(EffectVariant.POOF01, 0, entity.Position)
+	entity:Remove()
+end
+
+local function AddTempLocusts()
+
+	local entityCreations =
+		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_CREATION)
+	local entitesToRemove = TSIL.Utils.Tables.Filter(
+		Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ABYSS_LOCUST),
+		function(_, entitiy)
+			return entitiy.FrameCount == 0
+		end
+	)
+	local time = Game().TimeCounter
+	entityCreations[time] = entityCreations[time] or {}
+	for _, entity in ipairs(entitesToRemove) do
+        if not entityCreations[time][entity.SubType] then
+            entityCreations[time][entity.SubType] = 0
+        end
+		entityCreations[time][entity.SubType] = entityCreations[time][entity.SubType] + 1
+	end
+	TSIL.SaveManager.SetPersistentVariable(
+		RuneRooms,
+		RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_CREATION,
+		entityCreations
+	)
+	Isaac.CreateTimer(function()
+		for _, entity in ipairs(entitesToRemove) do
+			RemoveWithPoof(entity)
+		end
+        entityCreations[time] = nil
+	end, 90, 1, true)
+end
+
+function BerkanoEssence:OnStartGame(isContinue)
+	if isContinue then
+		local entityCreations =
+			TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_CREATION)
+        for time, entities in pairs(entityCreations) do
+            local newTime = 90 - (Game().TimeCounter  - time)
+            Isaac.CreateTimer(function()
+                for entSubType, num in pairs(entities) do
+                    local subNum = 0
+                    for _, ent in ipairs(Isaac.FindByType(EntityType.ENTITY_FAMILIAR, FamiliarVariant.ABYSS_LOCUST, entSubType)) do
+                        if subNum > nym then
+                            break
+                        end
+                        ent:Remove()
+                        subNum = subNum + 1
+                    end
+                    entityCreations[time][entSubType] = nil
+                end
+                if #entityCreations[time] == 0 then
+                    entityCreations[time] = nil
+                end
+                TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_CREATION, entityCreations)
+            end, newTime, 1, true)
+        end
+	end
+end
+RuneRooms:AddPriorityCallback(ModCallbacks.MC_POST_GAME_STARTED, CallbackPriority.LATE, BerkanoEssence.OnStartGame)
+
+---@param collectible CollectibleType | integer
+---@param firstTime boolean
 ---@param player EntityPlayer
-function BerkanoEssence:OnFireDelayCache(player)
-    local numItems = player:GetCollectibleNum(BerkanoItem)
-    player.MaxFireDelay = RuneRooms.Helpers:AddTears(player.MaxFireDelay, numItems * 0.3)
+function BerkanoEssence:OnBerkanoPickup(collectible, _, firstTime, _, _, player)
+	if not firstTime then
+		return
+	end
+	if collectible == BerkanoItem then
+		for i = 1, 3 do
+			player:AddLocust(CollectibleType.COLLECTIBLE_1UP, player.Position)
+		end
+		AddTempLocusts()
+	elseif player:HasCollectible(BerkanoItem) then
+		player:AddLocust(collectible, player.Position)
+		AddTempLocusts()
+	end
 end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_EVALUATE_CACHE,
-    BerkanoEssence.OnFireDelayCache,
-    CacheFlag.CACHE_FIREDELAY
-)
-
-
----@param npc EntityNPC
-local function SpawnBoneOrbital(npc)
-    local players = TSIL.Players.GetPlayersByCollectible(BerkanoItem)
-    TSIL.Utils.Tables.ForEach(players, function (_, player)
-        local familiar = TSIL.EntitySpecific.SpawnFamiliar(
-            FamiliarVariant.BONE_ORBITAL,
-            0,
-            npc.Position,
-            Vector.Zero,
-            player
-        )
-        familiar.Parent = player
-    end)
-end
-
-
----@param npc EntityNPC
----@param rng RNG
-local function SpawnRandomFamiliar(npc, rng)
-    local collectibles = TSIL.Collectibles.GetCollectiblesWithTag(TSIL.Enums.ItemConfigTag.MONSTER_MANUAL)
-    collectibles = TSIL.Utils.Tables.Filter(collectibles, function (_, collectible)
-        return not collectible.PersistentEffect and collectible:IsAvailable()
-    end)
-
-    local players = TSIL.Players.GetPlayersByCollectible(BerkanoItem)
-    TSIL.Utils.Tables.ForEach(players, function (_, player)
-        local collectible = TSIL.Random.GetRandomElementsFromTable(collectibles, 1, rng)[1]
-
-        local effects = player:GetEffects()
-        effects:AddCollectibleEffect(collectible.ID, false)
-
-        local familiarPositions = TSIL.SaveManager.GetPersistentVariable(
-            RuneRooms,
-            RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_POSITIONS
-        )
-        familiarPositions[#familiarPositions+1] = npc.Position
-    end)
-end
-
-
----@param npc EntityNPC
-function BerkanoEssence:OnNPCDeath(npc)
-    if not PlayerManager.AnyoneHasCollectible(BerkanoItem) then return end
-
-    local rng = TSIL.RNG.NewRNG(npc.InitSeed)
-
-    if rng:RandomFloat() >= FAMILIAR_SPAWN_CHANCE then return end
-
-    if npc.MaxHitPoints <= 10 then
-        SpawnBoneOrbital(npc)
-    else
-        SpawnRandomFamiliar(npc, rng)
-    end
-end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_POST_NPC_DEATH,
-    BerkanoEssence.OnNPCDeath
-)
-
-
----@param familiar EntityFamiliar
-function BerkanoEssence:OnFamiliarInit(familiar)
-    local familiarPositions = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_POSITIONS
-    )
-    if #familiarPositions == 0 then return end
-
-    local pos = table.remove(familiarPositions, 1)
-    familiar:ClearEntityFlags(EntityFlag.FLAG_APPEAR)
-    TSIL.Entities.SetEntityData(
-        RuneRooms,
-        familiar,
-        "MoveFamiliarToPos",
-        pos
-    )
-end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_FAMILIAR_INIT,
-    BerkanoEssence.OnFamiliarInit
-)
-
-
----@param familiar EntityFamiliar
-function BerkanoEssence:OnFamiliarUpdate(familiar)
-    local moveToPos = TSIL.Entities.GetEntityData(
-        RuneRooms,
-        familiar,
-        "MoveFamiliarToPos"
-    )
-
-    if moveToPos then
-        familiar.Position = moveToPos
-        TSIL.Entities.SetEntityData(
-            RuneRooms,
-            familiar,
-            "MoveFamiliarToPos",
-            nil
-        )
-    end
-end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_FAMILIAR_UPDATE,
-    BerkanoEssence.OnFamiliarUpdate
-)
+RuneRooms:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, BerkanoEssence.OnBerkanoPickup)

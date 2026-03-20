@@ -17,17 +17,6 @@ TSIL.SaveManager.AddPersistentVariable(
     TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
 )
 
----@param player EntityPlayer
-function PerthroEssence:OnDamageCache(player)
-    local numItems = player:GetCollectibleNum(PerthroItem)
-    player.Damage = player.Damage + numItems * 0.5
-end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_EVALUATE_CACHE,
-    PerthroEssence.OnDamageCache,
-    CacheFlag.CACHE_DAMAGE
-)
-
 
 ---@param item CollectibleType
 ---@return integer

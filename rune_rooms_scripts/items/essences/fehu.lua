@@ -1,8 +1,8 @@
 local FehuEssence = {}
 
-local MIDAS_TEAR_CHANCE = 0.1
+local MIDAS_TEAR_CHANCE = 0.05
 local MIDAS_TEAR_CHANCE_PER_LUCK = 0.05
-local MAX_MIDAS_TEAR_CHANCE = 0.5
+local MAX_MIDAS_TEAR_CHANCE = 0.20
 local PENNY_REPLACE_CHANCE = 0.25
 ---@type {chance: number, value: CoinSubType}[]
 local POSSIBLE_COINS = {
@@ -28,18 +28,6 @@ local FehuItem = RuneRooms.Enums.Item.FEHU_ESSENCE
 function RuneRooms.API:AddCoinSubtypeToReroll(coinSubType, chance)
     POSSIBLE_COINS[#POSSIBLE_COINS+1] = {chance = chance, value = coinSubType}
 end
-
----@param player EntityPlayer
-function FehuEssence:OnLuckCache(player)
-    local numItems = player:GetCollectibleNum(FehuItem)
-    player.Luck = player.Luck + numItems * 1
-end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_EVALUATE_CACHE,
-    FehuEssence.OnLuckCache,
-    CacheFlag.CACHE_LUCK
-)
-
 
 ---@param tear EntityTear
 function FehuEssence:OnTearInit(tear)
@@ -74,7 +62,11 @@ function FehuEssence:PreEntitySpawn(type, variant, subtype, _, _, _, seed)
     local rng = TSIL.RNG.NewRNG(seed)
     if rng:RandomFloat() >= PENNY_REPLACE_CHANCE then return end
 
-    local newSubtype = TSIL.Random.GetRandomElementFromWeightedList(rng, POSSIBLE_COINS)
+    local outcome = WeightedOutcomePicker()
+    for _, coin in ipairs(POSSIBLE_COINS) do
+        outcome:AddOutcomeWeight(coin.value, coin.chance)
+    end
+    local newSubtype = outcome:PickOutcome(rng)
     return {type, variant, newSubtype, rng:Next()}
 end
 RuneRooms:AddCallback(
