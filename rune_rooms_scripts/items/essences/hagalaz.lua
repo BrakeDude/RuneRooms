@@ -25,8 +25,8 @@ local function ReplaceRocks()
 		if rng:RandomFloat() >= TINTED_ROCK_REPLACE_CHANCE then
 			return
 		end
-        rock:SetType(GridEntityType.GRID_ROCKT)
-        rock:GetSprite():Play("tinted", true)
+		rock:SetType(GridEntityType.GRID_ROCKT)
+		rock:GetSprite():Play("tinted", true)
 	end)
 end
 
@@ -35,11 +35,7 @@ function HagalazEssence:OnHagalazEssencePickup()
 
 	ReplaceRocks()
 end
-RuneRooms:AddCallback(TSIL.Enums.CustomCallback.POST_PLAYER_COLLECTIBLE_ADDED, HagalazEssence.OnHagalazEssencePickup, {
-	nil,
-	nil,
-	RuneRooms.Enums.Item.HAGALAZ_ESSENCE,
-})
+RuneRooms:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, HagalazEssence.OnHagalazEssencePickup, HagalazItem)
 
 function HagalazEssence:OnNewRoom()
 	if not PlayerManager.AnyoneHasCollectible(HagalazItem) then
@@ -74,9 +70,20 @@ RuneRooms:AddCallback(ModCallbacks.MC_NPC_UPDATE, HagalazEssence.NoShootFire, En
 ---@param countdown integer
 ---@return boolean?
 function HagalazEssence:NoDamageFromEternalFly(player, damage, flags, source, countdown)
-    if player:HasCollectible(HagalazItem) and source.Entity and source.Entity.Type == EntityType.ENTITY_ETERNALFLY then
-        return false
-    end
+	if source.Entity then
+		print(source.Entity.Type)
+	end
+	print(flags)
+	if
+		player:HasCollectible(HagalazItem)
+		and (
+			source.Entity
+				and (source.Entity.Type == EntityType.ENTITY_ETERNALFLY or source.Entity:ToProjectile() and source.Entity.SpawnerType == EntityType.ENTITY_POLTY)
+			or flags & DamageFlag.DAMAGE_TNT > 0
+		)
+	then
+		return false
+	end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_PRE_PLAYER_TAKE_DMG, HagalazEssence.NoDamageFromEternalFly)
 
@@ -86,25 +93,30 @@ RuneRooms:AddCallback(ModCallbacks.MC_PRE_PLAYER_TAKE_DMG, HagalazEssence.NoDama
 ---@param flags DamageFlag | integer
 ---@return boolean?
 function HagalazEssence:NoPlayerRedPoopDamage(grid, entity, damage, flags)
-	if entity and entity:ToPlayer() then
-        local player = entity:ToPlayer()
-        if player:HasCollectible(HagalazItem) then
-            return false
-        end
-    end
+	if entity and entity:ToPlayer() and grid:GetVariant() == GridPoopVariant.RED then
+		local player = entity:ToPlayer()
+		if player:HasCollectible(HagalazItem) then
+			return false
+		end
+	end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_GRID_HURT_DAMAGE, HagalazEssence.NoPlayerRedPoopDamage, GridEntityType.GRID_POOP)
 
 ---@param grid GridEntityRock
 ---@return boolean?
 function HagalazEssence:NoNearExplosion(grid, gridType, immediate, source)
-	if PlayerManager.AnyoneHasCollectible(HagalazItem) then
-        local players = Isaac.FindInCapsule(Capsule(grid.Position, grid.Position, 60), EntityPartition.PLAYER)
-        if #players > 0 then
-            grid:SetType(GridEntityType.GRID_ROCK)
-            grid.State = 1
-            grid:Destroy()
-        end
-    end
+	local players = Isaac.FindInCapsule(Capsule(grid.Position, grid.Position, 60), EntityPartition.PLAYER)
+	for _, player in ipairs(players) do
+		if player:ToPlayer():HasCollectible(HagalazItem) then
+			grid:SetType(GridEntityType.GRID_ROCK)
+			grid.State = 1
+			grid:Destroy()
+			break
+		end
+	end
 end
-RuneRooms:AddCallback(ModCallbacks.MC_POST_GRID_ROCK_DESTROY, HagalazEssence.NoNearExplosion, GridEntityType.GRID_ROCK_BOMB)
+RuneRooms:AddCallback(
+	ModCallbacks.MC_POST_GRID_ROCK_DESTROY,
+	HagalazEssence.NoNearExplosion,
+	GridEntityType.GRID_ROCK_BOMB
+)
