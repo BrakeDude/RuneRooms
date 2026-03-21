@@ -20,7 +20,6 @@ end
 ---@param roomData RoomConfigRoom
 ---@return boolean
 function RuneRooms.Helpers:IsRuneRoomDescriptor(roomData)
-
 	if not roomData then
 		return false
 	end
@@ -156,7 +155,7 @@ end
 ---@param player EntityPlayer
 ---@return boolean
 function RuneRooms.Helpers:HasRunicTablet(player)
-	return  RunicTablet and player:HasCollectible(RunicTablet.Collectible.RunicTablet.ID)
+	return RunicTablet and player:HasCollectible(RunicTablet.Collectible.RunicTablet.ID)
 end
 
 ---@param player EntityPlayer
