@@ -125,7 +125,7 @@ function RuneRooms:DealDamageToGiantCrystal(giantCrystal)
     local data = GetGiantCrystalData(giantCrystal)
     if data.activated then return end
     if data.breakState >= 5 then return end
-    data.breakState = data.breakState + 2
+    data.breakState = data.breakState * 2
 
     local sprite = giantCrystal:GetSprite()
 

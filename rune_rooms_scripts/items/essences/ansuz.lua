@@ -93,6 +93,9 @@ local function PlaceRoom(options, bossGridVector, roomconf, seed, failCond)
 end
 
 function AnsuzEssence:OnNewLevel()
+	if not PlayerManager.AnyoneHasCollectible(AnsuzItem) then
+		return
+	end
 	local level = Game():GetLevel()
 	local seed = level:GetDungeonPlacementSeed()
 	local rng = RNG(seed)
@@ -141,21 +144,6 @@ function AnsuzEssence:OnNewLevel()
 			return bossGridVector:Distance(GridIndexToVector(a.GridIndex))
 				< bossGridVector:Distance(GridIndexToVector(b.GridIndex))
 		end)
-		for doorSlot, neighborDesc in pairs(sorted) do
-			if neighborDesc.Data and neighborDesc.Data.Type ~= RoomType.ROOM_DEFAULT then
-				canPlace = false
-			end
-			if canPlace then
-				local room = level:TryPlaceRoom(roomconf, gridIndex, -1, seed, false, false)
-				if IsAltPathDownpoorWithMirror() then
-					local room = level:TryPlaceRoom(roomconf, gridIndex, 1, seed, false, false)
-				end
-				if room then
-					MinimapAPI:LoadDefaultMap()
-					return
-				end
-			end
-		end
 
         if PlaceRoom(options, bossGridVector, roomconf, seed, function(desc) 
             return desc.Data and desc.Data.Type ~= RoomType.ROOM_DEFAULT

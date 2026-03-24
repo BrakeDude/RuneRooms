@@ -100,7 +100,6 @@ local function ActivateRuneCurseBlessing(runeEffect, isBlessing)
 
 	local effects = TSIL.SaveManager.GetPersistentVariable(RuneRooms, saveKey)
 	TSIL.SaveManager.SetPersistentVariable(RuneRooms, saveKey, TSIL.Utils.Flags.AddFlags(effects, runeEffect))
-	print(hadEffectPreviously)
 	if not hadEffectPreviously then
 		Isaac.RunCallbackWithParam(callback, runeEffect, runeEffect)
 	end
