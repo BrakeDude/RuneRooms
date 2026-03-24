@@ -70,10 +70,6 @@ RuneRooms:AddCallback(ModCallbacks.MC_NPC_UPDATE, HagalazEssence.NoShootFire, En
 ---@param countdown integer
 ---@return boolean?
 function HagalazEssence:NoDamageFromEternalFly(player, damage, flags, source, countdown)
-	if source.Entity then
-		print(source.Entity.Type)
-	end
-	print(flags)
 	if
 		player:HasCollectible(HagalazItem)
 		and (
