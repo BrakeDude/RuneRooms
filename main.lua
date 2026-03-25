@@ -81,7 +81,7 @@ TSIL.SaveManager.AddPersistentVariable(
 	RuneRooms,
 	RuneRooms.Enums.SaveKey.DEBUG_ENABLED,
 	false,
-	TSIL.Enums.VariablePersistenceMode.NONE
+	TSIL.Enums.VariablePersistenceMode.RESET_RUN
 )
 
 RuneRooms:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
