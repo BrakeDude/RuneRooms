@@ -2,6 +2,7 @@ local BerkanoEssence = {}
 
 local FAMILIAR_SPAWN_CHANCE = 0.1
 local BerkanoItem = RuneRooms.Enums.Item.BERKANO_ESSENCE
+local LOCUST_LIFE_SPAWN = 3600
 
 TSIL.SaveManager.AddPersistentVariable(
 	RuneRooms,
@@ -10,9 +11,12 @@ TSIL.SaveManager.AddPersistentVariable(
 	TSIL.Enums.VariablePersistenceMode.RESET_RUN
 )
 
+---@param entity Entity
 local function RemoveWithPoof(entity)
-	TSIL.EntitySpecific.SpawnEffect(EffectVariant.POOF01, 0, entity.Position)
-	entity:Remove()
+	if entity:Exists() then
+		TSIL.EntitySpecific.SpawnEffect(EffectVariant.POOF01, 0, entity.Position)
+		entity:Remove()
+	end
 end
 
 local function AddTempLocusts()
@@ -43,7 +47,7 @@ local function AddTempLocusts()
 			RemoveWithPoof(entity)
 		end
         entityCreations[time] = nil
-	end, 90, 1, true)
+	end, LOCUST_LIFE_SPAWN, 1, true)
 end
 
 function BerkanoEssence:OnStartGame(isContinue)
@@ -51,7 +55,7 @@ function BerkanoEssence:OnStartGame(isContinue)
 		local entityCreations =
 			TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.BERKANO_FAMILIAR_CREATION)
         for time, entities in pairs(entityCreations) do
-            local newTime = 90 - (Game().TimeCounter  - time)
+            local newTime = LOCUST_LIFE_SPAWN - (Game().TimeCounter  - time)
             Isaac.CreateTimer(function()
                 for entSubType, num in pairs(entities) do
                     local subNum = 0
@@ -59,7 +63,9 @@ function BerkanoEssence:OnStartGame(isContinue)
                         if subNum > num then
                             break
                         end
-                        ent:Remove()
+						if ent:Exists() then
+                        	ent:Remove()
+						end
                         subNum = subNum + 1
                     end
                     entityCreations[time][entSubType] = nil
@@ -85,7 +91,6 @@ function BerkanoEssence:OnBerkanoPickup(collectible, _, firstTime, _, _, player)
 		for i = 1, 3 do
 			player:AddLocust(CollectibleType.COLLECTIBLE_1UP, player.Position)
 		end
-		AddTempLocusts()
 	elseif player:HasCollectible(BerkanoItem) then
 		player:AddLocust(collectible, player.Position)
 		AddTempLocusts()

@@ -161,7 +161,7 @@ function AnsuzEssence:OnNewLevel()
 end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, AnsuzEssence.OnNewLevel)
 
-function AnsuzEssence:OnNPCDeath()
+function AnsuzEssence:RevealOnRoomClear()
 	if not PlayerManager.AnyoneHasCollectible(AnsuzItem) then
 		return
 	end
@@ -187,4 +187,4 @@ function AnsuzEssence:OnNPCDeath()
 	local room = TSIL.Random.GetRandomElementsFromTable(notFullyVisibleRooms, 1, rng)[1]
 	room.DisplayFlags = FULL_DISPLAY_FLAGS
 end
-RuneRooms:AddCallback(ModCallbacks.MC_POST_ROOM_TRIGGER_CLEAR, AnsuzEssence.OnNPCDeath)
+RuneRooms:AddCallback(ModCallbacks.MC_POST_ROOM_TRIGGER_CLEAR, AnsuzEssence.RevealOnRoomClear)
