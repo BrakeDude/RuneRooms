@@ -2,7 +2,7 @@
 	<passive id="1"  gfx="hagalaz_essence.png"  name="Essence of Hagalaz"   description="Destruction?"      quality="3" tags="noeden nocantrip" range="120" />
     <passive id="2"  gfx="jera_essence.png"     name="Essence of Jera"      description="Abundance?"        quality="3" tags="noeden nocantrip" speed="0.15" />
     <passive id="3"  gfx="ehwaz_essence.png"    name="Essence of Ehwaz"     description="Passage?"          quality="3" tags="noeden nocantrip" shotspeed="0.3" />
-    <passive id="4"  gfx="dagaz_essence.png"    name="Essence of Dagaz"     description="Purity?"           quality="3" tags="noeden nocantrip" hearts="2" maxhealth="1" soulhearts="2" />
+    <passive id="4"  gfx="dagaz_essence.png"    name="Essence of Dagaz"     description="Purity?"           quality="3" tags="noeden nocantrip" soulhearts="2" />
     <passive id="5"  gfx="ansuz_essence.png"    name="Essence of Ansuz"     description="Vision?"           quality="3" tags="noeden nocantrip" bombs="2" />
     <passive id="6"  gfx="perthro_essence.png"  name="Essence of Perthro"   description="Change?"           quality="3" tags="noeden nocantrip" flatdamage="0.5" />
     <passive id="7"  gfx="berkano_essence.png"  name="Essence of Berkano"   description="Companionship?"    quality="3" tags="noeden nocantrip" flattears="0.3" />

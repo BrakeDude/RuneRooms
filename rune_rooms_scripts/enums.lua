@@ -83,6 +83,10 @@ RuneRooms.Enums.EffectVariant = {
     EID_DESCRIPTION_HOLDER  = Isaac.GetEntityVariantByName("EID Description Holder")
 }
 
+RuneRooms.Enums.EffectSubType = {
+    ESSENCE_OF_DAGAZ_HALO = Isaac.GetEntitySubTypeByName("Essence of Dagaz Halo")
+}
+
 RuneRooms.Enums.Runes = {
     GEBO = Isaac.GetCardIdByName("Gebo"),
     KENAZ = Isaac.GetCardIdByName("Kenaz"),
