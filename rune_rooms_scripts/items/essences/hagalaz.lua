@@ -74,7 +74,8 @@ function HagalazEssence:NoDamageFromEternalFly(player, damage, flags, source, co
 		player:HasCollectible(HagalazItem)
 		and (
 			source.Entity
-				and (source.Entity.Type == EntityType.ENTITY_ETERNALFLY or source.Entity:ToProjectile() and source.Entity.SpawnerType == EntityType.ENTITY_POLTY)
+				and (source.Entity.Type == EntityType.ENTITY_ETERNALFLY or source.Entity:ToProjectile() and source.Entity.SpawnerType == EntityType.ENTITY_POLTY
+			or source.Entity.Type == EntityType.ENTITY_FIREPLACE and source.Entity.Variant ~= 4)
 			or flags & DamageFlag.DAMAGE_TNT > 0
 		)
 	then
