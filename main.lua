@@ -19,6 +19,7 @@ RuneRooms.Libs = {}
 include("rune_rooms_scripts.lib.hidden_item_manager")
 include("rune_rooms_scripts.lib.dss_menu")
 include("rune_rooms_scripts.lib.minimap_api")
+include("rune_rooms_scripts.lib.gebo.main")
 
 include("rune_rooms_scripts.mod_compat.main")
 
