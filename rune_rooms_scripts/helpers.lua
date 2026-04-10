@@ -269,6 +269,15 @@ function RuneRooms.Helpers:IsInteger(n)
 	return type(n) == "number" and n == math.floor(n)
 end
 
+---@param player EntityPlayer
+function RuneRooms.Helpers:GetTrueLuck(player)
+	local tearDropMult = player:GetTrinketMultiplier(TrinketType.TRINKET_TEARDROP_CHARM) * 2
+	if tearDropMult > 0 then
+		tearDropMult = tearDropMult + 2
+	end
+	return player.Luck + tearDropMult
+end
+
 function RuneRooms.Helpers:Clamp(n, min, max)
 	if n < min then
 		return min

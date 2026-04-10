@@ -1,6 +1,4 @@
 include("rune_rooms_scripts.tear_effects.blood_creep")
-include("rune_rooms_scripts.tear_effects.midas")
-
 
 ---Adds a custom tear flag to a tear.
 ---@param tear EntityTear

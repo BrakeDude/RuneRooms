@@ -83,22 +83,6 @@ Called before the rune room grids sprite are replaced. Return a spritesheet to r
 
 ## API functions
 
-`void RuneRooms.API:AddCoinSubtypeToReroll(CoinSubType|integer coinSubtype, number chance)`
-
-Adds a coin subtype Essence of Fehu might reroll other coins into.
-
-For reference, these are the vanilla coins:
-```lua
-{chance = 50, value = CoinSubType.COIN_DOUBLEPACK},
-{chance = 30, value = CoinSubType.COIN_NICKEL},
-{chance = 10, value = CoinSubType.COIN_DIME},
-{chance = 5,  value = CoinSubType.COIN_LUCKYPENNY}
-```
-
-`void RuneRooms.API:AddCollectiblesToRuneItemPool(PoolItems[] collectibles)`
-
-Adds any number of collectibles to the rune item pool.
-
 `void RuneRooms.API:AddPossibleSlotToSpawn(integer slotVariant, fun(): boolean canSpawn)`
 
 Adds a slot that may spawn with the positive Gebo rune room effect. If `canSpawn` is set to nil, the slot will always be able to spawn.
