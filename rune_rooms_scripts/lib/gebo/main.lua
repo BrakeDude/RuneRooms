@@ -1,6 +1,6 @@
 local majorversion = 1
 local minorversion = 1
-local APIFolder = "rune_rooms_scripts.lib"
+local APIFolder = "rune_rooms_scripts.lib.gebo"
 
 local function Init()
 	Gebo = RegisterMod("Gebo API", 1)

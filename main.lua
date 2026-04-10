@@ -16,7 +16,8 @@ if StageAPI then
 end
 
 RuneRooms.Libs = {}
-include("rune_rooms_scripts.lib.hidden_item_manager")
+RuneRooms.Libs.HiddenItemManager = include("rune_rooms_scripts.lib.hidden_item_manager")
+RuneRooms.Libs.HiddenItemManager:Init(RuneRooms)
 include("rune_rooms_scripts.lib.dss_menu")
 include("rune_rooms_scripts.lib.minimap_api")
 include("rune_rooms_scripts.lib.gebo.main")
