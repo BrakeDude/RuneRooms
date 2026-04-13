@@ -56,7 +56,11 @@ function AlgizEssence:OnPlayerDamage(entity, _, damageFlags, source, countdown)
     if HasPlayerTakenDamage(player) then return end
     if not player:HasCollectible(AlgizItem) then return end
 
-    return {1, damageFlags | DamageFlag.DAMAGE_NO_MODIFIERS, countdown}
+    return {
+                Damage = 1,
+                DamageFlags = damageFlags | DamageFlag.DAMAGE_NO_MODIFIERS,
+                DamageCountdown = countdown
+            }
 
 end
 RuneRooms:AddCallback(
