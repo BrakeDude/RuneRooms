@@ -2,6 +2,7 @@ local MinimapAPILocal = {}
 
 require("scripts.minimapapi.init")
 
+--[[
 
 TSIL.SaveManager.AddPersistentVariable(
     RuneRooms,
@@ -53,4 +54,4 @@ end
 RuneRooms:AddCallback(
     ModCallbacks.MC_PRE_GAME_EXIT,
     MinimapAPILocal.OnGameExit
-)
+)]]

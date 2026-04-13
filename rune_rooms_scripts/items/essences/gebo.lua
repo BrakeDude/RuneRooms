@@ -3,28 +3,15 @@ local GeboEssence = {}
 local MAX_FREE_USES = 5
 local GeboItem = RuneRooms.Enums.Item.GEBO_ESSENCE
 
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.FREE_SLOT_USES_PER_PLAYER,
-	{},
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
 ---Returns the number of free slot uses a player has.
 ---@param player EntityPlayer
 ---@return integer
 function RuneRooms:GetGeboEssenceSlotFreeUses(player)
-	local playerIndex = TSIL.Players.GetPlayerIndex(player)
-	local freeSlotUsesPerPlayer =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.FREE_SLOT_USES_PER_PLAYER)
+	local playerData = RuneRooms:FloorSave(player)
 
-	local freeSlotUses = freeSlotUsesPerPlayer[playerIndex]
+	playerData.FreeGeboPlays = playerData.FreeGeboPlays or 0
 
-	if not freeSlotUses then
-		return 0
-	else
-		return freeSlotUses
-	end
+	return playerData.FreeGeboPlays
 end
 
 ---Decreases the number of free slot uses a player has.
@@ -32,33 +19,26 @@ end
 ---@param num integer?
 function RuneRooms:DecreaseGeboEssenceSlotFreeUses(player, num)
 	num = num or 1
-	local playerIndex = TSIL.Players.GetPlayerIndex(player)
-	local freeSlotUsesPerPlayer =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.FREE_SLOT_USES_PER_PLAYER)
+	local playerData = RuneRooms:FloorSave(player)
 
-	local freeSlotUses = freeSlotUsesPerPlayer[playerIndex]
+	playerData.FreeGeboPlays = playerData.FreeGeboPlays or 0
 
-	if not freeSlotUses or freeSlotUses == 0 then
+	if playerData.FreeGeboPlays == 0 then
 		return
 	end
 
-	freeSlotUsesPerPlayer[playerIndex] = math.max(freeSlotUses - num, 0)
+	playerData.FreeGeboPlays = math.max(playerData.FreeGeboPlays - num, 0)
 end
 
 function GeboEssence:OnNewLevel()
 	local players = PlayerManager.GetPlayers()
-	local freeSlotUsesPerPlayer = {}
 
 	TSIL.Utils.Tables.ForEach(players, function(_, player)
-		local playerIndex = TSIL.Players.GetPlayerIndex(player)
-		freeSlotUsesPerPlayer[playerIndex] = MAX_FREE_USES
+		if player:HasCollectible(GeboItem) then
+			local playerData = RuneRooms:FloorSave(player)
+			playerData.FreeGeboPlays = MAX_FREE_USES
+		end
 	end)
-
-	TSIL.SaveManager.SetPersistentVariable(
-		RuneRooms,
-		RuneRooms.Enums.SaveKey.FREE_SLOT_USES_PER_PLAYER,
-		freeSlotUsesPerPlayer
-	)
 end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, GeboEssence.OnNewLevel)
 
@@ -67,11 +47,8 @@ function GeboEssence:OnGeboEssencePickup(_, _, firstTime, _, _, player)
 		return
 	end
 
-	local freeSlotUsesPerPlayer =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.FREE_SLOT_USES_PER_PLAYER)
-
-	local playerIndex = TSIL.Players.GetPlayerIndex(player)
-	freeSlotUsesPerPlayer[playerIndex] = MAX_FREE_USES
+	local playerData = RuneRooms:FloorSave(player)
+	playerData.FreeGeboPlays = MAX_FREE_USES
 end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, GeboEssence.OnGeboEssencePickup, GeboItem)
 

@@ -2,26 +2,12 @@ local RuneRoomsUnlock = {}
 local PersistentData = Isaac.GetPersistentGameData()
 local itemConfig = Isaac.GetItemConfig()
 
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.COUNT_RUNES_USED_IN_RUN,
-	0,
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
 function RuneRooms:GetRunesUsedCount()
-    return TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-	    RuneRooms.Enums.SaveKey.COUNT_RUNES_USED_IN_RUN
-    )
+    return RuneRooms:RunSave().RunesUsedInRun
 end
 
 function RuneRooms:SetRunesUsedCount(value)
-    return TSIL.SaveManager.SetPersistentVariable(
-        RuneRooms,
-	    RuneRooms.Enums.SaveKey.COUNT_RUNES_USED_IN_RUN,
-        value
-    )
+   RuneRooms:RunSave().RunesUsedInRun = value
 end
 
 ---@return boolean

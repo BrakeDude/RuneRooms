@@ -1,12 +1,5 @@
 local DagazNegative = {}
 
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.NEGATIVE_DAGAZ_CURSE,
-	0,
-	TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
-
 local curseLookup = {
 	LevelCurse.CURSE_OF_BLIND,
 	LevelCurse.CURSE_OF_DARKNESS,
@@ -26,7 +19,7 @@ local function SelectCurse(curses)
     repeat
         selectedExtraCurse = curseLookup[rng:RandomInt(1, #curseLookup)]
     until not TSIL.Utils.Flags.HasFlags(curses, selectedExtraCurse)
-    TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.NEGATIVE_DAGAZ_CURSE, selectedExtraCurse)
+	RuneRooms:FloorSave().NegativeDagazCurse = selectedExtraCurse
     return selectedExtraCurse
 end
 
@@ -56,7 +49,7 @@ RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE, Dagaz
 
 function DagazNegative:ForceCurses()
 	if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.DAGAZ) then
-        local curse = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.NEGATIVE_DAGAZ_CURSE)
+        local curse = RuneRooms:FloorSave().NegativeDagazCurse or 0
         local level = Game():GetLevel()
         local curses = level:GetCurses()
         if curse ~= 0 and not TSIL.Utils.Flags.HasFlags(curses, curse) then

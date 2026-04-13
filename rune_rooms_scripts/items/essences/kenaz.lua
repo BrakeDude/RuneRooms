@@ -11,13 +11,6 @@ local POISON_CLOUD_STATS = {
 
 local KenazItem = RuneRooms.Enums.Item.KENAZ_ESSENCE
 
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.PLAYERS_CLOSE_TO_POISON_CLOUD,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_ROOM
-)
-
 ---@param firstTime boolean
 ---@param player EntityPlayer
 function KenazEssence:OnKenazPickup(_, _, firstTime, _, _, player)
@@ -57,13 +50,9 @@ local function GetStatsFromPoisonClouds(player)
         return distanceSqr <= POISON_CLOUD_STAT_RADIUS ^ 2
     end)
 
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
-    local playersCloseToCloud = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.PLAYERS_CLOSE_TO_POISON_CLOUD
-    )
-    local wasCloseToCloud = playersCloseToCloud[playerIndex]
-    playersCloseToCloud[playerIndex] = cloudNearby
+    local playerData = RuneRooms:RoomSave(player)
+    local wasCloseToCloud = playerData.wasCloseToCloud
+    playerData.wasCloseToCloud = cloudNearby
 
     if wasCloseToCloud == nil or wasCloseToCloud ~= cloudNearby then
         player:AddCacheFlags(CacheFlag.CACHE_DAMAGE | CacheFlag.CACHE_FIREDELAY)
@@ -142,12 +131,8 @@ RuneRooms:AddCallback(
 function KenazEssence:OnCacheEval(player, cacheFlags)
     if not player:HasCollectible(KenazItem) then return end
 
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
-    local playersCloseToCloud = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.PLAYERS_CLOSE_TO_POISON_CLOUD
-    )
-    local wasCloseToCloud = playersCloseToCloud[playerIndex]
+    local playerData = RuneRooms:RoomSave(player)
+    local wasCloseToCloud = playerData.wasCloseToCloud
 
     if not wasCloseToCloud then return end
 

@@ -2,30 +2,15 @@ local RunePad = {}
 
 local RUNE_PAD_SPRITE_SHEET = "gfx/grid/grid_rune_pad_"
 
-
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.RUNE_PAD_DATA,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
-
-
 ---@param runePad Entity
 local function GetRunePadData(runePad)
-    local padsData = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.RUNE_PAD_DATA
-    )
-    local padIndex = RuneRooms.Helpers:GetCustomGridIndex(runePad)
+    local padsData = RuneRooms:FloorSave(runePad)
 
-    if not padsData[padIndex] then
-        padsData[padIndex] = {
-            activated = false
-        }
+    if padsData.activated == nil then
+        padsData.activated = false
     end
 
-    return padsData[padIndex]
+    return padsData
 end
 
 

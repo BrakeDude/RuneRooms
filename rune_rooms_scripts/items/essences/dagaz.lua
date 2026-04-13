@@ -4,18 +4,11 @@ local BURNING_RADIUS = 100
 local BURNING_DURATION = 30 * 3
 local DagazItem = RuneRooms.Enums.Item.DAGAZ_ESSENCE
 
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.REMOVE_CURSES_NEXT_FLOOR,
-	false,
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
 function DagazEssence:OnDagazPickup(_, _, first)
 	if not first then
 		return
 	end
-	TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.REMOVE_CURSES_NEXT_FLOOR, true)
+	RuneRooms:RunSave().RemoveCursesNextFloor = true
 
 	local level = Game():GetLevel()
 	level:RemoveCurses(level:GetCurses())
@@ -23,12 +16,10 @@ end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, DagazEssence.OnDagazPickup, DagazItem)
 
 function DagazEssence:OnCurseEval()
-	local removeCurses =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.REMOVE_CURSES_NEXT_FLOOR)
+	local removeCurses = RuneRooms:RunSave().RemoveCursesNextFloor
 
 	if removeCurses then
-		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.REMOVE_CURSES_NEXT_FLOOR, false)
-
+		RuneRooms:RunSave().RemoveCursesNextFloor = nil
 		return 0
 	end
 end

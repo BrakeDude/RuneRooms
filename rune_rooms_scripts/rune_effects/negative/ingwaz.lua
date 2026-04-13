@@ -10,14 +10,6 @@ local CHESTS_REPLACED_WITH_DOUBLE_CLOSED = {
 }
 
 
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.REPLACED_DOUBLE_CLOSED_CHESTS,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
-
-
 ---@param type EntityType
 ---@param variant integer
 ---@param seed integer
@@ -34,13 +26,11 @@ function IngwazNegative:PreEntitySpawn(type, variant, _, _, _, _, seed)
             seed
         }
     elseif CHESTS_REPLACED_WITH_DOUBLE_CLOSED[variant] then
-        local chestsReplaced = TSIL.SaveManager.GetPersistentVariable(
-            RuneRooms,
-            RuneRooms.Enums.SaveKey.REPLACED_DOUBLE_CLOSED_CHESTS
-        )
-        if chestsReplaced[seed] then return end
+        local floorData = RuneRooms:FloorSave()
+        floorData.ReplacedDoubleClosedChests = floorData.ReplacedDoubleClosedChests or {}
+        if floorData.ReplacedDoubleClosedChests[seed] then return end
 
-        chestsReplaced[seed] = true
+        floorData.ReplacedDoubleClosedChests[seed] = true
 
         local newChestVariant = CHESTS_REPLACED_WITH_DOUBLE_CLOSED[variant]
         return {

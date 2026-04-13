@@ -10,23 +10,9 @@ function RuneRooms.API:AddRuneRoom(id, weight)
 	RuneRooms.Constants.RUNE_ROOMS_IDS[id] = weight
 end
 
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE,
-	0,
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.RUNE_ROOM_ENTERED_IN_RUN,
-	false,
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
 local function RunSpawnChanceCallbacks()
 	local callbacks = Isaac.GetCallbacks(RuneRooms.Enums.CustomCallback.RUNE_ROOM_SPAWN_CHANCE)
-	local chance = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE)
+	local chance = RuneRooms:RunSave().RuneRoomSpawnChance
 	for _, callback in ipairs(callbacks) do
 		local ret = callback.Function(callback.Mod, chance * 100)
 		if type(ret) == "number" then
@@ -41,7 +27,7 @@ function RuneRooms.API:GetRoomSpawnChance()
 end
 
 function RuneRooms.API:SetRoomSpawnChance(value)
-	TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_SPAWN_CHANCE, value)
+	RuneRooms:RunSave().RuneRoomSpawnChance = value
 end
 
 function RuneRooms.API:AddToRoomSpawnChance(value)
@@ -190,13 +176,12 @@ RuneRooms:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, LevelGen.NoNaturalRo
 
 function LevelGen:NewRoom()
 	local room = game:GetRoom()
-	local runeRoomWasEntered =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_ENTERED_IN_RUN)
-	if room:IsFirstVisit() and room:GetType() == RoomType.ROOM_SUPERSECRET and not runeRoomWasEntered then
+	local runData = RuneRooms:RunSave()
+	if room:IsFirstVisit() and room:GetType() == RoomType.ROOM_SUPERSECRET and not runData.RuneRoomEntered then
 		RuneRooms.API:AddToRoomSpawnChance(0.15)
 	end
 	if RuneRooms.Helpers:IsRuneRoom() then
-		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.RUNE_ROOM_ENTERED_IN_RUN, true)
+		runData.RuneRoomEntered = true
 		RuneRooms.API:SetRoomSpawnChance(1 / 15)
 		if RuneRooms.Helpers:IsInMirrorDimension() then
 			local props =

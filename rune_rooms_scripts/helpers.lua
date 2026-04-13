@@ -1,5 +1,7 @@
 RuneRooms.Helpers = {}
 
+local debug_enabled = false
+
 ---Helper function to check if a room is a rune room
 ---@param gridIndex integer? @Default: current room index
 ---@return boolean
@@ -44,8 +46,11 @@ do
 	end
 
 	function RuneRooms.Helpers:IsDebugEnabled()
-		local value = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED)
-		return value ~= nil and value == true
+		return debug_enabled
+	end
+
+	function RuneRooms.Helpers:SetDebugEnabled(val)
+		debug_enabled = type(val) == "boolean" and val or debug_enabled
 	end
 
 	RuneRooms:AddCallback(ModCallbacks.MC_POST_RENDER, function()

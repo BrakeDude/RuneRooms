@@ -1,23 +1,27 @@
 ---@class ModReference
 RuneRooms = RegisterMod("Rune Rooms", 1)
+RuneRooms.API = {}
+RuneRooms.Version = "v2.0"
 
-local myFolder = "rune_rooms_loi"
-local LOCAL_TSIL = require(myFolder .. ".TSIL")
-LOCAL_TSIL.Init(myFolder)
+local tsilFolder = "rune_rooms_loi"
+local LOCAL_TSIL = require(tsilFolder .. ".TSIL")
+LOCAL_TSIL.Init(tsilFolder)
 
 include("rune_rooms_scripts.enums")
 include("rune_rooms_scripts.constants")
 include("rune_rooms_scripts.helpers")
-RuneRooms.API = {}
-RuneRooms.Version = "v2.0"
 
 if StageAPI then
 	StageAPI.UnregisterCallbacks(RuneRooms.Constants.MOD_ID)
 end
 
 RuneRooms.Libs = {}
-RuneRooms.Libs.HiddenItemManager = include("rune_rooms_scripts.lib.hidden_item_manager")
-RuneRooms.Libs.HiddenItemManager:Init(RuneRooms)
+RuneRooms.Libs.HiddenItemManager = include("rune_rooms_scripts.lib.hidden_item_manager"):Init(RuneRooms)
+RuneRooms.Libs.SaveManager = include("rune_rooms_scripts.lib.save_manager")
+RuneRooms.Libs.SaveManager.Init(RuneRooms)
+
+include("rune_rooms_scripts.saving_system")
+
 include("rune_rooms_scripts.lib.dss_menu")
 include("rune_rooms_scripts.lib.minimap_api")
 include("rune_rooms_scripts.lib.gebo.main")
@@ -77,15 +81,6 @@ RuneRooms:AddCallback(ModCallbacks.MC_EXECUTE_CMD, function(_, cmd, params)
 	end
 end)
 
---TSIL.SaveManager.AddPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false, TSIL.Enums.VariablePersistenceMode.REMOVE_RUN)
-
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.DEBUG_ENABLED,
-	false,
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
 RuneRooms:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function()
 	local value = RuneRooms.Helpers:IsDebugEnabled()
 	for _, cmd in pairs({ "debug 10", "debug 8" }) do
@@ -99,13 +94,13 @@ end)
 
 RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function(_, _, toggle)
 	local value
-	local isEnabled = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED)
+	local isEnabled = false
 	if toggle == "enable" then
 		if isEnabled then
 			print("Rune Rooms debug mode already activated")
 			return true
 		end
-		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, true)
+		RuneRooms.Helpers:SetDebugEnabled(true)
 		print("Rune Rooms debug mode activated")
 		value = true
 	elseif toggle == "disable" then
@@ -113,7 +108,7 @@ RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function(_, 
 			print("Rune Rooms debug mode already deactivated")
 			return true
 		end
-		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false)
+		RuneRooms.Helpers:SetDebugEnabled(false)
 		print("Rune Rooms debug mode deactivated")
 		value = false
 	end
@@ -146,12 +141,6 @@ RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.ON_CUSTOM_CMD, function(_, 
 	end
 	return true
 end, "debug")
-
-RuneRooms:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isContinue)
-	if not isContinue then
-		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.DEBUG_ENABLED, false)
-	end
-end)
 
 Console.RegisterCommand(
 	"rune",

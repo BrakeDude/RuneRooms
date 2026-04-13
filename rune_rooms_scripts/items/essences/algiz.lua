@@ -5,13 +5,6 @@ local SOUL_HEART_CHANCE = 0.07
 
 local AlgizItem = RuneRooms.Enums.Item.ALGIZ_ESSENCE
 
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.HAS_PLAYER_TAKEN_DMG,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_ROOM
-)
-
 ---@param collectible CollectibleType | integer
 ---@param firstTime boolean
 ---@param player EntityPlayer
@@ -44,14 +37,10 @@ RuneRooms:AddCallback(
 ---@param player EntityPlayer
 ---@return boolean
 local function HasPlayerTakenDamage(player)
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
-    local playersTakenDamage = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.HAS_PLAYER_TAKEN_DMG
-    )
+    local playerData = RuneRooms:RoomSave(player)
 
-    local hasTakenDamage = playersTakenDamage[playerIndex] ~= nil
-    playersTakenDamage[playerIndex] = true
+    local hasTakenDamage = playerData.hasTakenDamage ~= nil
+    playerData.hasTakenDamage = true
 
     return hasTakenDamage
 end

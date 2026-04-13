@@ -3,20 +3,6 @@ local SowiloEssence = {}
 local FRIENDLY_ENEMY_RESPAWN_CHANCE = 0.5
 local SowiloItem = RuneRooms.Enums.Item.SOWILO_ESSENCE
 
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.LAST_KILLED_ENEMY,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_ROOM
-)
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.DEAD_FRIENDLY_ENEMY,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
-
 ---@param npc EntityNPC
 ---@return boolean
 local function CanSpawnFriendlyVersion(npc)
@@ -38,11 +24,7 @@ local function CheckForLastEnemyKilled(npc)
         position = npc.Position
     }
 
-    TSIL.SaveManager.SetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.LAST_KILLED_ENEMY,
-        enemyInfo
-    )
+    RuneRooms:RoomSave().LastKilledEnemy = enemyInfo
 end
 
 ---@param entity Entity
@@ -74,11 +56,9 @@ RuneRooms:AddCallback(
 function SowiloEssence:OnRoomClear()
     if not PlayerManager.AnyoneHasCollectible(SowiloItem) then return end
 
-    local lastKilledEnemy = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.LAST_KILLED_ENEMY
-    )
-    if not lastKilledEnemy.type then return end
+    local roomData = RuneRooms:RoomSave()
+    local lastKilledEnemy = roomData.LastKilledEnemy
+    if not lastKilledEnemy or not lastKilledEnemy.type then return end
 
     local enemy = TSIL.Entities.Spawn(
         lastKilledEnemy.type,
@@ -88,11 +68,7 @@ function SowiloEssence:OnRoomClear()
     )
     enemy:AddEntityFlags(EntityFlag.FLAG_CHARM | EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_PERSISTENT)
 
-    TSIL.SaveManager.SetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.LAST_KILLED_ENEMY,
-        {}
-    )
+    roomData.LastKilledEnemy = nil
 end
 RuneRooms:AddCallback(
     ModCallbacks.MC_POST_ROOM_TRIGGER_CLEAR,
@@ -100,19 +76,16 @@ RuneRooms:AddCallback(
 )
 
 function SowiloEssence:OnNewRoom()
-    local friendlyEnemyToRespawn = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.DEAD_FRIENDLY_ENEMY
-    )
+    local runData = RuneRooms:RunSave()
 
-    if friendlyEnemyToRespawn.type then
+    if runData.FriendlyEnemyToRespawn and runData.FriendlyEnemyToRespawn.type then
         local room = Game():GetRoom()
         local pos = room:FindFreePickupSpawnPosition(room:GetCenterPos(), 0, true)
 
         local enemy = TSIL.Entities.Spawn(
-            friendlyEnemyToRespawn.type,
-            friendlyEnemyToRespawn.variant,
-            friendlyEnemyToRespawn.subtype,
+            runData.FriendlyEnemyToRespawn.type,
+            runData.FriendlyEnemyToRespawn.variant,
+            runData.FriendlyEnemyToRespawn.subtype,
             pos
         )
         enemy:AddEntityFlags(EntityFlag.FLAG_CHARM | EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_PERSISTENT)
@@ -121,11 +94,7 @@ function SowiloEssence:OnNewRoom()
             TSIL.Doors.OpenAllDoors(false)
         end
 
-        TSIL.SaveManager.SetPersistentVariable(
-            RuneRooms,
-            RuneRooms.Enums.SaveKey.DEAD_FRIENDLY_ENEMY,
-            {}
-        )
+        runData.FriendlyEnemyToRespawn = nil
     end
 end
 RuneRooms:AddCallback(

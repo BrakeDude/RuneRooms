@@ -3,31 +3,11 @@ local RuneEffects = {}
 local RuneCurses = RuneRooms.Constants.RUNE_CURSES
 local RuneBlessings = RuneRooms.Constants.RUNE_BLESSINGS
 
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS,
-	0,
-	TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
-
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES,
-	0,
-	TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.FORCED_RUNE_EFFECT,
-	-1,
-	TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
-
 ---Returns the rune effect for the current floor
 ---@return RuneEffect
 function RuneRooms:GetRuneEffectForFloor()
-	local forcedEffect = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.FORCED_RUNE_EFFECT)
+	local forcedEffect = RuneRooms:FloorSave().ForcedRuneEffect or -1
+	---@cast forcedEffect RuneEffect
 
 	if forcedEffect >= 0 then
 		return forcedEffect
@@ -71,11 +51,10 @@ local function IsRuneCurseBlessingActive(runeEffect, isBlessing)
 	if not exists then
 		return false
 	end
-	local curseBlessing =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES)
+	local curseBlessing = RuneRooms:RunSave().PersistentRuneCurses or 0
 
 	if isBlessing then
-		curseBlessing = TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS)
+		curseBlessing = RuneRooms:FloorSave().PersistentRuneBlessing or 0
 	end
 	return TSIL.Utils.Flags.HasFlags(curseBlessing, runeEffect)
 end
@@ -90,16 +69,18 @@ local function ActivateRuneCurseBlessing(runeEffect, isBlessing)
 
 	local hadEffectPreviously = IsRuneCurseBlessingActive(runeEffect, isBlessing)
 
-	local saveKey = RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES
-	local callback = RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE
+	local effects, callback
 
 	if isBlessing then
-		saveKey = RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS
+		effects = RuneRooms:FloorSave().FloorRuneBlessing or 0
+		RuneRooms:FloorSave().FloorRuneBlessing = TSIL.Utils.Flags.AddFlags(effects, runeEffect)
 		callback = RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_BLESSING
+	else
+		effects = RuneRooms:RunSave().PersistentRuneCurses or 0
+		RuneRooms:RunSave().PersistentRuneCurses = TSIL.Utils.Flags.AddFlags(effects, runeEffect)
+		callback = RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE
 	end
 
-	local effects = TSIL.SaveManager.GetPersistentVariable(RuneRooms, saveKey)
-	TSIL.SaveManager.SetPersistentVariable(RuneRooms, saveKey, TSIL.Utils.Flags.AddFlags(effects, runeEffect))
 	if not hadEffectPreviously then
 		Isaac.RunCallbackWithParam(callback, runeEffect, runeEffect)
 	end
@@ -113,15 +94,13 @@ local function DeactivateRuneCurseBlessing(runeEffect, isBlessing)
 		return
 	end
 
-	local saveKey = RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES
-
 	if isBlessing then
-		saveKey = RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS
+		local effects = RuneRooms:FloorSave().FloorRuneBlessing or 0
+		RuneRooms:FloorSave().FloorRuneBlessing = TSIL.Utils.Flags.RemoveFlags(effects, runeEffect)
+	else
+		local effects = RuneRooms:RunSave().PersistentRuneCurses
+		RuneRooms:RunSave().PersistentRuneCurses = TSIL.Utils.Flags.RemoveFlags(effects, runeEffect)
 	end
-
-	local effects = TSIL.SaveManager.GetPersistentVariable(RuneRooms, saveKey)
-
-	TSIL.SaveManager.SetPersistentVariable(RuneRooms, saveKey, TSIL.Utils.Flags.RemoveFlags(effects, runeEffect))
 end
 
 ---@param ... RuneEffect
@@ -195,9 +174,9 @@ function RuneEffects:OnActivateGoodCommand(_, ...)
 	end
 	if #args == 1 and args[1] == "all" then
 		local mask = GetAllCursesBlessingMask()
-		local currentBlessings =
-			TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS)
-		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS, mask)
+		local floorSave = RuneRooms:FloorSave()
+		local currentBlessings = floorSave.FloorRuneBlessing or 0
+		floorSave.FloorRuneBlessing = mask
 		for _, runeEffect in pairs(RuneRooms.Enums.RuneEffect) do
 			if not TSIL.Utils.Flags.HasFlags(currentBlessings, runeEffect) then
 				Isaac.RunCallbackWithParam(
@@ -242,8 +221,7 @@ function RuneEffects:OnDeactivateGoodCommand(_, ...)
 
 	if #args == 1 and args[1] == "all" then
 		if AnyCurseBlessingActive(true) then
-			local mask = GetAllCursesBlessingMask()
-			TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.LEVEL_RUNE_BLESSINGS, mask)
+			RuneRooms:FloorSave().FloorRuneBlessing = nil
 			print("Succesfully deactivated all positive effects")
 		else
 			print("No positive effect was activated")
@@ -280,9 +258,10 @@ function RuneEffects:OnActivateBadCommand(_, ...)
 	end
 	if #args == 1 and args[1] == "all" then
 		local mask = GetAllCursesBlessingMask()
-		local currentCurses =
-			TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES)
-		TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES, mask)
+		local runData = RuneRooms:RunSave().PersistentRuneCurses
+		local currentCurses = runData.PersistentRuneCurses
+		runData.PersistentRuneCurses = mask
+
 		for _, runeEffect in pairs(RuneRooms.Enums.RuneEffect) do
 			if not TSIL.Utils.Flags.HasFlags(currentCurses, runeEffect) then
 				Isaac.RunCallbackWithParam(
@@ -328,7 +307,7 @@ function RuneEffects:OnDeactivateBadCommand(_, ...)
 	if #args == 1 and args[1] == "all" then
 		if AnyCurseBlessingActive() then
 			local mask = GetAllCursesBlessingMask()
-			TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.PERSISTENT_RUNE_CURSES, mask)
+			RuneRooms:RunSave().PersistentRuneCurses = 0
 			print("Succesfully deactivated all negative rune effects")
 		else
 			print("No negative effect was activated")
@@ -364,6 +343,8 @@ function RuneEffects:OnForceRuneEffect(_, runeName)
 		return true
 	end
 
+	local floorSave = RuneRooms:FloorSave()
+
 	local effect
 	for runeEffect, name in pairs(RuneRooms.Constants.RUNE_NAMES) do
 		if runeName == name then
@@ -382,11 +363,11 @@ function RuneEffects:OnForceRuneEffect(_, runeName)
 
 	if effect == -1 then
 		print("Succesfully set rune effect for the floor to default")
+		floorSave.ForcedRuneEffect = nil
 	else
 		print("Succesfully set rune effect for the floor to " .. runeName)
+		floorSave.ForcedRuneEffect = effect
 	end
-
-	TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.FORCED_RUNE_EFFECT, effect)
 
 	return true
 end

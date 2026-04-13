@@ -1,14 +1,5 @@
 local SowiloPositive = {}
 
-
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.LOWEST_HEALTH_ENEMY,
-    nil,
-    TSIL.Enums.VariablePersistenceMode.RESET_ROOM
-)
-
-
 ---@param npc EntityNPC
 ---@return boolean
 local function CanSpawnFriendlyVersion(npc)
@@ -26,13 +17,7 @@ local function SetLowestHealthEnemy(npc)
         subtype = npc.SubType,
         position = npc.Position
     }
-
-    TSIL.SaveManager.SetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.LOWEST_HEALTH_ENEMY,
-        npcInfo,
-        true
-    )
+    RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy = npcInfo
 end
 
 
@@ -40,10 +25,7 @@ end
 function SowiloPositive:OnNPCDeath(npc)
     if not CanSpawnFriendlyVersion(npc) then return end
 
-    local lowestHealthEnemy = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.LOWEST_HEALTH_ENEMY
-    )
+    local lowestHealthEnemy =  RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy
 
     if not lowestHealthEnemy then
         SetLowestHealthEnemy(npc)
@@ -58,10 +40,7 @@ RuneRooms:AddCallback(
 
 
 function SowiloPositive:OnRoomClear()
-    local lowestHealthEnemy = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.LOWEST_HEALTH_ENEMY
-    )
+    local lowestHealthEnemy = RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy 
 
     if lowestHealthEnemy and RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.SOWILO) then
         local friendlyEnemy = TSIL.Entities.Spawn(
@@ -73,12 +52,7 @@ function SowiloPositive:OnRoomClear()
         friendlyEnemy:AddEntityFlags(EntityFlag.FLAG_CHARM | EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_PERSISTENT)
     end
 
-    TSIL.SaveManager.SetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.LOWEST_HEALTH_ENEMY,
-        nil,
-        true
-    )
+     RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy = nil
 end
 RuneRooms:AddCallback(
     TSIL.Enums.CustomCallback.POST_ROOM_CLEAR_CHANGED,

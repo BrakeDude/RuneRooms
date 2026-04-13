@@ -27,31 +27,14 @@ local CRYSTAL_EXPLOSION_SHOCKWAVE = {
     Duration = 4 * 30
 }
 
-
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.GIANT_CRYSTAL_DATA,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
-
-
 ---@param giantCrystal Entity
 local function GetGiantCrystalData(giantCrystal)
-    local crystalsData = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.GIANT_CRYSTAL_DATA
-    )
-    local crystalIndex = RuneRooms.Helpers:GetCustomGridIndex(giantCrystal)
+    local crystalsData = RuneRooms:FloorSave(giantCrystal)
 
-    if not crystalsData[crystalIndex] then
-        crystalsData[crystalIndex] = {
-            breakState = 1,
-            activated = false
-        }
-    end
+    crystalsData.breakState = crystalsData.breakState or 1
+    crystalsData.activated = crystalsData.activated or false
 
-    return crystalsData[crystalIndex]
+    return crystalsData
 end
 
 

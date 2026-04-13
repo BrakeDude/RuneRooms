@@ -5,50 +5,39 @@ local FehuPositive = {}
 local RNG_OFFSET = 149
 local MIDAS_TEAR_CHANCE = 0.1
 
-TSIL.SaveManager.AddPersistentVariable(
-    RuneRooms,
-    RuneRooms.Enums.SaveKey.POSITIVE_FEHU_RNG_PER_PLAYER,
-    {},
-    TSIL.Enums.VariablePersistenceMode.RESET_RUN
-)
-
-
 ---@param player EntityPlayer
 ---@return RNG
 local function GetPositiveFehuRNG(player)
-    local rngPerPlayer = TSIL.SaveManager.GetPersistentVariable(
-        RuneRooms,
-        RuneRooms.Enums.SaveKey.POSITIVE_FEHU_RNG_PER_PLAYER
-    )
-    local playerIndex = TSIL.Players.GetPlayerIndex(player)
+    local playerData = RuneRooms:RunSave(player)
 
-    local rng = rngPerPlayer[playerIndex]
-    if not rng then
+    local rng = RNG()
+    if not playerData.PositiveFehuRNGSeed then
         local startSeed = Game():GetSeeds():GetStartSeed()
         rng = TSIL.RNG.NewRNG(startSeed)
         for _ = 1, RNG_OFFSET do
             rng:Next()
         end
-        rngPerPlayer[playerIndex] = rng
+    else
+        rng:SetSeed(playerData.PositiveFehuRNGSeed, 35)
     end
 
     return rng
 end
 
+local GOLDEN_COLOR = Color(0.9, 0.8, 0, 1, 0.8, 0.7, 0)
 
----@param tear EntityTear
-function FehuPositive:OnTearInit(tear)
-    if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.FEHU) then return end
-
-    local player = TSIL.Players.GetPlayerFromEntity(tear)
-    if not player then return end
-
-    local rng = GetPositiveFehuRNG(player)
-    if rng:RandomFloat() >= MIDAS_TEAR_CHANCE then return end
-
-    RuneRooms:AddCustomTearFlag(tear, RuneRooms.Enums.TearFlag.MIDAS)
+---@param player EntityPlayer
+---@param params TearParams
+function FehuPositive:TearMidas(player, params)
+    if RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.FEHU) then
+        local rng = GetPositiveFehuRNG(player)
+        local playerData = RuneRooms:RunSave(player)
+        local chance = rng:RandomFloat()
+        playerData.PositiveFehuRNGSeed = rng:GetSeed()
+        if chance < MIDAS_TEAR_CHANCE then
+            params.TearFlags = params.TearFlags | TearFlags.TEAR_MIDAS
+            params.TearColor = GOLDEN_COLOR
+        end
+    end
 end
-RuneRooms:AddCallback(
-    ModCallbacks.MC_POST_TEAR_INIT,
-    FehuPositive.OnTearInit
-)
+RuneRooms:AddCallback(ModCallbacks.MC_EVALUATE_TEAR_HIT_PARAMS, FehuPositive.TearMidas)

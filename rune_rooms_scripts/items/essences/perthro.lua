@@ -2,18 +2,16 @@ local PerthroEssence = {}
 
 local PerthroItem = RuneRooms.Enums.Item.PERTHRO_ESSENCE
 
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.COLLECTIBLE_INFOS_PERTHRO,
-	{},
-	TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
-TSIL.SaveManager.AddPersistentVariable(
-	RuneRooms,
-	RuneRooms.Enums.SaveKey.ACTIVATED_4_PIP_DICE_ROOM,
-	false,
-	TSIL.Enums.VariablePersistenceMode.RESET_LEVEL
-)
+local function GetEssencePerthroData(collectible)
+	local collectibleInfo = RuneRooms:PickupSave(collectible, true)
+	if not collectibleInfo.EssencePerthroData then
+		collectibleInfo.EssencePerthroData = {
+			CycleChance = 25,
+			RerolledAfter4Pip = false
+		}
+	end
+	return collectibleInfo.EssencePerthroData
+end
 
 ---@param collectible EntityPickup
 ---@param collectibleInfo table
@@ -26,7 +24,7 @@ local function TryAddItemCycling(collectible, collectibleInfo)
 	local itemPool = Game():GetItemPool()
 	local itemPoolType = room:GetItemPool(rng:Next())
 
-	local chance = collectibleInfo.CycleChance or 25
+	local chance = collectibleInfo.CycleChance
 	print("ID: " .. collectible.SubType .. ", Chance: " .. chance)
 	if rng:RandomInt(1, 100) <= chance then
 		print("ID: " .. collectible.SubType .. " Success.")
@@ -43,19 +41,10 @@ local function TryAddItemCycling(collectible, collectibleInfo)
 end
 
 local function TryAddItemsCycling()
-	local collectibleInfos =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.COLLECTIBLE_INFOS_PERTHRO)
-
 	local collectibles = TSIL.EntitySpecific.GetPickups(PickupVariant.PICKUP_COLLECTIBLE)
 
 	for _, collectible in ipairs(collectibles) do
-		local collectibleIndex = TSIL.Pickups.GetPickupIndex(collectible)
-
-		local collectibleInfo = collectibleInfos[collectibleIndex]
-
-		if collectibleInfo ~= nil then
-			TryAddItemCycling(collectible, collectibleInfo)
-		end
+		TryAddItemCycling(collectible, GetEssencePerthroData(collectible))
 	end
 end
 
@@ -64,15 +53,11 @@ function PerthroEssence:OnCollectibleInit(collectible)
 	if not PlayerManager.AnyoneHasCollectible(PerthroItem) then
 		return
 	end
-	local collectibleInfos =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.COLLECTIBLE_INFOS_PERTHRO)
-	local collectibleIndex = TSIL.Pickups.GetPickupIndex(collectible)
-	if not collectibleInfos[collectibleIndex] then
-		collectibleInfos[collectibleIndex] = {
-			RerolledAfter4Pip = true,
-			CyclingChance = 25,
-		}
-        TryAddItemCycling(collectible, collectibleInfos[collectibleIndex])
+	local collectibleInfo = RuneRooms:PickupSave(collectible, true)
+	if not collectibleInfo.EssencePerthroData then
+		GetEssencePerthroData(collectible)
+		
+		TryAddItemCycling(collectible, collectibleInfo)
 	end
 end
 RuneRooms:AddCallback(
@@ -83,28 +68,18 @@ RuneRooms:AddCallback(
 
 ---@param collectible EntityPickup
 function PerthroEssence:OnCollectibleUpdate(collectible)
-	local collectibleIndex = TSIL.Pickups.GetPickupIndex(collectible)
 
-	local collectibleInfos =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.COLLECTIBLE_INFOS_PERTHRO)
+	local collectibleInfo = GetEssencePerthroData(collectible)
 
-	local hasActivated4Pip =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.ACTIVATED_4_PIP_DICE_ROOM)
+	local hasActivated4Pip = RuneRooms:FloorSave().Activated4Pip
 
 	if
 		hasActivated4Pip
-		and collectibleInfos[collectibleIndex]
-		and not collectibleInfos[collectibleIndex].RerolledAfter4Pip
+		and collectibleInfo
+		and not collectibleInfo.RerolledAfter4Pip
 	then
-		TryAddItemCycling(collectible, collectibleInfos[collectibleIndex])
-	end
-	if collectibleInfos[collectibleIndex] then
-		collectibleInfos[collectibleIndex].RerolledAfter4Pip = true
-	else
-		collectibleInfos[collectibleIndex] = {
-			RerolledAfter4Pip = true,
-			CyclingChance = 25,
-		}
+		TryAddItemCycling(collectible, collectibleInfo)
+		collectibleInfo.RerolledAfter4Pip = true
 	end
 end
 RuneRooms:AddCallback(
@@ -130,24 +105,7 @@ function PerthroEssence:OnFourPipDiceFloorActivation(player)
 	end
 	TryAddItemsCycling()
 
-	local collectibles = TSIL.EntitySpecific.GetPickups(PickupVariant.PICKUP_COLLECTIBLE)
-	local collectibleIndexes = {}
-
-	for _, collectible in ipairs(collectibles) do
-		local collectibleIndex = TSIL.Pickups.GetPickupIndex(collectible)
-		collectibleIndexes[collectibleIndex] = true
-	end
-
-	local collectibleInfos =
-		TSIL.SaveManager.GetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.COLLECTIBLE_INFOS_PERTHRO)
-	for collectibleIndex, collectibleInfo in pairs(collectibleInfos) do
-		if not collectibleIndexes[collectibleIndex] then
-			collectibleInfo.RerolledAfter4Pip = false
-			collectibleInfo.CycleChance = 25
-		end
-	end
-
-	TSIL.SaveManager.SetPersistentVariable(RuneRooms, RuneRooms.Enums.SaveKey.ACTIVATED_4_PIP_DICE_ROOM, true)
+	RuneRooms:FloorSave().Activated4Pip = true
 end
 RuneRooms:AddCallback(
 	TSIL.Enums.CustomCallback.POST_DICE_ROOM_ACTIVATED,
