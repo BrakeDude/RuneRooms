@@ -16,7 +16,8 @@ local function SetLowestHealthEnemy(npc)
         type = npc.Type,
         variant = npc.Variant,
         subtype = npc.SubType,
-        position = npc.Position
+        positionX = npc.Position.X,
+        positionY = npc.Position.Y
     }
     RuneRooms:TempSave().SowiloPositiveLowestHealthEnemy = npcInfo
 end
@@ -48,7 +49,7 @@ function SowiloPositive:OnRoomClear()
             lowestHealthEnemy.type,
             lowestHealthEnemy.variant,
             lowestHealthEnemy.subtype,
-            lowestHealthEnemy.position
+            Vector(lowestHealthEnemy.positionX, lowestHealthEnemy.positionY)
         )
         friendlyEnemy:AddEntityFlags(EntityFlag.FLAG_CHARM | EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_PERSISTENT)
     end
