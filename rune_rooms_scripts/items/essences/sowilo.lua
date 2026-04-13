@@ -24,7 +24,7 @@ local function CheckForLastEnemyKilled(npc)
         position = npc.Position
     }
 
-    RuneRooms:RoomSave().LastKilledEnemy = enemyInfo
+    RuneRooms:TempSave().LastKilledEnemy = enemyInfo
 end
 
 ---@param entity Entity
@@ -56,7 +56,7 @@ RuneRooms:AddCallback(
 function SowiloEssence:OnRoomClear()
     if not PlayerManager.AnyoneHasCollectible(SowiloItem) then return end
 
-    local roomData = RuneRooms:RoomSave()
+    local roomData = RuneRooms:TempSave()
     local lastKilledEnemy = roomData.LastKilledEnemy
     if not lastKilledEnemy or not lastKilledEnemy.type then return end
 

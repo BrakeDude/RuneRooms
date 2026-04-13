@@ -50,11 +50,12 @@ local function GetStatsFromPoisonClouds(player)
         return distanceSqr <= POISON_CLOUD_STAT_RADIUS ^ 2
     end)
 
-    local playerData = RuneRooms:RoomSave(player)
+    local playerData = RuneRooms:TempSave(player)
     local wasCloseToCloud = playerData.wasCloseToCloud
     playerData.wasCloseToCloud = cloudNearby
 
     if wasCloseToCloud == nil or wasCloseToCloud ~= cloudNearby then
+        ---@diagnostic disable-next-line: param-type-mismatch
         player:AddCacheFlags(CacheFlag.CACHE_DAMAGE | CacheFlag.CACHE_FIREDELAY)
         player:EvaluateItems()
     end
@@ -131,7 +132,7 @@ RuneRooms:AddCallback(
 function KenazEssence:OnCacheEval(player, cacheFlags)
     if not player:HasCollectible(KenazItem) then return end
 
-    local playerData = RuneRooms:RoomSave(player)
+    local playerData = RuneRooms:TempSave(player)
     local wasCloseToCloud = playerData.wasCloseToCloud
 
     if not wasCloseToCloud then return end

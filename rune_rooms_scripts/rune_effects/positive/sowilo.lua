@@ -4,6 +4,7 @@ local SowiloPositive = {}
 ---@return boolean
 local function CanSpawnFriendlyVersion(npc)
     return not npc:IsBoss()     --Can't spawn a friendly boss
+    ---@diagnostic disable-next-line: param-type-mismatch
     and not npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) --Can't be friendly
 end
 
@@ -17,7 +18,7 @@ local function SetLowestHealthEnemy(npc)
         subtype = npc.SubType,
         position = npc.Position
     }
-    RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy = npcInfo
+    RuneRooms:TempSave().SowiloPositiveLowestHealthEnemy = npcInfo
 end
 
 
@@ -25,7 +26,7 @@ end
 function SowiloPositive:OnNPCDeath(npc)
     if not CanSpawnFriendlyVersion(npc) then return end
 
-    local lowestHealthEnemy =  RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy
+    local lowestHealthEnemy =  RuneRooms:TempSave().SowiloPositiveLowestHealthEnemy
 
     if not lowestHealthEnemy then
         SetLowestHealthEnemy(npc)
@@ -40,7 +41,7 @@ RuneRooms:AddCallback(
 
 
 function SowiloPositive:OnRoomClear()
-    local lowestHealthEnemy = RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy 
+    local lowestHealthEnemy = RuneRooms:TempSave().SowiloPositiveLowestHealthEnemy
 
     if lowestHealthEnemy and RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.SOWILO) then
         local friendlyEnemy = TSIL.Entities.Spawn(
@@ -52,7 +53,7 @@ function SowiloPositive:OnRoomClear()
         friendlyEnemy:AddEntityFlags(EntityFlag.FLAG_CHARM | EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_PERSISTENT)
     end
 
-     RuneRooms:RoomSave().SowiloPositiveLowestHealthEnemy = nil
+    RuneRooms:TempSave().SowiloPositiveLowestHealthEnemy = nil
 end
 RuneRooms:AddCallback(
     TSIL.Enums.CustomCallback.POST_ROOM_CLEAR_CHANGED,

@@ -37,7 +37,7 @@ RuneRooms:AddCallback(
 ---@param player EntityPlayer
 ---@return boolean
 local function HasPlayerTakenDamage(player)
-    local playerData = RuneRooms:RoomSave(player)
+    local playerData = RuneRooms:TempSave(player)
 
     local hasTakenDamage = playerData.hasTakenDamage ~= nil
     playerData.hasTakenDamage = true
@@ -51,7 +51,7 @@ end
 ---@param countdown integer
 function AlgizEssence:OnPlayerDamage(entity, _, damageFlags, source, countdown)
 
-    local player = entity:ToPlayer()
+    local player = entity:ToPlayer() ---@cast player EntityPlayer
 
     if HasPlayerTakenDamage(player) then return end
     if not player:HasCollectible(AlgizItem) then return end
