@@ -197,3 +197,37 @@ RuneRooms:AddCallback(
     ModCallbacks.MC_POST_OPEN_CHEST,
     IngwazEssence.OnChestOpened
 )
+local Mod = RuneRooms
+
+-- todo:
+-- only add bonus Entry when the other entries are pickup, and not flies, collectibles etc.
+-- add the chance for the bonus collectible and make it not change every time the callback is called
+-- collectible multiplier
+--
+
+---@param pickup EntityPickup
+function IngwazEssence:OnInit(pickup)
+    local save = pickup:GetData()
+    local lootlist = pickup:GetLootList(false)
+    save.IngwazEssence = {}
+    for index, lootlistEntry in ipairs(lootlist:GetEntries()) do
+        save.IngwazEssence[index] = {Type = lootlistEntry:GetType(), Variant = lootlistEntry:GetVariant(), Subtype = lootlistEntry:GetSubType(), Seed = lootlistEntry:GetSeed(), rng = lootlistEntry:GetRNG()}
+    end
+    Game():GetRoom():InvalidatePickupVision()
+end
+--Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, IngwazEssence.OnInit)
+
+---@param pickup EntityPickup
+---@param shouldAdvance boolean
+function IngwazEssence:OnPreLootList(pickup, shouldAdvance)
+    local oldLootlist = pickup:GetData().IngwazEssence
+    if not oldLootlist then return end
+    local newList = LootList()
+    for _, lootListEntry in ipairs(oldLootlist) do
+        newList:PushEntry(lootListEntry.Type, lootListEntry.Variant, lootListEntry.Subtype, lootListEntry.Seed, lootListEntry.rng)
+    end
+
+    newList:PushEntry(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_KEY, KeySubType.KEY_GOLDEN)
+    return newList
+end
+--Mod:AddPriorityCallback(ModCallbacks.MC_PRE_PICKUP_GET_LOOT_LIST, CallbackPriority.LATE, IngwazEssence.OnPreLootList)
