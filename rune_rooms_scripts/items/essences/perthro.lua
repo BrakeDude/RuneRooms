@@ -23,11 +23,16 @@ local function TryAddItemCycling(collectible, collectibleInfo)
 	local room = Game():GetRoom()
 	local itemPool = Game():GetItemPool()
 	local itemPoolType = room:GetItemPool(rng:Next())
+	if itemPoolType < 0 then
+		if Game():IsGreedMode() then
+			itemPoolType = ItemPoolType.POOL_GREED_TREASURE
+		else
+			itemPoolType = ItemPoolType.POOL_TREASURE
+		end
+	end
 
 	local chance = collectibleInfo.CycleChance
-	print("ID: " .. collectible.SubType .. ", Chance: " .. chance)
 	if rng:RandomInt(1, 100) <= chance then
-		print("ID: " .. collectible.SubType .. " Success.")
 		local newItem =
 			itemPool:GetCollectible(itemPoolType, true, collectible.InitSeed, CollectibleType.COLLECTIBLE_BREAKFAST)
 
