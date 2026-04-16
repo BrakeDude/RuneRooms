@@ -1,6 +1,6 @@
 local JeraEssence = {}
 
-local PICKUP_RESPAWN_CHANCE = 0.1
+local PICKUP_RESPAWN_CHANCE = 0.20
 local PICKUP_VARIANT_CHANCE = 1
 local NO_RESPAWN_PICKUPS = {
     [PickupVariant.PICKUP_BROKEN_SHOVEL] = true,
