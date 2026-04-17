@@ -1,6 +1,8 @@
 local JeraEssence = {}
 
 local PICKUP_RESPAWN_CHANCE = 0.20
+local PICKUP_RESPAWN_CHANCE_PER_LUCK = 0.01
+local PICKUP_RESPAWN_CHANCE_MAX = 0.50
 local PICKUP_VARIANT_CHANCE = 1
 local NO_RESPAWN_PICKUPS = {
     [PickupVariant.PICKUP_BROKEN_SHOVEL] = true,
@@ -30,21 +32,33 @@ function JeraEssence:OnPickupCollect(pickup)
     if not PlayerManager.AnyoneHasCollectible(JeraItem) then return end
     if NO_RESPAWN_PICKUPS[pickup.Variant] then return end
 
-    local rng = TSIL.RNG.NewRNG(pickup.InitSeed)
-    if rng:RandomFloat() >= PICKUP_RESPAWN_CHANCE then return end
-
-    local newSubtype = pickup.SubType
-    if rng:RandomFloat() < PICKUP_VARIANT_CHANCE then
-        --A subtype of 0 makes it so a random variant spawns
-        newSubtype = 0
+    local collectibleNum = PlayerManager.GetNumCollectibles(JeraItem)
+    local luckBonus = 0
+    for _, player in ipairs(PlayerManager.GetPlayers()) do
+        if player:HasCollectible(JeraItem) then
+            luckBonus = luckBonus + player.Luck
+        end
     end
 
-    local spawnPos = RuneRooms.Helpers:GetRandomPositionInRoom(false, false, rng)
-    TSIL.EntitySpecific.SpawnPickup(
-        pickup.Variant,
-        newSubtype,
-        spawnPos
-    )
+    local rng = TSIL.RNG.NewRNG(pickup.InitSeed)
+    local pickupChance = math.min(PICKUP_RESPAWN_CHANCE + (PICKUP_RESPAWN_CHANCE_PER_LUCK * luckBonus), PICKUP_RESPAWN_CHANCE_MAX)
+    for _ = 1, collectibleNum do
+        if rng:RandomFloat() <= pickupChance then
+
+            local newSubtype = pickup.SubType
+            if rng:RandomFloat() < PICKUP_VARIANT_CHANCE then
+                --A subtype of 0 makes it so a random variant spawns
+                newSubtype = 0
+            end
+
+            local spawnPos = RuneRooms.Helpers:GetRandomPositionInRoom(false, false, rng)
+            TSIL.EntitySpecific.SpawnPickup(
+                pickup.Variant,
+                newSubtype,
+                spawnPos
+            )
+        end
+    end
 end
 RuneRooms:AddCallback(
     TSIL.Enums.CustomCallback.POST_PICKUP_COLLECT,
