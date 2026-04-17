@@ -10,6 +10,7 @@ local function CanSpawnFriendlyVersion(npc)
     and not npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) --Can't be friendly
 end
 
+---@param npc EntityNPC
 local function CheckForLastEnemyKilled(npc)
     if not CanSpawnFriendlyVersion(npc) then return end
 
@@ -21,7 +22,8 @@ local function CheckForLastEnemyKilled(npc)
         type = npc.Type,
         variant = npc.Variant,
         subtype = npc.SubType,
-        position = npc.Position
+        positionX = npc.Position.X,
+        positionY = npc.Position.Y
     }
 
     RuneRooms:TempSave().LastKilledEnemy = enemyInfo
@@ -34,9 +36,9 @@ end
 ---@param countdown integer
 function SowiloEssence:FriendlyNPCDeath(entity, damage, flags, source, countdown)
     if entity and entity:ToNPC() and entity:HasMortalDamage() and not entity:IsBoss() then
-        if source and source.Entity and source.Entity.Type == EntityType.ENTITY_PLAYER then
-            local player = source.Entity:ToPlayer()
-            if player:HasCollectible(SowiloItem) and npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) then
+        local player = source.Entity and source.Entity:ToPlayer()
+        if player then
+            if player:HasCollectible(SowiloItem) and entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_FRIENDLY_BALL) then
                 player:UseActiveItem(CollectibleType.COLLECTIBLE_NECRONOMICON, UseFlag.USE_NOANIM)
             end
         end
@@ -64,7 +66,7 @@ function SowiloEssence:OnRoomClear()
         lastKilledEnemy.type,
         lastKilledEnemy.variant,
         lastKilledEnemy.subtype,
-        lastKilledEnemy.position
+        Vector(lastKilledEnemy.positionX, lastKilledEnemy.positionY)
     )
     enemy:AddEntityFlags(EntityFlag.FLAG_CHARM | EntityFlag.FLAG_FRIENDLY | EntityFlag.FLAG_PERSISTENT)
 
@@ -75,6 +77,7 @@ RuneRooms:AddCallback(
     SowiloEssence.OnRoomClear
 )
 
+--! FriendlyEnemyToRespawn isn't used anywhere else, it will always be empty, what does this code do?
 function SowiloEssence:OnNewRoom()
     local runData = RuneRooms:RunSave()
 
