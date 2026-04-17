@@ -5,8 +5,8 @@ local POISON_DURATION = 30 * 3
 local POISON_CLOUD_DURATION = 30 * 15
 local POISON_CLOUD_STAT_RADIUS = 40
 local POISON_CLOUD_STATS = {
-    Damage = 2,
-    Tears = 1
+    Damage = 3,
+    Tears = 3
 }
 
 local KenazItem = RuneRooms.Enums.Item.KENAZ_ESSENCE
