@@ -4,6 +4,7 @@ local TINTED_ROCK_REPLACE_CHANCE = 0.05
 local HagalazItem = RuneRooms.Enums.Item.HAGALAZ_ESSENCE
 
 local function RetractSpikes()
+	if Game():GetRoom():GetType() == RoomType.ROOM_SACRIFICE then return end
 	local player = Isaac.GetPlayer()
 	local trinketSituation = TSIL.Players.TemporarilyRemoveTrinkets(player)
 
@@ -77,6 +78,8 @@ function HagalazEssence:NoDamageFromEternalFly(player, damage, flags, source, co
 				and (source.Entity.Type == EntityType.ENTITY_ETERNALFLY or source.Entity:ToProjectile() and source.Entity.SpawnerType == EntityType.ENTITY_POLTY
 			or source.Entity.Type == EntityType.ENTITY_FIREPLACE and source.Entity.Variant ~= 4)
 			or flags & DamageFlag.DAMAGE_TNT > 0
+			-- Mushroom exploding, no clue if there is a better way to identify it.
+			or source and source.Variant == 10000
 		)
 	then
 		return false
