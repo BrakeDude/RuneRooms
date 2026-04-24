@@ -1,6 +1,7 @@
 local HagalazEssence = {}
 
 local TINTED_ROCK_REPLACE_CHANCE = 0.05
+local FOOL_ROCK_REPLACE_CHANCE = 0.07
 local HagalazItem = RuneRooms.Enums.Item.HAGALAZ_ESSENCE
 
 local function RetractSpikes()
@@ -23,11 +24,17 @@ local function ReplaceRocks()
 	TSIL.Utils.Tables.ForEach(rocks, function(_, rock)
 		local rng = TSIL.RNG.NewRNG(rock.Desc.SpawnSeed)
 
-		if rng:RandomFloat() >= TINTED_ROCK_REPLACE_CHANCE then
+		if rng:RandomFloat() <= TINTED_ROCK_REPLACE_CHANCE then
+			rock:SetType(GridEntityType.GRID_ROCKT)
+			rock:GetSprite():Play("tinted", true)
 			return
 		end
-		rock:SetType(GridEntityType.GRID_ROCKT)
-		rock:GetSprite():Play("tinted", true)
+
+		if rng:RandomFloat() <= FOOL_ROCK_REPLACE_CHANCE then
+			rock:SetType(GridEntityType.GRID_ROCK_GOLD)
+			rock:GetSprite():Play("foolsgold", true)
+			return
+		end
 	end)
 end
 
