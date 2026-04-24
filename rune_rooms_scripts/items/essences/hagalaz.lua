@@ -80,6 +80,7 @@ function HagalazEssence:NoDamageFromEternalFly(player, damage, flags, source, co
 			or flags & DamageFlag.DAMAGE_TNT > 0
 			-- Mushroom exploding, no clue if there is a better way to identify it.
 			or source and source.Variant == 10000
+			or source and source.Type == EntityType.ENTITY_STONEHEAD
 		)
 	then
 		return false
@@ -87,20 +88,70 @@ function HagalazEssence:NoDamageFromEternalFly(player, damage, flags, source, co
 end
 RuneRooms:AddCallback(ModCallbacks.MC_PRE_PLAYER_TAKE_DMG, HagalazEssence.NoDamageFromEternalFly)
 
+---@param npc EntityNPC
+function HagalazEssence:KillGapingMaw(npc)
+	if PlayerManager.AnyoneHasCollectible(HagalazItem) then
+		npc.State = NpcState.STATE_DEATH
+	end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_POST_NPC_INIT, HagalazEssence.KillGapingMaw, EntityType.ENTITY_GAPING_MAW)
+RuneRooms:AddCallback(ModCallbacks.MC_POST_NPC_INIT, HagalazEssence.KillGapingMaw, EntityType.ENTITY_BROKEN_GAPING_MAW)
+RuneRooms:AddCallback(ModCallbacks.MC_POST_NPC_INIT, HagalazEssence.KillGapingMaw, EntityType.ENTITY_QUAKE_GRIMACE)
+
+function HagalazEssence:NerfHost(type, variant, subType)
+	if type == EntityType.ENTITY_HOST and PlayerManager.AnyoneHasCollectible(HagalazItem) then
+		if variant == 0 and subType == 0 then
+			return {type, 1, 0}
+		elseif variant == 3 and subType == 0 then
+			return {type, variant, 40}
+		end
+	end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_PRE_ENTITY_SPAWN, HagalazEssence.NerfHost)
+
+--[[
+---@param npc EntityNPC
+function HagalazEssence:ExplodeTuffTwin(npc)
+	if npc.Variant == 2 and PlayerManager.AnyoneHasCollectible(HagalazItem) then
+		Isaac.CreateTimer(function ()
+			Game():BombExplosionEffects(npc.Position, 1)
+		end, 30, 1, false)
+	end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_POST_NPC_INIT, HagalazEssence.ExplodeTuffTwin, EntityType.ENTITY_LARRYJR)]]
+
 ---@param grid GridEntity
 ---@param entity Entity
 ---@param damage number
 ---@param flags DamageFlag | integer
 ---@return boolean?
 function HagalazEssence:NoPlayerRedPoopDamage(grid, entity, damage, flags)
-	if entity and entity:ToPlayer() and grid:GetVariant() == GridPoopVariant.RED then
-		local player = entity:ToPlayer()
+	if flags & DamageFlag.DAMAGE_POOP == 0 then return end
+	if not entity then return end
+	local player = entity:ToPlayer()
+	if player and grid:GetVariant() == GridPoopVariant.RED then
 		if player:HasCollectible(HagalazItem) then
 			return false
 		end
 	end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_GRID_HURT_DAMAGE, HagalazEssence.NoPlayerRedPoopDamage, GridEntityType.GRID_POOP)
+
+---@param web GridEntityWeb
+function RuneRooms:DestroyCobWeb(web)
+	if PlayerManager.AnyoneHasCollectible(HagalazItem) then
+		for _, player in ipairs(PlayerManager.GetPlayers()) do
+			if player:HasCollectible(HagalazItem) then
+				local room = Game():GetRoom()
+				if web:GetGridIndex() == room:GetGridIndex(player.Position) then
+					web:Destroy()
+				end
+			end
+		end
+	end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_POST_GRID_ENTITY_WEB_UPDATE, RuneRooms.DestroyCobWeb, GridEntityType.GRID_SPIDERWEB)
+
 
 ---@param grid GridEntityRock
 ---@return boolean?
