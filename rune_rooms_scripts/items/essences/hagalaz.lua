@@ -71,6 +71,16 @@ function HagalazEssence:NoShootFire(npc)
 end
 RuneRooms:AddCallback(ModCallbacks.MC_NPC_UPDATE, HagalazEssence.NoShootFire, EntityType.ENTITY_FIREPLACE)
 
+---@param npc EntityNPC
+function HagalazEssence:GrimmaceNoShoot(npc)
+	if PlayerManager.AnyoneHasCollectible(HagalazItem) then
+		npc.ProjectileCooldown = 84
+	end
+end
+RuneRooms:AddCallback(ModCallbacks.MC_NPC_UPDATE, HagalazEssence.GrimmaceNoShoot, EntityType.ENTITY_STONEHEAD)
+
+
+
 ---@param player EntityPlayer
 ---@param damage number
 ---@param flags DamageFlag | integer
