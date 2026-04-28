@@ -117,7 +117,7 @@ RuneRooms:AddCallback(ModCallbacks.MC_POST_NPC_INIT, HagalazEssence.KillGapingMa
 
 function HagalazEssence:NerfHost(type, variant, subType)
 	if type == EntityType.ENTITY_HOST and PlayerManager.AnyoneHasCollectible(HagalazItem) then
-		if variant == 0 and subType == 0 then
+		if (variant == 0 or variant == 3 and not ReworkedFoes) and subType == 0 then
 			return {type, 1, 0}
 		elseif variant == 3 and subType == 0 then
 			return {type, variant, 40}
