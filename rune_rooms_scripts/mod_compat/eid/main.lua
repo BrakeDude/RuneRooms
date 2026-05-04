@@ -1,3 +1,4 @@
+if not EID then return end
 local Descriptions = RuneRooms.Constants.Descriptions
 local runeSprites = Sprite("gfx/ui/eid_rune_icon.anm2", true)
 
