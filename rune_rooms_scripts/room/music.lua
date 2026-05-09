@@ -1,7 +1,7 @@
 local RuneRoomMusic = {}
 
 function RuneRoomMusic:Play(id, volume, isFade)
-    if RuneRooms.Helpers:IsRuneRoom() then
+    if RuneRooms.API:IsRuneRoom() then
         return {RuneRooms.Enums.Music.RUNE_ROOM, volume}
     end
 end

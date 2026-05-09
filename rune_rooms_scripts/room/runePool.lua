@@ -2,7 +2,7 @@ local RunePool = {}
 local itemPool = Game():GetItemPool()
 
 function RunePool:PreGetCollectible(pool, decrease, seed)
-    if RuneRooms.Helpers:IsRuneRoom() and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_CHAOS) then
+    if RuneRooms.API:IsRuneRoom() and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_CHAOS) then
         local newItem = itemPool:PickCollectible(RuneRooms.Enums.ItemPool.RUNE_ROOM_POOL, decrease, RNG(seed))
         if newItem ~= nil then
             return newItem.itemID
@@ -15,7 +15,7 @@ RuneRooms:AddCallback(
 )
 
 function RunePool:SetRoomPool()
-    if RuneRooms.Helpers:IsRuneRoom() then
+    if RuneRooms.API:IsRuneRoom() then
         Game():GetRoom():SetItemPool(RuneRooms.Enums.ItemPool.RUNE_ROOM_POOL)
     end
 end

@@ -2,36 +2,6 @@ RuneRooms.Helpers = {}
 
 local debug_enabled = false
 
----Helper function to check if a room is a rune room
----@param gridIndex integer? @Default: current room index
----@return boolean
-function RuneRooms.Helpers:IsRuneRoom(gridIndex)
-	local roomData = TSIL.Rooms.GetRoomData(gridIndex)
-
-	if not roomData then
-		return false
-	end
-
-	if roomData.Type ~= RoomType.ROOM_CHEST and roomData.Type ~= RoomType.ROOM_NULL then
-		return false
-	end
-	return RuneRooms.Constants.RUNE_ROOMS_IDS[roomData.Variant] ~= nil
-end
-
----Helper function to check if a room is a rune room data
----@param roomData RoomConfigRoom
----@return boolean
-function RuneRooms.Helpers:IsRuneRoomDescriptor(roomData)
-	if not roomData then
-		return false
-	end
-
-	if roomData.Type ~= RoomType.ROOM_CHEST then
-		return false
-	end
-	return RuneRooms.Constants.RUNE_ROOMS_IDS[roomData.Variant] ~= nil
-end
-
 do
 	local scheduledFunctions = {}
 

@@ -80,40 +80,7 @@ RuneRooms.Constants.RuneNames = {
 	[RuneRooms.Enums.Runes.INGWAZ] = "Ingwaz",
 }
 
-RuneRooms.Constants.RUNE_ROOMS_IDS = {
-	[3670] = 1,
-	[3671] = 1,
-	[3672] = 1,
-	[3673] = 1,
-	[3674] = 1,
-	[3675] = 1,
-	[3676] = 1,
-	[3677] = 1,
-	[3678] = 1,
-	[3679] = 1,
-	[3680] = 1,
-	[3681] = 0.25,
-	[3682] = 0.25,
-	[3683] = 1,
-	[3684] = 1,
-	[3685] = 1,
-	[3686] = 1,
-	[3687] = 1,
-	[3688] = 1,
-	[3689] = 1,
-	[3690] = 0.5,
-	[3691] = 1,
-	[3692] = 1,
-	[3693] = 1,
-	[3694] = 1,
-	[3695] = 1,
-	[3696] = 1,
-	[3697] = 1,
-	[3698] = 1,
-	[3699] = 1,
-}
----@type {chance: number, value: RoomConfigRoom}[]
-RuneRooms.Constants.RUNE_ROOMS_DATAS = {}
+RuneRooms.Constants.RUNE_ROOM_SUBTYPE = 55
 
 RuneRooms.Constants.RUNE_ROOM_ICON = "RuneRoomIcon"
 

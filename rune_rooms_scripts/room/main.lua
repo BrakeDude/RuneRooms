@@ -5,3 +5,5 @@ include("rune_rooms_scripts.room.minimap")
 include("rune_rooms_scripts.room.music")
 include("rune_rooms_scripts.room.runePool")
 include("rune_rooms_scripts.room.unlock")
+
+RuneRooms.API:AddRuneRooms("rune_rooms.stb")

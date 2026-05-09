@@ -10,7 +10,7 @@ RuneRooms:AddModCompat("REVEL", function ()
 
             local currentStageName = currentStage.Name
 
-            if RuneRooms.Helpers:IsRuneRoom() then
+            if RuneRooms.API:IsRuneRoom() then
                 return
             end
 

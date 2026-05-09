@@ -433,7 +433,7 @@ end
 
 
 function Backdrop:OnNewRoom()
-    if not RuneRooms.Helpers:IsRuneRoom() then return end
+    if not RuneRooms.API:IsRuneRoom() then return end
 
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     local rng = TSIL.RNG.NewRNG(roomDesc.DecorationSeed)
@@ -487,7 +487,7 @@ end
 
 ---@param gridEntity GridEntity
 function Backdrop:OnGridEntityInit(gridEntity)
-    if not RuneRooms.Helpers:IsRuneRoom() then return end
+    if not RuneRooms.API:IsRuneRoom() then return end
 
     if gridEntity:GetType() == GridEntityType.GRID_PIT then
         ReplacePitSprite(gridEntity:ToPit())

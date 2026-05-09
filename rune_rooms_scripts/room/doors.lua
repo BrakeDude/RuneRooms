@@ -21,12 +21,12 @@ local function CanReplaceDoorSprite(door)
     end
 
     --If we are in a rune room and the target is a default room, change the door
-    if RuneRooms.Helpers:IsRuneRoom() and targetRoomType == RoomType.ROOM_DEFAULT then
+    if RuneRooms.API:IsRuneRoom() and targetRoomType == RoomType.ROOM_DEFAULT then
         return true
     end
 
     --If the target is a rune room, replace
-    return RuneRooms.Helpers:IsRuneRoom(door.TargetRoomIndex)
+    return RuneRooms.API:IsRuneRoom(door.TargetRoomIndex)
 end
 
 

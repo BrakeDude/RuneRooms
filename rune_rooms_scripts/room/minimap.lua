@@ -13,12 +13,10 @@ function Minimap:UpdateIcon()
 			---@type RoomDescriptor?
 			local roomDesc = room.Descriptor
 			if roomDesc then
-				local roomData = roomDesc.Data
-				local isRuneRoomID = RuneRooms.Constants.RUNE_ROOMS_IDS[roomData.Variant] ~= nil
+				local isRuneRoom = RuneRooms.API:IsRuneRoomConfig(roomDesc.Data)
 
 				if
-					roomData.Type == RoomType.ROOM_CHEST
-					and isRuneRoomID
+					isRuneRoom
 					and room.PermanentIcons[1] ~= RuneRooms.Constants.RUNE_ROOM_ICON
 				then
 					room.PermanentIcons = { RuneRooms.Constants.RUNE_ROOM_ICON }
