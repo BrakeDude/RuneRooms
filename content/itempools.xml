@@ -1,16 +1,28 @@
 <ItemPools>
 	<Pool Name="Rune Room">
+		<!-- Rune Bag -->
 		<Item Id="389" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Clear Rune -->
 		<Item Id="263" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Crystal Ball -->
 		<Item Id="158" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Glass Cannon -->
 		<Item Id="352" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Jar of Wisps -->
 		<Item Id="685" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Everything Jar -->
 		<Item Id="720" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Angelic Prism -->
 		<Item Id="528" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Shard of Glass -->
 		<Item Id="448" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Cracked Orb -->
 		<Item Id="675" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Glass Eye -->
 		<Item Id="730" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Isaac's Tears -->
 		<Item Id="323" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
+		<!-- Sacred Orb -->
 		<Item Id="691" Weight="1" DecreaseBy="1" RemoveOn="0.1"/>
 	</Pool>
 </ItemPools>
