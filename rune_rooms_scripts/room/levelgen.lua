@@ -5,7 +5,10 @@ local rooms = {}
 ---@cast rooms RoomConfigRoom[]
 
 
-local function GetRandomRoom(rng)
+---Returns a valid Rune Room config
+---@param rng RNG RuneRooms uses a new rng created by the seed of level:GetDungeonPlacementSeed()
+---@return RoomConfigRoom | nil
+function RuneRooms.API:GetRandomRoom(rng)
 	local outcomes = WeightedOutcomePicker()
 	for i, room in ipairs(rooms) do
 		outcomes:AddOutcomeFloat(i, room.Weight)
@@ -128,7 +131,7 @@ function LevelGen:PlaceRoom()
 		local rng = RNG(seed)
 		local chance = RunSpawnChanceCallbacks()
 		if rng:RandomFloat() <= chance then
-			local roomconf = GetRandomRoom(rng)
+			local roomconf = RuneRooms.API:GetRandomRoom(rng)
 
 			if roomconf == nil then
 				print("None")
