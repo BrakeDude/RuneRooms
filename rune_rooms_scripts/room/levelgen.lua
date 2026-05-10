@@ -112,14 +112,15 @@ end
 
 function RuneRooms.API:CanSpawnRuneRoom()
 	local levelStage = GetCurrentLevelStage()
-	return not game:IsGreedMode() and not game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)
-	and (RuneRooms:RoomsUnlocked() and Isaac.GetPlayer(0):GetNumKeys() >= 2 or RuneRooms.Helpers:IsDebugEnabled())
+	return not game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH)
+	and (Isaac.GetPlayer(0):GetNumKeys() >= 2 or RuneRooms.Helpers:IsDebugEnabled())
 	and levelStage < LevelStage.STAGE4_3
 end
 
 function LevelGen:PlaceRoom()
 	if
-		not RuneRooms.API:CanSpawnRuneRoom()
+		game:IsGreedMode() or not RuneRooms:RoomsUnlocked()
+		or not RuneRooms.API:CanSpawnRuneRoom()
 	then
 		return
 	end
