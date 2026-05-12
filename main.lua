@@ -19,6 +19,9 @@ RuneRooms.Libs = {}
 RuneRooms.Libs.SaveManager = include("rune_rooms_scripts.lib.save_manager")
 RuneRooms.Libs.SaveManager.Init(RuneRooms)
 
+include("rune_rooms_scripts.lib.hud_helper")
+include("rune_rooms_scripts.lib.foundhudhelper")
+
 include("rune_rooms_scripts.saving_system")
 
 include("rune_rooms_scripts.lib.dss_menu")
@@ -41,6 +44,7 @@ include("rune_rooms_scripts.item_pools.main")
 
 
 include("rune_rooms_scripts.tear_effects.main")]]
+include("rune_rooms_scripts.stats_hud")
 
 print("Rune Rooms " .. RuneRooms.Version .. ' loaded. Use "rune help" to get information about commands.')
 
