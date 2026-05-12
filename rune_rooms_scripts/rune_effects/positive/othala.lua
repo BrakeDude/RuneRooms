@@ -16,7 +16,7 @@ local function AddRandomItemForRoom(player)
     local randomItem = items[rng:RandomInt(1, #items)]
     local item = randomItem:GetItemID()
 
-    RuneRooms.Libs.HiddenItemManager:AddForRoom(player, item, nil, 1)
+    player:SetInnateCollectibleCount(item, 1, "RUNE_ROOMS_OTHALA_BLESSING")
 end
 
 
@@ -30,7 +30,7 @@ end
 
 function OthalaPositive:OnNewRoom()
     if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.OTHALA) then return end
-
+    player:ClearInnateItemGroup("RUNE_ROOMS_OTHALA_BLESSING")
     AddRandomItemToPlayers()
 end
 RuneRooms:AddCallback(

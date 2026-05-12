@@ -98,21 +98,6 @@ local runData = {
 
 RuneRooms.Libs.SaveManager.Utility.AddDefaultRunData(RuneRooms.Libs.SaveManager.DefaultSaveKeys.GLOBAL, runData)
 
-
-RuneRooms:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, function(_, isSaving)
-    if isSaving then
-        local runSave = RuneRooms:RunSave()
-        runSave.HiddenItemManager = RuneRooms.Libs.HiddenItemManager:GetSaveData()
-    end
-end)
-
-RuneRooms:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, isLoading)
-    if isLoading then
-        local runSave = RuneRooms:RunSave()
-        RuneRooms.Libs.HiddenItemManager:LoadData(runSave.HiddenItemManager)
-    end
-end)
-
 RuneRooms:AddCallback(RuneRooms.Libs.SaveManager.SaveCallbacks.PRE_DATA_LOAD, function(_, data, luaMod)
 	if not luaMod then
         local settings = {

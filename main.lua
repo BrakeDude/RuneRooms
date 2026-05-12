@@ -16,7 +16,6 @@ if StageAPI then
 end
 
 RuneRooms.Libs = {}
-RuneRooms.Libs.HiddenItemManager = include("rune_rooms_scripts.lib.hidden_item_manager"):Init(RuneRooms)
 RuneRooms.Libs.SaveManager = include("rune_rooms_scripts.lib.save_manager")
 RuneRooms.Libs.SaveManager.Init(RuneRooms)
 
