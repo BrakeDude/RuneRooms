@@ -154,11 +154,11 @@ function MinimapAPI:RoomDistance(room1,room2)
 end
 
 function MinimapAPI:GetFrameBR()
-	return Vector(MinimapAPI.Config.MapFrameWidth, MinimapAPI.Config.MapFrameHeight)
+	return Vector(MinimapAPI:GetConfig("MapFrameWidth"), MinimapAPI:GetConfig("MapFrameHeight"))
 end
 
 function MinimapAPI:GetFrameCenterOffset()
-	return Vector(MinimapAPI.Config.MapFrameWidth + 1, MinimapAPI.Config.MapFrameHeight + 1) / 2
+	return Vector(MinimapAPI:GetConfig("MapFrameWidth") + 1, MinimapAPI:GetConfig("MapFrameHeight") + 1) / 2
 end
 
 --minimap api
@@ -723,7 +723,8 @@ function MinimapAPI:LoadDefaultMap(dimension)
 				end
 			end
 			if override_greed and game:IsGreedMode() then
-				if roomDescriptor.Data.Type == RoomType.ROOM_TREASURE and roomDescriptor.GridIndex == 98 then
+				-- Use silver treasure room icon for greed mode treasure rooms, except for the one right next to the shop
+				if roomDescriptor.Data.Type == RoomType.ROOM_TREASURE and roomDescriptor.GridIndex ~= 85 then
 					t.PermanentIcons = {"TreasureRoomGreed"}
 				end
 			end
@@ -1078,7 +1079,8 @@ function maproomfunctions:UpdateType()
 			end
 		end
 		if override_greed and game:IsGreedMode() then
-			if self.Descriptor.Data.Type == RoomType.ROOM_TREASURE and self.Descriptor.GridIndex == 98 then
+			-- Use silver treasure room icon for greed mode treasure rooms, except for the one right next to the shop
+			if self.Descriptor.Data.Type == RoomType.ROOM_TREASURE and self.Descriptor.GridIndex ~= 85 then
 				self.PermanentIcons = { "TreasureRoomGreed" }
 			end
 		end
@@ -1688,8 +1690,11 @@ MinimapAPI:AddCallbackFunc(ModCallbacks.MC_USE_CARD, CALLBACK_PRIORITY, function
 		MinimapAPI.lastCardUsedRoom = MinimapAPI:GetCurrentRoom()
 	elseif MinimapAPI.isRepentance and card == Card.CARD_CRACKED_KEY or card == Card.CARD_SOUL_CAIN then
 		--Update visibility of adjacent rooms like secret rooms
-		for _,room in ipairs(MinimapAPI:GetCurrentRoom():GetAdjacentRooms()) do
-			room:SetDisplayFlags(5)
+		local currentRoom = MinimapAPI:GetCurrentRoom()
+		if currentRoom then
+			for _,room in ipairs(currentRoom:GetAdjacentRooms()) do
+				room:SetDisplayFlags(5)
+			end
 		end
 		MinimapAPI:CheckForNewRedRooms()
 	end
@@ -1703,7 +1708,7 @@ function MinimapAPI:PrevMapDisplayMode()
 		[4] = MinimapAPI:GetConfig("AllowToggleNoMap"),
 	}
 	for _ = 1, 4 do
-		MinimapAPI.Config.DisplayMode = MinimapAPI.Config.DisplayMode - 1
+		MinimapAPI.Config.DisplayMode = MinimapAPI:GetConfig("DisplayMode") - 1
 		if MinimapAPI.Config.DisplayMode < 1 then
 			MinimapAPI.Config.DisplayMode = 4
 		end
@@ -1721,7 +1726,7 @@ function MinimapAPI:NextMapDisplayMode()
 		[4] = MinimapAPI:GetConfig("AllowToggleNoMap"),
 	}
 	for _ = 1, 4 do
-		MinimapAPI.Config.DisplayMode = MinimapAPI.Config.DisplayMode + 1
+		MinimapAPI.Config.DisplayMode = MinimapAPI:GetConfig("DisplayMode") + 1
 		if MinimapAPI.Config.DisplayMode > 4 then
 			MinimapAPI.Config.DisplayMode = 1
 		end
