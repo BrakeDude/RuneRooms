@@ -173,7 +173,7 @@ local exampledirectory = {
 				end,
 
 				store = function(var)
-                    RuneRooms:AddDefaultFileSave("RocksSpriteMode", var)
+					RuneRooms:AddDefaultFileSave("RocksSpriteMode", var)
 				end,
 
 				tooltip = { strset = { "what sprite", "rocks have", "in rune rooms" } },
@@ -193,7 +193,7 @@ local exampledirectory = {
 				end,
 
 				store = function(var)
-                    RuneRooms:AddDefaultFileSave("PitsSpriteMode", var)
+					RuneRooms:AddDefaultFileSave("PitsSpriteMode", var)
 				end,
 
 				tooltip = { strset = { "what sprite", "pits have", "in rune rooms" } },
@@ -325,6 +325,22 @@ DeadSeaScrollsMenu.AddMenu("Rune Rooms", {
 	DirectoryKey = exampledirectorykey,
 })
 
--- There are a lot more features that DSS supports not covered here, like sprite insertion and
--- scroller menus, that you'll have to look at other mods for reference to use. But, this should be
--- everything you need to create a simple menu for configuration or other simple use cases!
+local prefix = "RuneRooms"
+
+if not ImGui.ElementExists("RestoredMods") then
+	ImGui.CreateMenu("RestoredMods", "Restored Mods")
+end
+
+if not ImGui.ElementExists("EdithRestored") then
+	ImGui.AddElement("RestoredMods", prefix, ImGuiElement.Menu, "Rune Rooms")
+end
+
+if not ImGui.ElementExists("edithMenuSettings") then
+	ImGui.AddElement(prefix, prefix.."Settings", ImGuiElement.MenuItem, "\u{f013} Settings")
+end
+
+if not ImGui.ElementExists(prefix.."Window") then
+	ImGui.CreateWindow(prefix.."Window", "Rune Rooms Settings")
+	ImGui.LinkWindowToElement(prefix.."Window", prefix.."Settings")
+	ImGui.SetWindowSize(prefix.."Window", 800, 350)
+end
