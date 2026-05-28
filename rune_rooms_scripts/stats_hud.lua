@@ -10,7 +10,7 @@ element.Sprite:SetFrame("Idle", 8)
 local previousChance
 
 function HudStat:Render()
-	element.Visible = (RuneRooms:RoomsUnlocked() or RuneRooms.Helpers:IsDebugEnabled()) and not Game():IsGreedMode()
+	element.Visible = ((RuneRooms:RoomsUnlocked() or RuneRooms.Helpers:IsDebugEnabled()) and not Game():IsGreedMode()) and RuneRooms:GetDefaultFileSave("ShowHudIcon")
 
 	local currentChance = RuneRooms.API:GetRoomSpawnChance() * 100
 

@@ -103,6 +103,7 @@ RuneRooms:AddCallback(RuneRooms.Libs.SaveManager.SaveCallbacks.PRE_DATA_LOAD, fu
         local settings = {
             ["RocksSpriteMode"] = RuneRooms.Enums.GridSpriteMode.DEFAULT,
             ["PitsSpriteMode"] = RuneRooms.Enums.GridSpriteMode.DEFAULT,
+            ["ShowHudIcon"] = true,
 		}
 		for k,v in pairs(settings) do
 			if data.file.other[k] == nil then
