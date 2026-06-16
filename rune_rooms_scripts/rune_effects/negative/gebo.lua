@@ -18,7 +18,7 @@ local function DestroySlot(slot)
         0.0001
     )
 
-    SFXManager():Stop(SoundEffect.SOUND_EXPLOSION_WEAK)
+    RuneRooms.SFX:Stop(SoundEffect.SOUND_EXPLOSION_WEAK)
 
     local pickups = TSIL.EntitySpecific.GetPickups()
     TSIL.Utils.Tables.ForEach(pickups, function (_, pickup)

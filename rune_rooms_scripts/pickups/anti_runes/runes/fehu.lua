@@ -23,7 +23,7 @@ function FehuRune:UseFehu(fehu, player, useflags, rng, time, div)
 	return true
 end
 RuneRooms:AddInternalCallback(RuneRooms.Enums.CustomCallback.RUN_RUNE_MAIN, function()
-	Game():GetRoom():TurnGold()
+	RuneRooms.Room():TurnGold()
 	return true
 end, RuneRooms.Enums.Runes.FEHU)
 

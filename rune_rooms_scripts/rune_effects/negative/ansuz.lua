@@ -2,7 +2,7 @@ local AnsuzNegative = {}
 local MinimapAPICallbacks = require("scripts.minimapapi.callbacks")
 
 local function GetRandomRoomWithEnemies(roomType)
-	local level = Game():GetLevel()
+	local level = RuneRooms.Level
 	local seed = level:GetDungeonPlacementSeed()
 	local rng = RNG(seed)
 	local roomconfig
@@ -43,7 +43,7 @@ RuneRooms:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, AnsuzNegative.Replac
 
 function AnsuzNegative:RemovePickups()
 	if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.ANSUZ) then return end
-	local room = Game():GetRoom()
+	local room = RuneRooms.Room()
     
     if (room:GetType() == RoomType.ROOM_SECRET or room:GetType() == RoomType.ROOM_SUPERSECRET)
     and room:IsFirstVisit() then
@@ -58,7 +58,7 @@ RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, AnsuzNegative.RemovePickups
 
 ---@param runeEffect RuneEffect
 function AnsuzNegative:ReplaceCurrentLevelRooms(runeEffect)
-    local level = Game():GetLevel()
+    local level = RuneRooms.Level
     local rooms = level:GetRooms()
     for i = 0, rooms.Size - 1 do
         local room = rooms:Get(i)
@@ -86,7 +86,7 @@ RuneRooms:AddCallback(ModCallbacks.MC_PRE_SPAWN_CLEAN_AWARD, AnsuzNegative.NoRew
 function AnsuzNegative:RandomMinimapPosition(room, playerPos)
     if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.ANSUZ) then return end
     local cache = MinimapAPI.Cache
-    local level = Game():GetLevel()
+    local level = RuneRooms.Level
     local currentroom = cache.RoomDescriptor
 	if currentroom.GridIndex < 0 then
 		return Vector(-32768,-32768)

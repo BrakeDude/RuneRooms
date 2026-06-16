@@ -5,7 +5,7 @@ local FOOL_ROCK_REPLACE_CHANCE = 0.07
 local HagalazItem = RuneRooms.Enums.Item.HAGALAZ_ESSENCE
 
 local function RetractSpikes()
-	if Game():GetRoom():GetType() == RoomType.ROOM_SACRIFICE then return end
+	if RuneRooms.Room():GetType() == RoomType.ROOM_SACRIFICE then return end
 	local player = Isaac.GetPlayer()
 	local trinketSituation = TSIL.Players.TemporarilyRemoveTrinkets(player)
 
@@ -159,7 +159,7 @@ function RuneRooms:DestroyCobWeb(web)
 	if PlayerManager.AnyoneHasCollectible(HagalazItem) then
 		for _, player in ipairs(PlayerManager.GetPlayers()) do
 			if player:HasCollectible(HagalazItem) then
-				local room = Game():GetRoom()
+				local room = RuneRooms.Room()
 				if web:GetGridIndex() == room:GetGridIndex(player.Position) then
 					web:Destroy()
 				end

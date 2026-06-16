@@ -76,11 +76,11 @@ function EhwazPositive:OnGideonDeath(npc)
     )
     if not isSpecialGideon then return end
 
-    SFXManager():Stop(SoundEffect.SOUND_MONSTER_ROAR_2)
-    SFXManager():Stop(SoundEffect.SOUND_ROCK_CRUMBLE)
-    SFXManager():Stop(SoundEffect.SOUND_EXPLOSION_STRONG)
+    RuneRooms.SFX:Stop(SoundEffect.SOUND_MONSTER_ROAR_2)
+    RuneRooms.SFX:Stop(SoundEffect.SOUND_ROCK_CRUMBLE)
+    RuneRooms.SFX:Stop(SoundEffect.SOUND_EXPLOSION_STRONG)
     TSIL.Utils.Functions.RunInFrames(function ()
-        SFXManager():Stop(SoundEffect.SOUND_EXPLOSION_STRONG)
+        RuneRooms.SFX:Stop(SoundEffect.SOUND_EXPLOSION_STRONG)
     end, 2)
 
     local explosions = TSIL.EntitySpecific.GetEffects(EffectVariant.BOMB_EXPLOSION)
@@ -104,23 +104,22 @@ RuneRooms:AddCallback(
 )
 
 function EhwazPositive:OnEhwazPositiveActivation()
+    local room = RuneRooms.Room()
     if crawlspaceMode == "temporary" then
         Isaac.ExecuteCommand("goto s.itemdungeon.1000")
         Game():StartRoomTransition(GridRooms.ROOM_DEBUG_IDX, Direction.NO_DIRECTION, RoomTransitionAnim.PIXELATION)
     elseif crawlspaceMode == "gideon" then
-        local room = Game():GetRoom()
         local centerPos = room:GetCenterPos()
         local spawnPos = centerPos + Vector(0, 80)
 
         SpawnDyingGideon(spawnPos)
     elseif crawlspaceMode == "replace" then
-        local level = Game():GetLevel()
+        local level = RuneRooms.Level
 
         local writeableRoom = level:GetRoomByIdx(GridRooms.ROOM_DUNGEON_IDX, -1)
         local gideonDungeonRoomData = RoomConfig.GetRoomByStageTypeAndVariant(StbType.SPECIAL_ROOMS, RoomType.ROOM_DUNGEON, 1000)
         writeableRoom.Data = gideonDungeonRoomData
 
-        local room = Game():GetRoom()
         local centerPos = room:GetCenterPos()
         local spawnPos = centerPos + Vector(0, 80)
 

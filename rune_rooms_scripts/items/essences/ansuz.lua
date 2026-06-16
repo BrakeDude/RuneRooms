@@ -5,7 +5,7 @@ local FULL_DISPLAY_FLAGS = 5
 local AnsuzItem = RuneRooms.Enums.Item.ANSUZ_ESSENCE
 
 function AnsuzEssence:OnAnsuzPickup()
-	local level = Game():GetLevel()
+	local level = RuneRooms.Level
 
 	level:ApplyCompassEffect(false)
 	level:ApplyBlueMapEffect()
@@ -21,7 +21,7 @@ RuneRooms:AddCallback(TSIL.Enums.CustomCallback.POST_PLAYER_COLLECTIBLE_ADDED, A
 
 ---@param player EntityPlayer
 local function AnsuzNewLevelEffect(player)
-	local level = Game():GetLevel()
+	local level = RuneRooms.Level
 	local rng = player:GetCollectibleRNG(AnsuzItem)
 
 	local effect = rng:RandomInt(3)
@@ -47,7 +47,7 @@ local function GridIndexToVector(gridIndex)
 end
 
 local function IsAltPathDownpoorWithMirror()
-	local level = Game():GetLevel()
+	local level = RuneRooms.Level
 	local levelStage = level:GetAbsoluteStage()
 	local levelType = level:GetStageType()
 
@@ -65,7 +65,7 @@ local function IsAltPathDownpoorWithMirror()
 end
 
 local function PlaceRoom(options, bossGridVector, roomconf, seed, failCond)
-    local level = Game():GetLevel()
+    local level = RuneRooms.Level
 	for _, gridIndex in ipairs(options) do
 		local canPlace = true
 		local neighbors = level:GetNeighboringRooms(gridIndex, roomconf.Shape)
@@ -96,7 +96,7 @@ function AnsuzEssence:OnNewLevel()
 	if not PlayerManager.AnyoneHasCollectible(AnsuzItem) then
 		return
 	end
-	local level = Game():GetLevel()
+	local level = RuneRooms.Level
 	local seed = level:GetDungeonPlacementSeed()
 	local rng = RNG(seed)
 	local roomconf

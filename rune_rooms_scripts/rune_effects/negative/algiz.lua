@@ -8,7 +8,7 @@ function NegativeAlgiz:OnEntityDamage(entity)
 
     if entity.Type == EntityType.ENTITY_PLAYER then return end
 
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local frameCount = room:GetFrameCount()
 
     if frameCount <= INVINCIBILITY_DURATION then

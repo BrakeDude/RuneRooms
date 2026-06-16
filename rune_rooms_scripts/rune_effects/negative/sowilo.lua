@@ -20,7 +20,7 @@ function SowiloNegative:OnRoomClear()
 
     TSIL.Doors.CloseAllDoors(true)
 
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     local roomData = roomDesc.Data
 

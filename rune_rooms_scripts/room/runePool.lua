@@ -1,5 +1,5 @@
 local RunePool = {}
-local itemPool = Game():GetItemPool()
+local itemPool = RuneRooms.ItemPool
 
 function RunePool:PreGetCollectible(pool, decrease, seed)
     if RuneRooms.API:IsRuneRoom() and not PlayerManager.AnyoneHasCollectible(CollectibleType.COLLECTIBLE_CHAOS) then
@@ -16,7 +16,7 @@ RuneRooms:AddCallback(
 
 function RunePool:SetRoomPool()
     if RuneRooms.API:IsRuneRoom() then
-        Game():GetRoom():SetItemPool(RuneRooms.Enums.ItemPool.RUNE_ROOM_POOL)
+        RuneRooms.Room():SetItemPool(RuneRooms.Enums.ItemPool.RUNE_ROOM_POOL)
     end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, RunePool.SetRoomPool)

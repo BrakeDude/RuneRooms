@@ -46,8 +46,8 @@ function SowiloEssence:FriendlyNPCDeath(entity, damage, flags, source, countdown
     if not PlayerManager.AnyoneHasCollectible(SowiloItem) then return end
     if entity and entity:ToNPC() and entity:HasMortalDamage() and not entity:IsBoss() then
         if entity:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then
-            SFXManager():Play(SoundEffect.SOUND_DEATH_BURST_LARGE)
-            Game():ShakeScreen(15)
+            RuneRooms.SFX:Play(SoundEffect.SOUND_DEATH_BURST_LARGE)
+            RuneRooms.Game:ShakeScreen(15)
             for _, otherEntity in ipairs(Isaac.GetRoomEntities()) do
                 local npc = otherEntity:ToNPC()
                 if npc and npc:IsActiveEnemy() and npc:IsVulnerableEnemy() and not npc:HasEntityFlags(EntityFlag.FLAG_FRIENDLY) then

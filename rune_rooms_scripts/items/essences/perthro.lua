@@ -20,11 +20,11 @@ local function TryAddItemCycling(collectible, collectibleInfo)
 		return false
 	end
 	local rng = collectible:GetDropRNG()
-	local room = Game():GetRoom()
-	local itemPool = Game():GetItemPool()
+	local room = RuneRooms.Room()
+	local itemPool = RuneRooms.ItemPool
 	local itemPoolType = room:GetItemPool(rng:Next())
 	if itemPoolType < 0 then
-		if Game():IsGreedMode() then
+		if RuneRooms.Game:IsGreedMode() then
 			itemPoolType = ItemPoolType.POOL_GREED_TREASURE
 		else
 			itemPoolType = ItemPoolType.POOL_TREASURE

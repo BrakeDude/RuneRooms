@@ -108,7 +108,7 @@ end
 
 ---@param rng RNG
 local function SpawnCrystalPillars(rng)
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local runeEffect = RuneRooms:GetRuneEffectForFloor()
 
     TSIL.Utils.Tables.ForEach(CRYSTAL_PILLARS_ORIENTATION_PER_GRID_INDEX, function(gridIndex, orientation)
@@ -131,7 +131,7 @@ end
 ---@param anm2 string
 ---@param rng RNG
 local function SpawnHorizontalWallDetails(anm2, rng)
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local center = room:GetCenterPos()
 
     TSIL.Utils.Tables.ForEach(HORIZONTAL_DETAIL_GRID_INDEXES, function(_, gridIndex)
@@ -184,7 +184,7 @@ end
 ---@param anm2 string
 ---@param rng RNG
 local function SpawnVerticalWallDetails(anm2, rng)
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local center = room:GetCenterPos()
 
     TSIL.Utils.Tables.ForEach(VERTICAL_DETAIL_GRID_INDEXES, function(_, gridIndex)
@@ -246,7 +246,7 @@ end
 
 ---@param rng RNG
 local function SpawnHorizontalOverlays(rng)
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
 
     TSIL.Utils.Tables.ForEach(HORIZONTAL_OVERLAY_GRID_INDEXES, function(_, gridIndex)
         if rng:RandomFloat() >= 0.1 then return end
@@ -305,7 +305,7 @@ end
 
 ---@param rng RNG
 local function SpawnVerticalOverlays(rng)
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
 
     TSIL.Utils.Tables.ForEach(VERTICAL_OVERLAY_GRID_INDEXES, function(_, gridIndex)
         if rng:RandomFloat() >= 0.1 then return end

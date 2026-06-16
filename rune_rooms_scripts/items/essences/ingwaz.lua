@@ -74,7 +74,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
 
     -- 1 card or rune
     {chance = 5, value = function (position, rng)
-        local itemPool = Game():GetItemPool()
+        local itemPool = RuneRooms.ItemPool
         local card = itemPool:GetCard(
             rng:Next(),
             true,
@@ -92,7 +92,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
 
     -- 1 rune
     {chance = 5, value = function (position, rng)
-        local itemPool = Game():GetItemPool()
+        local itemPool = RuneRooms.ItemPool
         local card = itemPool:GetCard(
             rng:Next(),
             false,
@@ -213,7 +213,7 @@ function IngwazEssence:OnInit(pickup)
     for index, lootlistEntry in ipairs(lootlist:GetEntries()) do
         save.IngwazEssence[index] = {Type = lootlistEntry:GetType(), Variant = lootlistEntry:GetVariant(), Subtype = lootlistEntry:GetSubType(), Seed = lootlistEntry:GetSeed(), rng = lootlistEntry:GetRNG()}
     end
-    Game():GetRoom():InvalidatePickupVision()
+    RuneRooms.Room():InvalidatePickupVision()
 end
 --Mod:AddCallback(ModCallbacks.MC_POST_PICKUP_INIT, IngwazEssence.OnInit)
 

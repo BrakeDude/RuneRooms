@@ -1,6 +1,6 @@
 local RuneRoomsUnlock = {}
-local PersistentData = Isaac.GetPersistentGameData()
-local itemConfig = Isaac.GetItemConfig()
+local PersistentData = RuneRooms.PGD
+local itemConfig = RuneRooms.ItemConfig
 
 function RuneRooms:GetRunesUsedCount()
     return RuneRooms:RunSave().RunesUsedInRun

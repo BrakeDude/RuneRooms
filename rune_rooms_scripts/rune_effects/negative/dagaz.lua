@@ -11,7 +11,7 @@ local curseLookup = {
 }
 
 local function SelectCurse(curses)
-    local level = Game():GetLevel()
+    local level = RuneRooms.Level
     curses = curses or level:GetCurses()
     local seed = level:GetDungeonPlacementSeed()
     local rng = RNG(seed)
@@ -41,16 +41,16 @@ RuneRooms:AddCallback(ModCallbacks.MC_POST_CURSE_EVAL, DagazNegative.PickCurse)
 
 function DagazNegative:AddExtraCurse()
 	local curse = SelectCurse()
-    local level = Game():GetLevel()
+    local level = RuneRooms.Level
     local curses = level:GetCurses()
-    Game():GetLevel():AddCurse(curse, curses == 0)
+    level:AddCurse(curse, curses == 0)
 end
 RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE, DagazNegative.AddExtraCurse, RuneRooms.Enums.RuneEffect.DAGAZ)
 
 function DagazNegative:ForceCurses()
 	if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.DAGAZ) then
         local curse = RuneRooms:FloorSave().NegativeDagazCurse or 0
-        local level = Game():GetLevel()
+        local level = RuneRooms.Level
         local curses = level:GetCurses()
         if curse ~= 0 and not TSIL.Utils.Flags.HasFlags(curses, curse) then
             level:AddCurse(curse, curses == 0)

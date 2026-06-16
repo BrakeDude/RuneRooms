@@ -47,8 +47,8 @@ end
 ---Returns an rng object that's unique for each stage.
 ---@return RNG
 function RuneRooms.Helpers:GetStageRNG()
-	local level = Game():GetLevel()
-	local seeds = Game():GetSeeds()
+	local level = RuneRooms.Level
+	local seeds = RuneRooms.Game:GetSeeds()
 	local stageSeed = seeds:GetStageSeed(level:GetStage())
 
 	return TSIL.RNG.NewRNG(stageSeed)
@@ -75,7 +75,7 @@ end
 ---@param entity Entity
 ---@return string
 function RuneRooms.Helpers:GetCustomGridIndex(entity)
-	local room = Game():GetRoom()
+	local room = RuneRooms.Room()
 	local gridIndex = room:GetGridIndex(entity.Position)
 
 	local roomDesc = TSIL.Rooms.GetRoomDescriptor()
@@ -100,7 +100,7 @@ end
 ---@param doOffset boolean Whether to randomly offset the position or be grid aligned
 ---@param rng RNG
 function RuneRooms.Helpers:GetRandomPositionInRoom(allowPits, doOffset, rng)
-	local room = Game():GetRoom()
+	local room = RuneRooms.Room()
 
 	local gridIndexes = TSIL.GridIndexes.GetAllGridIndexes(true)
 	local emptyGridIndexes = TSIL.Utils.Tables.Filter(gridIndexes, function(_, gridIndex)
@@ -156,7 +156,7 @@ function RuneRooms.Helpers:PlaySound(sound, rng)
 		rng:SetSeed(math.max(1, Isaac.GetFrameCount()), 35)
 	end
 	if Options.AnnouncerVoiceMode == 2 or Options.AnnouncerVoiceMode == 0 and rng:RandomInt(4) == 0 then
-		SFXManager():Play(sound, 1, 0)
+		RuneRooms.SFX:Play(sound, 1, 0)
 	end
 end
 
@@ -177,7 +177,7 @@ end
 
 ---@return boolean | nil
 function RuneRooms.Helpers:IsInMirrorDimension()
-	local room = Game():GetRoom()
+	local room = RuneRooms.Room()
 	return room:IsMirrorWorld() or StageAPI and StageAPI.IsMirrorDimension()
 end
 

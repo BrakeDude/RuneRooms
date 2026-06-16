@@ -25,7 +25,7 @@ function AlgizEssence:OnNewRoom()
     local players = TSIL.Players.GetPlayersByCollectible(AlgizItem)
 
     TSIL.Utils.Tables.ForEach(players, function (_, player)
-        if not Game():GetRoom():IsClear() then
+        if not RuneRooms.Room():IsClear() then
             player:AddCollectibleEffect(CollectibleType.COLLECTIBLE_BOOK_OF_SHADOWS, true, SHIELD_DURATION, true)
         end
     end)

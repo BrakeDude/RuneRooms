@@ -80,11 +80,11 @@ function GeboPositive:OnNewRoom()
             return canSpawn()
         end
 
-        return Isaac.GetPersistentGameData():Unlocked(achievement)
+        return RuneRooms.PGD:Unlocked(achievement)
     end)
     local slotVariant = TSIL.Random.GetRandomElementsFromTable(slotsToSpawn, 1, rng)[1]
 
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local centerPos = room:GetCenterPos()
     local freePos = room:FindFreePickupSpawnPosition(centerPos, 0, true)
 

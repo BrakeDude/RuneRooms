@@ -36,7 +36,7 @@ function BerkanoNegative:OnNPCDeath(npc)
     local rng = RNG(npc.InitSeed)
 
     local numEnemies = math.min(1 , math.ceil(npc.MaxHitPoints / 5))
-    local level = Game():GetLevel()
+    local level = RuneRooms.Level
     local parent = nil
     for _ = 1, numEnemies, 1 do
         local type = EntityType.ENTITY_ARMYFLY

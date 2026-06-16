@@ -12,7 +12,7 @@ local function RerollHighestQualityItem(player)
     local itemsPerQuality = {}
     local highestQuality = -1
 
-    local itemConfig = Isaac.GetItemConfig()
+    local itemConfig = RuneRooms.ItemConfig
     TSIL.Utils.Tables.ForEach(playerInventory, function (_, inventoryItem)
         local itemInfo = itemConfig:GetCollectible(inventoryItem.Id)
 

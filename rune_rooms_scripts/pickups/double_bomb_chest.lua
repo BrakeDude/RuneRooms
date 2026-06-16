@@ -40,7 +40,7 @@ RuneRooms:AddCallback(
 function DoubleBombChest:OnDoubleBombChestUpdate(chest)
     local sprite = chest:GetSprite()
     if sprite:IsEventTriggered("DropSound") then
-        SFXManager():Play(SoundEffect.SOUND_CHEST_DROP)
+        RuneRooms.SFX:Play(SoundEffect.SOUND_CHEST_DROP)
     end
 
     chest.Velocity = chest.Velocity / 1.1

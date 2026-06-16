@@ -28,7 +28,7 @@ local function OpenChest(chest)
 
     local sprite = chest:GetSprite()
     sprite:SetFrame(8)
-    SFXManager():Play(SoundEffect.SOUND_UNLOCK00)
+    RuneRooms.SFX:Play(SoundEffect.SOUND_UNLOCK00)
 end
 
 
@@ -50,7 +50,7 @@ RuneRooms:AddCallback(
 function DoubleLockedChest:OnDoubleLockedChestUpdate(chest)
     local sprite = chest:GetSprite()
     if sprite:IsEventTriggered("DropSound") then
-        SFXManager():Play(SoundEffect.SOUND_CHEST_DROP)
+        RuneRooms.SFX:Play(SoundEffect.SOUND_CHEST_DROP)
     end
 
     chest.Velocity = chest.Velocity / 1.1

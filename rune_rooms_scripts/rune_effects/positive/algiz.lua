@@ -3,7 +3,7 @@ local PositiveAlgiz = {}
 
 function PositiveAlgiz:OnNewRoom()
     if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.ALGIZ) then return end
-    if not Game():GetRoom():IsFirstVisit() then return end
+    if not RuneRooms.Room():IsFirstVisit() then return end
 
     local players = PlayerManager.GetPlayers()
 

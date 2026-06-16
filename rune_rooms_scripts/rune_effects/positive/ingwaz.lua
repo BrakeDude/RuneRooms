@@ -108,7 +108,7 @@ function EhwazPositive:OnChestOpened(chest)
 	end
 
 	Isaac.CreateTimer(function()
-		SFXManager():Play(SoundEffect.SOUND_CHEST_DROP)
+		RuneRooms.SFX:Play(SoundEffect.SOUND_CHEST_DROP)
 		TSIL.Entities.SetEntityData(RuneRooms, chest, "ClosingAnimationTimer", 1)
 	end, TO_CLOSE_DURATION, 1, false)
 	chest:GetData().CloseChest = true

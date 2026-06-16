@@ -5,7 +5,7 @@ local OthalaRune = {}
 ---@param useflags UseFlag | integer
 function OthalaRune:UseOthala(othala, player, useflags, rng, extra)
 	local randomItems = {}
-	local itemConfig = Isaac.GetItemConfig()
+	local itemConfig = RuneRooms.ItemConfig
 	local history = player:GetHistory()
 
 	local itemsTable = history:GetCollectiblesHistory()
@@ -27,8 +27,8 @@ function OthalaRune:UseOthala(othala, player, useflags, rng, extra)
 	end
 	while #randomItems > 0 do
 		player:AnimateCollectible(randomItems[1], "UseItem", "PlayerPickup")
-		player:QueueItem(Isaac.GetItemConfig():GetCollectible(randomItems[1]))
-		SFXManager():Play(SoundEffect.SOUND_POWERUP1, 1, 0)
+		player:QueueItem(itemConfig:GetCollectible(randomItems[1]))
+		RuneRooms.SFX:Play(SoundEffect.SOUND_POWERUP1, 1, 0)
 		table.remove(randomItems, 1)
 	end
 	return true

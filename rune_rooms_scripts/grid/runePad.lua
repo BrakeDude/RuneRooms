@@ -72,8 +72,8 @@ function RunePad:OnRunePadUpdate(runePad)
     local sprite = runePad:GetSprite()
 
     if not data.activated and sprite:IsPlaying("IdleOff") then
-        local room = Game():GetRoom()
-        local closestPlayer = Game():GetNearestPlayer(runePad.Position)
+        local room = RuneRooms.Room()
+        local closestPlayer = RuneRooms.Game:GetNearestPlayer(runePad.Position)
 
         local padGridIndex = room:GetGridIndex(runePad.Position)
         local playerGridIndex = room:GetGridIndex(closestPlayer.Position)
@@ -84,7 +84,7 @@ function RunePad:OnRunePadUpdate(runePad)
     end
 
     if sprite:IsFinished("TurnOn") then
-        SFXManager():Play(RuneRooms.Enums.SoundEffect.RUNE_PAD_ACTIVATION)
+        RuneRooms.SFX:Play(RuneRooms.Enums.SoundEffect.RUNE_PAD_ACTIVATION)
         data.activated = true
         sprite:Play("IdleOn", true)
 

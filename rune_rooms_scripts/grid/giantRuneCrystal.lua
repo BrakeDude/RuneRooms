@@ -117,7 +117,7 @@ function RuneRooms:DealDamageToGiantCrystal(giantCrystal)
         sprite:Play("State" .. data.breakState .. "Symbol", true)
         sprite:SetFrame(frame)
 
-        SFXManager():Play(RuneRooms.Enums.SoundEffect.RUNE_CRYSTAL_EXPLOSION)
+        RuneRooms.SFX:Play(RuneRooms.Enums.SoundEffect.RUNE_CRYSTAL_EXPLOSION)
 
         SpawnRuneParticles(giantCrystal.Position, 1)
 
@@ -128,18 +128,18 @@ function RuneRooms:DealDamageToGiantCrystal(giantCrystal)
         giantCrystal.SortingLayer = SortingLayer.SORTING_BACKGROUND
         giantCrystal.EntityCollisionClass = EntityCollisionClass.ENTCOLL_NONE
 
-        SFXManager():Play(SoundEffect.SOUND_MIRROR_BREAK)
-        Game():Darken(
+        RuneRooms.SFX:Play(SoundEffect.SOUND_MIRROR_BREAK)
+        RuneRooms.Game:Darken(
             CRYSTAL_EXPLOSION_DARKEN.Intensity,
             CRYSTAL_EXPLOSION_DARKEN.Duration
         )
-        Game():MakeShockwave(
+        RuneRooms.Game:MakeShockwave(
             giantCrystal.Position,
             CRYSTAL_EXPLOSION_SHOCKWAVE.Amplitude,
             CRYSTAL_EXPLOSION_SHOCKWAVE.Speed,
             CRYSTAL_EXPLOSION_SHOCKWAVE.Duration
         )
-        Game():ShakeScreen(20)
+        RuneRooms.Game:ShakeScreen(20)
 
         SpawnRuneParticles(giantCrystal.Position, 4)
 
@@ -211,7 +211,7 @@ function GiantRuneCrystal:OnGiantCrystalUpdate(giantCrystal)
 
         local runeEffect = RuneRooms:GetRuneEffectForFloor()
         RuneRooms:ActivateRuneBlessings(runeEffect)
-        Game():ShakeScreen(20)
+        RuneRooms.Game:ShakeScreen(20)
     end
 end
 RuneRooms:AddCallback(

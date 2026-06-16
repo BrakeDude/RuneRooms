@@ -5,7 +5,7 @@ local SMOKE_DURATION = 3 * 30
 local POISON_DURATION = 3 * 30
 
 local function SpawnSmokeCreen()
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local centerPos = room:GetCenterPos()
 
     local smokeScreen = TSIL.EntitySpecific.SpawnEffect(
@@ -55,7 +55,7 @@ end
 function KenazPositive:OnNewRoom()
     if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.KENAZ) then return end
 
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     if room:IsClear() then return end
 
     SpawnSmokeCreen()

@@ -32,7 +32,7 @@ end, function()
 							slot.Type,
 							slot.Variant,
 							slot.SubType,
-							Game():GetRoom():FindFreeTilePosition(slot.Position, 9999),
+							RuneRooms.Room():FindFreeTilePosition(slot.Position, 9999),
 							Vector.Zero,
 							nil
 						)
@@ -42,7 +42,7 @@ end, function()
 							Gebo.GetData(newslot).Gebo =
 								{ Uses = Gebo.GetGeboSlot(slot).Plays, rng = rng, Player = player }
 						end
-						SFXManager():Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
+						RuneRooms.SFX:Play(SoundEffect.SOUND_SLOTSPAWN, 1, 0, false)
 					end
 				end
 				return true

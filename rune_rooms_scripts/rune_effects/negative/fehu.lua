@@ -44,7 +44,7 @@ function FehuNegative:OnPlayerDamage(entity)
     playerData.NegativeFehuRNGSeed = rng:GetSeed()
     player:AddCoins(-coinsLost)
 
-    SFXManager():Play(SoundEffect.SOUND_THUMBS_DOWN)
+    RuneRooms.SFX:Play(SoundEffect.SOUND_THUMBS_DOWN)
 end
 RuneRooms:AddCallback(
     ModCallbacks.MC_ENTITY_TAKE_DMG,

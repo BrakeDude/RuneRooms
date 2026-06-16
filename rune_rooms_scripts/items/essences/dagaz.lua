@@ -10,7 +10,7 @@ function DagazEssence:OnDagazPickup(_, _, first)
 	end
 	RuneRooms:RunSave().RemoveCursesNextFloor = true
 
-	local level = Game():GetLevel()
+	local level = RuneRooms.Level
 	level:RemoveCurses(level:GetCurses())
 end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, DagazEssence.OnDagazPickup, DagazItem)

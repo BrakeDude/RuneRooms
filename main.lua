@@ -7,6 +7,8 @@ local tsilFolder = "rune_rooms_loi"
 local LOCAL_TSIL = require(tsilFolder .. ".TSIL")
 LOCAL_TSIL.Init(tsilFolder)
 
+include("rune_rooms_scripts.globals")
+
 include("rune_rooms_scripts.enums")
 include("rune_rooms_scripts.constants")
 include("rune_rooms_scripts.helpers")

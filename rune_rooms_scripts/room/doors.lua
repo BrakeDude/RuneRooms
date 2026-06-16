@@ -11,7 +11,7 @@ end
 
 ---@param door GridEntityDoor
 local function CanReplaceDoorSprite(door)
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local roomType = room:GetType()
     local targetRoomType = door.TargetRoomType
 

@@ -15,7 +15,7 @@ function EhwazEssence:OnNewRoom()
     local corner = TSIL.Random.GetRandomInt(1, 4, rng)
     local gridIndex = GRID_INDEX_PER_CORNER[corner]
 
-    local room = Game():GetRoom()
+    local room = RuneRooms.Room()
     local gridEntity = room:GetGridEntity(gridIndex)
     if not gridEntity or gridEntity:GetType() ~= GridEntityType.GRID_STAIRS then
         TSIL.GridEntities.SpawnGridEntity(
@@ -43,7 +43,7 @@ function EhwazEssence:OnRoomClear()
     local unusedDoorSlots = TSIL.Doors.GetUnusedDoorSlots()
     local doorSlot = TSIL.Random.GetRandomElementsFromTable(unusedDoorSlots, 1, rng)[1]
 
-    local level = Game():GetLevel()
+    local level = RuneRooms.Level
     local roomIndex = level:GetCurrentRoomIndex()
     level:MakeRedRoomDoor(roomIndex, doorSlot)
 end
