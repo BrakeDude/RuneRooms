@@ -72,7 +72,9 @@ end
 RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE, AnsuzNegative.ReplaceCurrentLevelRooms, RuneRooms.Enums.RuneEffect.ANSUZ)
 
 function AnsuzNegative:NoRewardInSecretRooms()
-	if RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.ANSUZ) then
+	local roomType = RuneRooms.Room():GetType()
+    if RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.ANSUZ)
+    and (roomType == RoomType.ROOM_SUPERSECRET or roomType == RoomType.ROOM_SECRET) then
 		return true
 	end
 end

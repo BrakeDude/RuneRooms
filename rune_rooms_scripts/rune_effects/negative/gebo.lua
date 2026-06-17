@@ -9,7 +9,7 @@ local function DestroySlot(slot)
         slot.Position
     )
 
-    Game():BombExplosionEffects(
+    RuneRooms.Game:BombExplosionEffects(
         slot.Position,
         0,
         nil,

@@ -1,5 +1,5 @@
 local AnsuzPositive = {}
-local game = Game()
+local game = RuneRooms.Game
 
 function AnsuzPositive:ReveilMapAndGenerateSecretRooms()
 	if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.ANSUZ) then

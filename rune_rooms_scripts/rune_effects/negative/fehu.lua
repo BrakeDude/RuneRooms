@@ -14,7 +14,7 @@ local function GetNegativeFehuRNG(player)
 
     local rng = RNG()
     if not playerData.NegativeFehuRNGSeed then
-        local startSeed = Game():GetSeeds():GetStartSeed()
+        local startSeed = RuneRooms.Game:GetSeeds():GetStartSeed()
         rng = TSIL.RNG.NewRNG(startSeed)
         for _ = 1, RNG_OFFSET do
             rng:Next()

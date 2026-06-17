@@ -231,7 +231,7 @@ end, function()
 			if HodlingTab() then
 				player = EID.holdTabPlayer
 			elseif descObj and descObj.Entity then
-				player = Game():GetNearestPlayer(descObj.Entity.Position)
+				player = RuneRooms.Game:GetNearestPlayer(descObj.Entity.Position)
 			end
 			if player and RuneRooms.Helpers:HasMagicChalkOrRunicTablet(player) then
 				if descriptions.replaces and descriptions.replaces[rune] then

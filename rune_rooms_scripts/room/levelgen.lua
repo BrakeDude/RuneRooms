@@ -1,5 +1,5 @@
 local LevelGen = {}
-local game = Game()
+local game = RuneRooms.Game
 local placingroom = false
 local rooms = {}
 ---@cast rooms RoomConfigRoom[]

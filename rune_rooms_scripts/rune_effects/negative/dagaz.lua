@@ -48,7 +48,7 @@ end
 RuneRooms:AddCallback(RuneRooms.Enums.CustomCallback.POST_GAIN_RUNE_CURSE, DagazNegative.AddExtraCurse, RuneRooms.Enums.RuneEffect.DAGAZ)
 
 function DagazNegative:ForceCurses()
-	if not RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.DAGAZ) then
+	if RuneRooms:IsRuneCurseActive(RuneRooms.Enums.RuneEffect.DAGAZ) then
         local curse = RuneRooms:FloorSave().NegativeDagazCurse or 0
         local level = RuneRooms.Level
         local curses = level:GetCurses()

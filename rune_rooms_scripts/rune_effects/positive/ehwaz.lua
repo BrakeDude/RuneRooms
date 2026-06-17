@@ -107,7 +107,7 @@ function EhwazPositive:OnEhwazPositiveActivation()
     local room = RuneRooms.Room()
     if crawlspaceMode == "temporary" then
         Isaac.ExecuteCommand("goto s.itemdungeon.1000")
-        Game():StartRoomTransition(GridRooms.ROOM_DEBUG_IDX, Direction.NO_DIRECTION, RoomTransitionAnim.PIXELATION)
+        RuneRooms.Game:StartRoomTransition(GridRooms.ROOM_DEBUG_IDX, Direction.NO_DIRECTION, RoomTransitionAnim.PIXELATION)
     elseif crawlspaceMode == "gideon" then
         local centerPos = room:GetCenterPos()
         local spawnPos = centerPos + Vector(0, 80)
