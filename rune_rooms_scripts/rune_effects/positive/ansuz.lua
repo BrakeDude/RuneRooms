@@ -6,15 +6,16 @@ function AnsuzPositive:ReveilMapAndGenerateSecretRooms()
 		return
 	end
 
-	game:GetLevel():ApplyMapEffect()
-	game:GetLevel():ApplyCompassEffect(true)
-	game:GetLevel():ApplyBlueMapEffect()
+	local level = RuneRooms.Level
+
+	level:ApplyMapEffect()
+	level:ApplyCompassEffect(true)
+	level:ApplyBlueMapEffect()
 
 	if game:IsGreedMode() or game:GetStateFlag(GameStateFlag.STATE_BACKWARDS_PATH) then
 		return
 	end
 
-	local level = game:GetLevel()
 	local seed = level:GetDungeonPlacementSeed()
 	local stb = Isaac.GetCurrentStageConfigId()
 	local rng = RNG(seed)

@@ -48,7 +48,7 @@ end
 
 
 function OthalaNegative:OnOthalaNegativeActivation()
-    local players = TSIL.Players.GetPlayers()
+    local players = PlayerManager.GetPlayers()
     TSIL.Utils.Tables.ForEach(players, function (_, player)
         RerollHighestQualityItem(player)
     end)

@@ -6,12 +6,9 @@ local function AddRandomItemForRoom(player)
     local roomDesc = TSIL.Rooms.GetRoomDescriptor()
     local rng = TSIL.RNG.NewRNG(roomDesc.SpawnSeed)
 
-    local playerInventory = TSIL.Players.GetPlayerInventory(player, TSIL.Enums.InventoryType.COLLECTIBLE)
     local history = player:GetHistory()
-    if #playerInventory == 0 then return end
-
     local items = history:GetCollectiblesHistory()
-
+    if #items == 0 then return end
 
     local randomItem = items[rng:RandomInt(1, #items)]
     local item = randomItem:GetItemID()
@@ -21,7 +18,7 @@ end
 
 
 local function AddRandomItemToPlayers()
-    local players = TSIL.Players.GetPlayers()
+    local players = PlayerManager.GetPlayers()
     TSIL.Utils.Tables.ForEach(players, function (_, player)
         AddRandomItemForRoom(player)
     end)

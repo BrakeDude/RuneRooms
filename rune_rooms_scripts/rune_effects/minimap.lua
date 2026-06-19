@@ -1,5 +1,4 @@
-local RuneIconsSprite = Sprite()
-RuneIconsSprite:Load("gfx/ui/rune_icons.anm2", true)
+local RuneIconsSprite = Sprite("gfx/ui/rune_icons.anm2", true)
 
 
 ---@param runeEffect RuneEffect

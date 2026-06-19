@@ -5,7 +5,7 @@ local BerkanoPositive = {}
 function BerkanoPositive:OnNPCDeath(npc)
     if not RuneRooms:IsRuneBlessingActive(RuneRooms.Enums.RuneEffect.BERKANO) then return end
 
-    local players = TSIL.Players.GetPlayers()
+    local players = PlayerManager.GetPlayers()
     local rng = TSIL.RNG.NewRNG(npc.InitSeed)
 
     TSIL.Utils.Tables.ForEach(players, function (_, player)

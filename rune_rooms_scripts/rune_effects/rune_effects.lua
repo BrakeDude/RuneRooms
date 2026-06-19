@@ -54,9 +54,13 @@ local function IsRuneCurseBlessingActive(runeEffect, isBlessing)
 	local curseBlessing = RuneRooms:RunSave().PersistentRuneCurses or 0
 
 	if isBlessing then
-		curseBlessing = RuneRooms:FloorSave().PersistentRuneBlessing or 0
+		curseBlessing = RuneRooms:FloorSave().FloorRuneBlessing or 0
 	end
 	return TSIL.Utils.Flags.HasFlags(curseBlessing, runeEffect)
+end
+
+function RuneRooms:EffectExists(runeEffect, isBlessing)
+	return IsRuneCurseBlessingActive(runeEffect, isBlessing)
 end
 
 ---@param runeEffect RuneEffect
@@ -66,7 +70,6 @@ local function ActivateRuneCurseBlessing(runeEffect, isBlessing)
 	if not exists then
 		return
 	end
-
 	local hadEffectPreviously = IsRuneCurseBlessingActive(runeEffect, isBlessing)
 
 	local effects, callback
