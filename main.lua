@@ -17,9 +17,13 @@ if StageAPI then
 	StageAPI.UnregisterCallbacks(RuneRooms.Constants.MOD_ID)
 end
 
+include("rune_rooms_scripts.lib.minimap_api")
+
 RuneRooms.Libs = {}
 RuneRooms.Libs.SaveManager = include("rune_rooms_scripts.lib.save_manager")
 RuneRooms.Libs.SaveManager.Init(RuneRooms)
+
+RuneRooms.Libs.SaveManager.InitMinimapAPI(MinimapAPI, RuneRooms.Constants.MINIMAPI_VERSION)
 
 include("rune_rooms_scripts.lib.hud_helper")
 include("rune_rooms_scripts.lib.foundhudhelper")
@@ -27,7 +31,6 @@ include("rune_rooms_scripts.lib.foundhudhelper")
 include("rune_rooms_scripts.saving_system")
 
 include("rune_rooms_scripts.lib.imgui")
-include("rune_rooms_scripts.lib.minimap_api")
 include("rune_rooms_scripts.lib.gebo.main")
 
 include("rune_rooms_scripts.mod_compat.main")

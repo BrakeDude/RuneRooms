@@ -36,7 +36,8 @@ end
 
 ---@param enemies EntityNPC[]
 local function PoisonEntities(enemies)
-    local player = Isaac.GetPlayer()
+    local players = PlayerManager.GetPlayers()
+    local player = RuneRooms.Helpers:TableQuickSort(players, function(a,b) return a.Damage > b.Damage end)[1]
     local damage = player.Damage * 2
 
     TSIL.Utils.Tables.ForEach(enemies, function (_, enemy)
