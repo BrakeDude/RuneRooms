@@ -38,19 +38,25 @@ local function ReplaceRocks()
 	end)
 end
 
-function HagalazEssence:OnHagalazEssencePickup()
-	RetractSpikes()
-
+---@param player EntityPlayer
+function HagalazEssence:OnHagalazEssencePickup(_, _, _, _, _, player)
+	--RetractSpikes()
+	player:SetInnateTrinketCount(TrinketType.TRINKET_FLAT_FILE, 1, "HAGALAZ_ESSENCE_EFFECT", false)
 	ReplaceRocks()
 end
 RuneRooms:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, HagalazEssence.OnHagalazEssencePickup, HagalazItem)
+
+function HagalazEssence:OnHagalazEssencePickupRemove(player)
+	player:ClearInnateItemGroup("HAGALAZ_ESSENCE_EFFECT")
+end
+RuneRooms:AddCallback(ModCallbacks.MC_POST_TRIGGER_COLLECTIBLE_REMOVED, HagalazEssence.OnHagalazEssencePickupRemove, HagalazItem)
 
 function HagalazEssence:OnNewRoom()
 	if not PlayerManager.AnyoneHasCollectible(HagalazItem) then
 		return
 	end
 
-	RetractSpikes()
+	--RetractSpikes()
 
 	ReplaceRocks()
 end

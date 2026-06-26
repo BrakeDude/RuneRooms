@@ -30,7 +30,6 @@ RuneRooms:AddCallback(
     EhwazEssence.OnNewRoom
 )
 
-
 function EhwazEssence:OnRoomClear()
     local player = TSIL.Players.GetPlayersByCollectible(EhwazItem)[1]
     if not player then return end

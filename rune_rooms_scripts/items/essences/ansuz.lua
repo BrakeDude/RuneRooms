@@ -1,10 +1,10 @@
 local AnsuzEssence = {}
 
-local REVEAL_ROOM_CHANCE = 1
 local FULL_DISPLAY_FLAGS = 5
 local AnsuzItem = RuneRooms.Enums.Item.ANSUZ_ESSENCE
 
-function AnsuzEssence:OnAnsuzPickup()
+function AnsuzEssence:OnAnsuzPickup(_, _, firstTime)
+	if not firstTime then return end
 	local level = RuneRooms.Level
 
 	level:ApplyCompassEffect(false)
@@ -13,32 +13,7 @@ function AnsuzEssence:OnAnsuzPickup()
 
 	level:UpdateVisibility()
 end
-RuneRooms:AddCallback(TSIL.Enums.CustomCallback.POST_PLAYER_COLLECTIBLE_ADDED, AnsuzEssence.OnAnsuzPickup, {
-	nil,
-	nil,
-	AnsuzItem,
-})
-
----@param player EntityPlayer
-local function AnsuzNewLevelEffect(player)
-	local level = RuneRooms.Level
-	local rng = player:GetCollectibleRNG(AnsuzItem)
-
-	local effect = rng:RandomInt(3)
-
-	if effect == 0 then
-		--Compass
-		level:ApplyCompassEffect(false)
-	elseif effect == 1 then
-		--Blue map
-		level:ApplyBlueMapEffect()
-	elseif effect == 2 then
-		--Treasure map
-		level:ApplyMapEffect()
-	end
-
-	level:UpdateVisibility()
-end
+RuneRooms:AddCallback(ModCallbacks.MC_POST_ADD_COLLECTIBLE, AnsuzEssence.OnAnsuzPickup, AnsuzItem)
 
 ---@param gridIndex number
 ---@return Vector

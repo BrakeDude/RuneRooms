@@ -9,10 +9,9 @@ local IngwazItem = RuneRooms.Enums.Item.INGWAZ_ESSENCE
 
 ---@param rng RNG
 ---@return Vector
-local function GetRandomPickupVelocity(rng)
-    local angle = rng:RandomInt(360)
+local function GetRandomPickupVelocity(position, rng)
     local speed = TSIL.Random.GetRandomFloat(PICKUP_MIN_SPAWN_SPEED, PICKUP_MAX_SPAWN_SPEED, rng)
-    return Vector.FromAngle(angle):Resized(speed)
+    return EntityPickup.GetRandomPickupVelocity(position, rng):Resized(speed)
 end
 
 
@@ -27,7 +26,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
                 PickupVariant.PICKUP_COIN,
                 0,
                 position,
-                GetRandomPickupVelocity(rng)
+                GetRandomPickupVelocity(position, rng)
             )
         end
     end},
@@ -38,7 +37,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_HEART,
             0,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 
@@ -48,7 +47,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_KEY,
             0,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 
@@ -58,7 +57,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_BOMB,
             0,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 
@@ -68,7 +67,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_PILL,
             0,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 
@@ -86,7 +85,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_TAROTCARD,
             card,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 
@@ -104,7 +103,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_TAROTCARD,
             card,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 
@@ -114,7 +113,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_TRINKET,
             0,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 
@@ -124,7 +123,7 @@ local POSSIBLE_EXTRA_PICKUPS = {
             PickupVariant.PICKUP_LIL_BATTERY,
             0,
             position,
-            GetRandomPickupVelocity(rng)
+            GetRandomPickupVelocity(position, rng)
         )
     end},
 }
@@ -165,7 +164,7 @@ local function SpawnExtraKey(rng, position)
         PickupVariant.PICKUP_KEY,
         KeySubType.KEY_NORMAL,
         position,
-        GetRandomPickupVelocity(rng)
+        GetRandomPickupVelocity(position, rng)
     )
 end
 
