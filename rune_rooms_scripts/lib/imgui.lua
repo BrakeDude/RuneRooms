@@ -1,4 +1,5 @@
 ---@diagnostic disable: undefined-field
+local loaded = false
 
 ---@return GridSpriteMode
 function RuneRooms:GetRocksSpriteMode()
@@ -39,25 +40,19 @@ local function InitImGuiMenu()
 end
 
 local function UpdateImGuiMenu(IsDataInitialized)
-	if IsDataInitialized then
+	if IsDataInitialized and RuneRooms:RoomsUnlocked() then
 		if ImGui.ElementExists(settingsPrefix .. "NoWay") then
 			ImGui.RemoveElement(settingsPrefix .. "NoWay")
 		end
 
-		if RuneRooms:RoomsUnlocked() then
-			ImGui.AddCheckbox(prefix .. "Window", settingsPrefix .. "ShowHudIcon", "Show HUD icon", function(value)
-				RuneRooms:AddDefaultFileSave("ShowHudIcon", value)
-			end, true)
+		ImGui.AddCheckbox(prefix .. "Window", settingsPrefix .. "ShowHudIcon", "Show HUD icon", function(value)
+			RuneRooms:AddDefaultFileSave("ShowHudIcon", value)
+		end, true)
 
-			ImGui.AddCallback(settingsPrefix .. "ShowHudIcon", ImGuiCallback.Render, function()
-				ImGui.UpdateData(
-					settingsPrefix .. "ShowHudIcon",
-					ImGuiData.Value,
-					RuneRooms:ShowIcon()
-				)
-			end)
-			ImGui.SetTooltip(settingsPrefix .. "ShowHudIcon", "Shows chance of rune room spawning")
-		end
+		ImGui.AddCallback(settingsPrefix .. "ShowHudIcon", ImGuiCallback.Render, function()
+			ImGui.UpdateData(settingsPrefix .. "ShowHudIcon", ImGuiData.Value, RuneRooms:ShowIcon())
+		end)
+		ImGui.SetTooltip(settingsPrefix .. "ShowHudIcon", "Shows chance of rune room spawning")
 
 		ImGui.AddCombobox(
 			prefix .. "Window",
@@ -108,44 +103,32 @@ local function UpdateImGuiMenu(IsDataInitialized)
 			ImGui.RemoveElement(settingsPrefix .. "PitsSpriteMode")
 		end
 
-		if not ImGui.ElementExists(settingsPrefix .. "NoWay") then
-			ImGui.AddText(
-				prefix .. "Window",
-				"Options will be available after loading the game.",
-				true,
-				settingsPrefix .. "NoWay"
-			)
+		if ImGui.ElementExists(settingsPrefix .. "NoWay") then
+			ImGui.RemoveElement(settingsPrefix .. "NoWay")
 		end
-	end
-end
-
-local function Init()
-	InitImGuiMenu()
-	UpdateImGuiMenu(false)
-
-	local InGame = false
-
-	local function UpdateImGuiOnRender()
-		if not Isaac.IsInGame() and InGame then
-			UpdateImGuiMenu(false)
-			InGame = false
-		elseif Isaac.IsInGame() and not InGame then
-			UpdateImGuiMenu(true)
-			InGame = true
+		local text
+		if type(IsDataInitialized) == "nil" then
+			text = "loading the game."
+		else
+			text = RuneRooms:RoomsUnlocked() and "loading the game." or "unlocking rune rooms."
 		end
-	end
-	RuneRooms:AddPriorityCallback(ModCallbacks.MC_POST_RENDER, CallbackPriority.LATE, UpdateImGuiOnRender)
-	RuneRooms:AddPriorityCallback(ModCallbacks.MC_MAIN_MENU_RENDER, CallbackPriority.LATE, UpdateImGuiOnRender)
-end
-
-local function OnModsLoad()
-	if RuneRooms:RoomsUnlocked() then
-		Init()
+		ImGui.AddText(prefix .. "Window", "Options will be available after " .. text, true, settingsPrefix .. "NoWay")
 	end
 end
-RuneRooms:AddCallback(ModCallbacks.MC_POST_MODS_LOADED, OnModsLoad)
 
-local function OnUnlock()
-	Init()
+InitImGuiMenu()
+UpdateImGuiMenu()
+
+local InGame = false
+
+local function UpdateImGuiOnRender()
+	if not Isaac.IsInGame() and InGame then
+		UpdateImGuiMenu(false)
+		InGame = false
+	elseif Isaac.IsInGame() and not InGame then
+		UpdateImGuiMenu(true)
+		InGame = true
+	end
 end
-RuneRooms:AddCallback(ModCallbacks.MC_POST_ACHIEVEMENT_UNLOCK, OnUnlock, RuneRooms.Enums.Achievement.RUNE_ROOMS)
+RuneRooms:AddPriorityCallback(ModCallbacks.MC_POST_RENDER, CallbackPriority.LATE, UpdateImGuiOnRender)
+RuneRooms:AddPriorityCallback(ModCallbacks.MC_MAIN_MENU_RENDER, CallbackPriority.LATE, UpdateImGuiOnRender)
