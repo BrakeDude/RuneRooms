@@ -10,7 +10,9 @@ element.Sprite:SetFrame("Idle", 8)
 local previousChance
 
 function HudStat:Render()
-	element.Visible = ((RuneRooms:RoomsUnlocked() or RuneRooms.Helpers:IsDebugEnabled()) and not RuneRooms.Game:IsGreedMode()) and RuneRooms:GetDefaultFileSave("ShowHudIcon")
+	element.Visible = (
+		(RuneRooms:RoomsUnlocked() or RuneRooms.Helpers:IsDebugEnabled()) and not RuneRooms.Game:IsGreedMode()
+	) and RuneRooms:ShowIcon()
 
 	local currentChance = RuneRooms.API:GetRoomSpawnChance() * 100
 
@@ -22,7 +24,8 @@ function HudStat:Render()
 
 	if previousChance ~= currentChance then
 		local diff = currentChance - previousChance
-		local color = diff > 0 and FoundHUDHelper.COLOR_STAT_CHANGE_POSITIVE or FoundHUDHelper.COLOR_STAT_CHANGE_NEGATIVE
+		local color = diff > 0 and FoundHUDHelper.COLOR_STAT_CHANGE_POSITIVE
+			or FoundHUDHelper.COLOR_STAT_CHANGE_NEGATIVE
 		local index = FoundHUDHelper:GetIndex(element)
 		FoundHUDHelper:DisplayStatChange(index, FoundHUDHelper:GetFormattedPercentage(diff, true), color)
 		previousChance = currentChance
