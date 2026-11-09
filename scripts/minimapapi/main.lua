@@ -319,12 +319,21 @@ function MinimapAPI:AddPickup(id, iconid, typ, variant, subtype, call, icongroup
 			Condition = condition,
 		}
 	end
+	newPickup.IsVanillaPickup = false -- mark this pickup as a custom pickup
 	MinimapAPI.PickupList[id] = newPickup
 	MinimapAPI.PickupListByType[newPickup.Type] = MinimapAPI.PickupListByType[newPickup.Type] or {}
 	MinimapAPI.PickupListByType[newPickup.Type][newPickup.Variant] = MinimapAPI.PickupListByType[newPickup.Type][newPickup.Variant] or {}
 	MinimapAPI.PickupListByType[newPickup.Type][newPickup.Variant][newPickup.SubType] = MinimapAPI.PickupListByType[newPickup.Type][newPickup.Variant][newPickup.SubType] or {}
-	table.insert(MinimapAPI.PickupListByType[newPickup.Type][newPickup.Variant][newPickup.SubType], id)
-	table.sort(MinimapAPI.PickupList, function(a, b) return a.Priority > b.Priority	end	)
+	local pickupIDs = MinimapAPI.PickupListByType[newPickup.Type][newPickup.Variant][newPickup.SubType]
+	table.insert(pickupIDs, id)
+	table.sort(pickupIDs, function(a, b)
+		local priorityA = MinimapAPI.PickupList[a].Priority
+		local priorityB = MinimapAPI.PickupList[b].Priority
+		if priorityA == priorityB then -- sort by ID if priority is the same
+			return tostring(a) < tostring(b)
+		end
+		return priorityA > priorityB
+	end)
 	return newPickup
 end
 
@@ -507,33 +516,39 @@ function MinimapAPI:GetCurrentRoomPickupIDs() --gets pickup icon ids for current
 		local success = false
 		local id = type(ent:GetData()) == "table" and ent:GetData().MinimapAPIPickupID -- sanity checks to get entity Data
 		if id == nil then
-			local checkType = ent.Type
-			if not MinimapAPI.PickupListByType[checkType] then
-				checkType = -1
-			end
-			if MinimapAPI.PickupListByType[checkType] then
-				local checkVariant = ent.Variant
-				if not MinimapAPI.PickupListByType[checkType][checkVariant] then
-					checkVariant = -1
+			local toPickup = ent:ToPickup()
+			-- Shop pickups should not receive minimap pickup icons.
+			if not toPickup or not toPickup:IsShopItem() then
+				-- Fall back to wildcard entries when an exact type, variant, or subtype is missing.
+				local checkType = ent.Type
+				if not MinimapAPI.PickupListByType[checkType] then
+					checkType = -1
 				end
-				if MinimapAPI.PickupListByType[checkType][checkVariant] then
-					local checkSubType = ent.SubType
-					if not MinimapAPI.PickupListByType[checkType][checkVariant][checkSubType] then
-						checkSubType = -1
+				if MinimapAPI.PickupListByType[checkType] then
+					local checkVariant = ent.Variant
+					if not MinimapAPI.PickupListByType[checkType][checkVariant] then
+						checkVariant = -1
 					end
-					if MinimapAPI.PickupListByType[checkType][checkVariant][checkSubType] then
-						local currentidtable = MinimapAPI.PickupListByType[checkType][checkVariant][checkSubType]
-						if currentidtable then
-							local lastPriority = -9999
-							for _, v in pairs(currentidtable) do
-								local currentid = MinimapAPI.PickupList[v]
-								if currentid then
-									if not currentid.Priority or lastPriority < currentid.Priority then
-										if not currentid.Condition or currentid.Condition(ent) then
-											lastPriority = currentid.Priority
-											ent:GetData().MinimapAPIPickupID = v
-											id = v
-											success = true
+					if MinimapAPI.PickupListByType[checkType][checkVariant] then
+						local checkSubType = ent.SubType
+						if not MinimapAPI.PickupListByType[checkType][checkVariant][checkSubType] then
+							checkSubType = -1
+						end
+						if MinimapAPI.PickupListByType[checkType][checkVariant][checkSubType] then
+							local currentidtable = MinimapAPI.PickupListByType[checkType][checkVariant][checkSubType]
+							if currentidtable then
+								local lastPriority = -9999
+								for _, v in ipairs(currentidtable) do
+									local currentid = MinimapAPI.PickupList[v]
+									if currentid then
+										-- Replace a match only when this icon has higher priority.
+										if not currentid.Priority or lastPriority < currentid.Priority then
+											if not currentid.Condition or currentid.Condition(ent) then
+												lastPriority = currentid.Priority
+												ent:GetData().MinimapAPIPickupID = v
+												id = v
+												success = true
+											end
 										end
 									end
 								end
@@ -543,30 +558,33 @@ function MinimapAPI:GetCurrentRoomPickupIDs() --gets pickup icon ids for current
 				end
 			end
 			if not success then
+				-- Cache misses so unmatched entities are not checked again.
 				ent:GetData().MinimapAPIPickupID = false
 			end
 		end
 
 		local pickupicon = MinimapAPI.PickupList[id]
 		if pickupicon then
-			local ind = MinimapAPI:GetConfig("PickupNoGrouping") and (#pickupgroupset + 1) or pickupicon.IconGroup
-			if not pickupgroupset[ind] or MinimapAPI.PickupList[pickupgroupset[ind]].Priority < pickupicon.Priority then
-				if (not pickupicon.Call) or pickupicon.Call(ent) then
-					if pickupicon.IconGroup then
-						pickupgroupset[ind] = id
+			if not MinimapAPI:GetConfig("OnlyShowVanillaPickups") or pickupicon.IsVanillaPickup then
+				local ind = MinimapAPI:GetConfig("PickupNoGrouping") and (#pickupgroupset + 1) or pickupicon.IconGroup
+				if not pickupgroupset[ind] or MinimapAPI.PickupList[pickupgroupset[ind]].Priority < pickupicon.Priority then
+					if (not pickupicon.Call) or pickupicon.Call(ent) then
+						if pickupicon.IconGroup then
+							pickupgroupset[ind] = id
+						end
 					end
 				end
 			end
 		end
 	end
-	for _,v in pairs(pickupgroupset) do
+	for _, v in pairs(pickupgroupset) do
 		table.insert(addIcons, v)
 	end
 	local iconList = {}
-	for i,v in ipairs(addIcons) do
+	for i, v in ipairs(addIcons) do
 		iconList[i] = MinimapAPI.PickupList[v].IconID
 	end
-	for _,v in ipairs(MinimapAPI:GetCurrentRoomGridIDs()) do
+	for _, v in ipairs(MinimapAPI:GetCurrentRoomGridIDs()) do
 		table.insert(iconList, v)
 	end
 	return iconList
@@ -2212,7 +2230,7 @@ function MinimapAPI:renderRoomShadows(useCutOff)
 	local defaultOutlineColor = Color(1, 1, 1, MinimapAPI:GetTransparency(), MinimapAPI:GetConfig("DefaultOutlineColorR") * dlcColorMult, MinimapAPI:GetConfig("DefaultOutlineColorG") * dlcColorMult, MinimapAPI:GetConfig("DefaultOutlineColorB") * dlcColorMult)
 	local renderRoomSize = not MinimapAPI:IsLarge() and roomSize or largeRoomSize
 	local screen_size = MinimapAPI:GetScreenTopRight()
-	local offsetVec = Vector( screen_size.X - MinimapAPI:GetConfig("MapFrameWidth") - MinimapAPI:GetConfig("PositionX") + outlinePixelSize.X, screen_size.Y + MinimapAPI:GetConfig("PositionY") - outlinePixelSize.Y/2 - 2)
+	local offsetVec = Vector( screen_size.X - MinimapAPI:GetConfig("MapFrameWidth") - MinimapAPI:GetConfig("PositionX"), screen_size.Y + MinimapAPI:GetConfig("PositionY") - 2)
 
 	local sprite = not MinimapAPI:IsLarge() and MinimapAPI.SpriteMinimapSmall or MinimapAPI.SpriteMinimapLarge
 	sprite.Color = defaultOutlineColor
@@ -2236,19 +2254,6 @@ function MinimapAPI:renderRoomShadows(useCutOff)
 				else
 					sprite:Render(room.RenderOffset + pos, vectorZero, vectorZero)
 				end
-			end
-		end
-	end
-end
-
-local function calcAdjacentDistances(curRoomData)
-	for _,room in ipairs(curRoomData:GetAdjacentRooms()) do
-		if room.PlayerDistance == nil or (room.PlayerDistance and room.PlayerDistance > curRoomData.PlayerDistance + 1) then
-			if room:GetDisplayFlags() > 0 then
-				room.PlayerDistance = curRoomData.PlayerDistance + 1
-				calcAdjacentDistances(room)
-			else
-				room.PlayerDistance = false
 			end
 		end
 	end
@@ -2382,8 +2387,26 @@ local function renderCallbackFunction(_)
 			end
 		end
 		if resetPlayerDistance then
+			-- reset room distances to nil
+			for _,room in ipairs(MinimapAPI:GetLevel()) do
+				room.PlayerDistance = nil
+			end
 			currentroomdata.PlayerDistance = 0
-			calcAdjacentDistances(currentroomdata)
+			-- calculate player distance for each room recursively
+			local function calcadjdistances(thisroom)
+				for _,room in ipairs(thisroom:GetAdjacentRooms()) do
+					if room.PlayerDistance == nil or (room.PlayerDistance and room.PlayerDistance > thisroom.PlayerDistance + 1) then
+						if room:GetDisplayFlags() > 0 then
+							room.PlayerDistance = thisroom.PlayerDistance + 1
+							calcadjdistances(room)
+						else
+							room.PlayerDistance = false
+						end
+					end
+				end
+			end
+
+			calcadjdistances(currentroomdata)
 		end
 
 		if MinimapAPI:GetConfig("AltSemivisitedSprite") then
@@ -2423,13 +2446,11 @@ local function renderCallbackFunction(_)
 				if not islarge and MinimapAPI:GetConfig("DisplayMode") == 2 and MinimapAPI.GlobalScaleX >= 1 then -- Bounded map
 					if MinimapAPI:GetConfig("DisplayLevelFlags") == 1 then                            -- LEFT
 						levelflagoffset = Vector(
-							screen_size.X - MinimapAPI:GetConfig("MapFrameWidth") - MinimapAPI:GetConfig("PositionX")
-							+ roomPixelSize.X,
+							screen_size.X - MinimapAPI:GetConfig("MapFrameWidth") - MinimapAPI:GetConfig("PositionX") - roomPixelSize.X,
 							screen_size.Y + MinimapAPI:GetConfig("PositionY") + 3)
 					else -- BOTTOM
-						levelflagoffset = Vector(screen_size.X - MinimapAPI:GetConfig("PositionX") + roomPixelSize.X,
-							screen_size.Y + MinimapAPI:GetConfig("MapFrameHeight") + MinimapAPI:GetConfig("PositionY") +
-							3)
+						levelflagoffset = Vector(screen_size.X - MinimapAPI:GetConfig("PositionX") - 5,
+							screen_size.Y + MinimapAPI:GetConfig("MapFrameHeight") + MinimapAPI:GetConfig("PositionY") + roomPixelSize.Y)
 					end
 				elseif not islarge and MinimapAPI:GetConfig("DisplayMode") == 4 then -- hidden map
 					levelflagoffset = Vector(screen_size.X - MinimapAPI:GetConfig("PositionX") - roomPixelSize.X,
