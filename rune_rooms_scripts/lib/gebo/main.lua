@@ -1,5 +1,5 @@
 local majorversion = 1
-local minorversion = 1
+local minorversion = 2
 local APIFolder = "rune_rooms_scripts.lib.gebo"
 
 local function Init()
@@ -64,7 +64,7 @@ local function Init()
 		_type = _type or 6
 		subtype = subtype or 0
 		for key, slot in ipairs(GeboSlots) do
-			if slot.Type == _type and slot.Variant == variant and slot.SubType == subtype then
+			if slot.Type == _type and (slot.Variant == variant) and (slot.SubType == subtype or subtype == -1) then
 				GeboSlots[key].REPENTOGON = add
 			end
 		end
@@ -78,10 +78,7 @@ local function Init()
 		subtype = subtype or 0
 		plays = plays or 5
 		for key, slot in ipairs(GeboSlots) do
-			if slot.Type == _type and slot.Variant == variant and slot.SubType == subtype then
-				GeboSlots[key].Type = _type
-				GeboSlots[key].Variant = variant
-				GeboSlots[key].SubType = subtype
+			if slot.Type == _type and slot.Variant == variant and (slot.SubType == subtype or subtype == -1) then
 				GeboSlots[key].Plays = plays
 				if func ~= nil and type(func) == "function" then
 					GeboSlots[key].Function = func
@@ -212,32 +209,63 @@ local function Init()
 			if Gebo.IsGeboSlot(slot) then
 				local data = Gebo.GetData(slot)
 				local slotData = Gebo.GetGeboSlot(slot)
-				if data.Gebo ~= nil then
-					if type(slotData.Function) == "function" then
-						if not data.PrevCollide then
-							data.PrevCollide = slot.EntityCollisionClass
-							slot.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
-						end
-						local dead = slotData.Function(slot, data.Gebo.Player, data.Gebo.Uses, data.Gebo.rng)
+				if not slotData.REPENTOGON then
+					if data.Gebo ~= nil then
+						if type(slotData.Function) == "function" then
+							if not data.PrevCollide then
+								data.PrevCollide = slot.EntityCollisionClass
+								slot.EntityCollisionClass = EntityCollisionClass.ENTCOLL_ENEMIES
+							end
+							local dead = slotData.Function(slot, data.Gebo.Player, data.Gebo.Uses, data.Gebo.rng)
 
-						if
-							dead == nil
-							or type(dead) == "boolean" and dead == true
-							or type(dead) == "number" and dead <= 0
-						then
-							data.Gebo = nil
-						elseif type(dead) == "number" and dead > 0 then
-							data.Gebo.Uses = dead
+							if
+								dead == nil
+								or type(dead) == "boolean" and dead == true
+								or type(dead) == "number" and dead <= 0
+							then
+								data.Gebo = nil
+							elseif type(dead) == "number" and dead > 0 then
+								data.Gebo.Uses = dead
+							end
 						end
+					elseif data.PrevCollide then
+						slot.EntityCollisionClass = data.PrevCollide
+						data.PrevCollide = nil
 					end
-				elseif data.PrevCollide then
-					slot.EntityCollisionClass = data.PrevCollide
-					data.PrevCollide = nil
 				end
 			end
 		end
 	end
 	Gebo:AddCallback(ModCallbacks.MC_POST_UPDATE, GeboEffect)
+
+	if Gebo.RepentogonEnabled then
+		Gebo:AddCallback(ModCallbacks.MC_POST_SLOT_UPDATE, function(_, slot)
+			if Gebo.IsGeboSlot(slot) then
+				local data = Gebo.GetData(slot)
+				if data.GeboUses and data.GeboUses > 0 then
+					local slotData = Gebo.GetGeboSlot(slot)
+					if slotData.REPENTOGON then
+						if type(slotData.Function) == "function" then
+							if not (type(data.GeboPlayer) == "userdata" and data.GeboPlayer.ToPlayer and data.GeboPlayer:ToPlayer()) then
+								data.GeboPlayer = nil
+							end
+							local dead = slotData.Function(slot, data.GeboUses, data.GeboPlayer)
+							if
+								dead == nil
+								or type(dead) == "boolean" and dead == true
+								or type(dead) == "number" and dead <= 0
+							then
+								data.GeboUses = nil
+								data.GeboPlayer = nil
+							elseif type(dead) == "number" and dead > 0 then
+								data.GeboUses = dead
+							end
+						end
+					end
+				end
+			end
+		end)
+	end
 
 	local function GeboHourGlassNewRoom()
 		if not doingHourglass then
@@ -289,14 +317,14 @@ if Gebo then
 		Init()
 		Gebo.LoadSaveData(data, true)
 		print("[" .. Gebo.Name .. "] V" .. Gebo.MajorVersion .. "." .. Gebo.MinorVersion .. " successfully updated.")
-    else
-        local data = Gebo.GetSaveData()
+	else
+		local data = Gebo.GetSaveData()
 		Gebo = nil
 		Init()
 		Gebo.LoadSaveData(data, true)
 		print("[" .. Gebo.Name .. "] V" .. Gebo.MajorVersion .. "." .. Gebo.MinorVersion .. " successfully reloaded.")
-    end
+	end
 elseif not Gebo then
 	Init()
-    print("[" .. Gebo.Name .. "] V" .. Gebo.MajorVersion .. "." .. Gebo.MinorVersion .. " successfully loaded.")
+	print("[" .. Gebo.Name .. "] V" .. Gebo.MajorVersion .. "." .. Gebo.MinorVersion .. " successfully loaded.")
 end

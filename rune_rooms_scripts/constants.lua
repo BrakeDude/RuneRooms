@@ -630,15 +630,18 @@ RuneRooms.Constants.Descriptions = {
 		[RuneRooms.Enums.Runes.INGWAZ] = {
 			en_us = {
 				name = "Ingwaz",
-				description = "Unlocks every chest in the room",
+				description = "Unlocks every chest in the room."
+					.. "#{{Collectible199}} Applies Mom's Key effect to opened chests.",
 			},
 			spa = {
 				name = "Ingwaz",
-				description = "Abre todos los cofres de una sala",
+				description = "Abre todos los cofres de una sala"
+					.. "#{{Collectible199}} Aplica el efecto de la Llave de Mamá a todos los cofres abiertos.",
 			},
 			ru = {
 				name = "Игваз",
-				description = "Открывает все сундуки в комнате",
+				description = "Открывает все сундуки в комнате."
+					.. "#{{Collectible199}} Применяет эффект Маминого Ключа к открытым сундукам.",
 			},
 		},
 		[RuneRooms.Enums.Runes.KENAZ] = {
