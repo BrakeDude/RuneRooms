@@ -65,9 +65,7 @@ function Runes:UseRune(rune, player, useflags)
 	local rng = player:GetCardRNG(rune)
 	RuneRooms.Helpers:PlayGiantBook(
 		RuneRooms.Constants.RuneNames[rune],
-		Isaac.GetSoundIdByName(RuneRooms.Constants.RuneNames[rune]),
-		player,
-		rng
+		player
 	)
 	RunCallbacks(RuneRooms.Enums.CustomCallback.RUN_RUNE_MAIN, rune, player, useflags, rng)
 	RunCallbacks(RuneRooms.Enums.CustomCallback.RUN_RUNE_EXTRA, rune, player, useflags, rng)

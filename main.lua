@@ -26,7 +26,7 @@ RuneRooms.Libs.SaveManager.Init(RuneRooms)
 RuneRooms.Libs.SaveManager.InitMinimapAPI(MinimapAPI, RuneRooms.Constants.MINIMAPI_VERSION)
 
 include("rune_rooms_scripts.lib.hud_helper")
-include("rune_rooms_scripts.lib.foundhudhelper")
+--include("rune_rooms_scripts.lib.foundhudhelper")
 
 include("rune_rooms_scripts.saving_system")
 

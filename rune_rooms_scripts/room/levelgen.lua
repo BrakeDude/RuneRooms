@@ -213,6 +213,7 @@ function LevelGen:NoNaturalRoom(slot, roomConfig, seed)
 			)
 			rng:Next()
 		until roomconf ~= nil
+		return roomconf
 	end
 end
 RuneRooms:AddCallback(ModCallbacks.MC_PRE_LEVEL_PLACE_ROOM, LevelGen.NoNaturalRoom)

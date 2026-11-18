@@ -143,14 +143,13 @@ end
 ---@param sfx SoundEffect | integer
 ---@param player EntityPlayer
 ---@param rng RNG?
-function RuneRooms.Helpers:PlayGiantBook(gfx, sfx, player, rng)
+function RuneRooms.Helpers:PlayGiantBook(gfx, player)
 	ItemOverlay.Show(Isaac.GetGiantBookIdByName(gfx), 0, player)
-	RuneRooms.Helpers:PlaySound(sfx, rng)
 end
 
 ---@param sound SoundEffect | integer
 ---@param rng RNG?
-function RuneRooms.Helpers:PlaySound(sound, rng)
+function RuneRooms.Helpers:PlayAnnouncer(sound, rng)
 	if not rng then
 		rng = RNG()
 		rng:SetSeed(math.max(1, Isaac.GetFrameCount()), 35)

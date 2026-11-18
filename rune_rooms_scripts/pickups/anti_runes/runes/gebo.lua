@@ -22,6 +22,7 @@ function GeboRune:UseGebo(gebo, player, useflags, rng)
 					Gebo.GetData(slot).GeboUses = 0
 				end
 				Gebo.GetData(slot).GeboUses = Gebo.GetData(slot).GeboUses + Gebo.GetGeboSlot(slot).Plays
+				Gebo.GetData(slot).GeboPlayer = player
 			else
 				if not Gebo.GetData(slot).Gebo then
 					local rng = slot:GetDropRNG()
